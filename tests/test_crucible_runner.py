@@ -97,3 +97,31 @@ class ProcessRunnerTests(unittest.TestCase):
         result = self.run_adapter("adapter_refuses_correctly.py")
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("PASS search-absence", result.stdout)
+
+
+class CanonicalFixtureLoadingTests(unittest.TestCase):
+    def test_every_canonical_fixture_is_parseable(self):
+        specimens = ROOT / "crucible" / "specimens"
+        paths = sorted(specimens.glob("*.json"))
+        self.assertTrue(paths)
+        for path in paths:
+            specimen = json.loads(path.read_text(encoding="utf-8"))
+            self.assertEqual(specimen["id"], path.stem)
+            self.assertIn("expected", specimen)
+            self.assertIn("required_receipt_survivors", specimen["expected"])
+
+
+class ConformanceBoundaryTests(unittest.TestCase):
+    def test_readme_states_contract_is_not_runtime_conformance(self):
+        readme = (ROOT / "crucible" / "README.md").read_text(encoding="utf-8")
+        sentence = (
+            "Passing `crucible-contract` proves the fixture corpus and reference harness are internally consistent. "
+            "It does not prove an ALEX runtime conforms. Runtime conformance begins only when a real adapter "
+            "executes the applicable fixtures and the harness reports zero constitutional mismatches."
+        )
+        self.assertIn(sentence, readme)
+
+    def test_ci_workflow_runs_contract_tests(self):
+        workflow = (ROOT / ".github" / "workflows" / "crucible.yml").read_text(encoding="utf-8")
+        self.assertIn("name: crucible-contract", workflow)
+        self.assertIn("python -m unittest discover -s tests -v", workflow)
