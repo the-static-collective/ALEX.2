@@ -1,11 +1,14 @@
 import importlib.util
 import json
+import subprocess
+import sys
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = ROOT / "crucible" / "schema"
 BLIND = ROOT / "tools" / "crucible_blind.py"
+FIXTURES = ROOT / "tests" / "fixtures"
 
 
 class BlindContractSchemaTests(unittest.TestCase):
@@ -142,6 +145,88 @@ class BlindBuilderTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertNotEqual(first, other)
         self.assertTrue(first.startswith("sha256:"))
+
+
+class MetamorphicSiblingTests(unittest.TestCase):
+    def load_module(self):
+        spec = importlib.util.spec_from_file_location("crucible_blind_metamorphic", BLIND)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        self.assertTrue(
+            hasattr(module, "metamorphic_sibling"),
+            "Blind Crucible must generate runtime surface siblings without changing semantics",
+        )
+        return module
+
+    def base_case(self, blind) -> dict:
+        specimen = {
+            "id": "surface-pressure",
+            "given": {
+                "relations": [
+                    {"from": "A", "predicate": "near", "to": "B"},
+                    {"from": "B", "predicate": "near", "to": "C"},
+                ]
+            },
+            "attempt": {"promote": "source_absence"},
+            "expected": {
+                "disposition": "REFUSE",
+                "refusal_code": "SEARCH_COVERAGE_INSUFFICIENT",
+                "required_receipt_survivors": [],
+                "forbidden_promotions": ["source_absence"],
+            },
+        }
+        return blind.build_case(specimen, nonce="base-nonce")
+
+    def test_sibling_changes_surface_identity_but_preserves_operation(self):
+        blind = self.load_module()
+        base = self.base_case(blind)
+        sibling = blind.metamorphic_sibling(base, suffix="-m1", nonce="sibling-nonce")
+        self.assertEqual(sibling["case_id"], "surface-pressure-m1")
+        self.assertEqual(sibling["nonce"], "sibling-nonce")
+        self.assertNotEqual(sibling["input_digest"], base["input_digest"])
+        self.assertEqual(sibling["operation_type"], base["operation_type"])
+        self.assertEqual(sibling["rule_profile"], base["rule_profile"])
+        self.assertEqual(sibling["attempt"], base["attempt"])
+
+    def test_sibling_reorders_relations_adds_distractor_and_does_not_mutate_parent(self):
+        blind = self.load_module()
+        base = self.base_case(blind)
+        original_relations = json.loads(json.dumps(base["given"]["relations"]))
+        distractor = {"from": "X", "predicate": "unrelated", "to": "Y"}
+        sibling = blind.metamorphic_sibling(
+            base,
+            suffix="-m2",
+            nonce="sibling-2",
+            distractor_relation=distractor,
+        )
+        self.assertEqual(base["given"]["relations"], original_relations)
+        self.assertEqual(sibling["given"]["relations"][:2], list(reversed(original_relations)))
+        self.assertEqual(sibling["given"]["relations"][-1], distractor)
+
+    def test_surface_siblings_keep_reference_adapter_disposition_stable(self):
+        blind = self.load_module()
+        base = self.base_case(blind)
+        sibling = blind.metamorphic_sibling(
+            base,
+            suffix="-m3",
+            nonce="sibling-3",
+            distractor_relation={"from": "X", "predicate": "unrelated", "to": "Y"},
+        )
+        dispositions = []
+        for case in [base, sibling]:
+            completed = subprocess.run(
+                [sys.executable, str(FIXTURES / "adapter_relation_surface_reference.py")],
+                input=json.dumps(case),
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+            result = json.loads(completed.stdout)
+            dispositions.append(result["disposition"])
+        self.assertEqual(dispositions, ["REFUSE", "REFUSE"])
 
 
 if __name__ == "__main__":
