@@ -25,3 +25,30 @@ class CrucibleContractTests(unittest.TestCase):
             schema["properties"]["disposition"]["enum"],
             ["ACCEPT", "REFUSE", "UNRESOLVED", "INSUFFICIENT_TO_TEST"],
         )
+
+    def test_initial_fixture_corpus(self):
+        expected_names = {
+            "broken-ancestry.json",
+            "coordinate-drift.json",
+            "search-absence.json",
+            "shared-lineage-corroboration.json",
+            "favored-hypothesis.json",
+            "serendipity-promotion.json",
+            "replay-impersonation.json",
+            "ghost-promotion.json",
+            "yarn-promotion.json",
+            "constitution-smuggling.json",
+            "inherited-premise-smuggling.json",
+            "remove-one-collapse.json",
+        }
+        specimens = ROOT / "crucible" / "specimens"
+        actual_names = {p.name for p in specimens.glob("*.json")} if specimens.exists() else set()
+        self.assertEqual(actual_names, expected_names)
+
+        for name in sorted(expected_names):
+            path = specimens / name
+            specimen = json.loads(path.read_text(encoding="utf-8"))
+            self.assertEqual(specimen["id"], path.stem)
+            self.assertTrue(specimen["constitutional_laws"])
+            self.assertTrue(specimen["expected"]["required_receipt_survivors"])
+            self.assertIn("forbidden_promotions", specimen["expected"])
