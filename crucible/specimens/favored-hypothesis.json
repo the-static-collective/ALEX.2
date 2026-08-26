@@ -1,0 +1,9 @@
+{
+  "id": "favored-hypothesis",
+  "title": "PRESSURE refuses a test that cannot kill the favored hypothesis",
+  "constitutional_laws": ["a PRESSURE run must be capable of returning disproved", "promotion is earned by surviving loss"],
+  "given": {"hypothesis_id": "H0", "formulation": "favored strange seed", "direct_counterexample_search": "disabled"},
+  "attempt": {"promote": "pressure_survivor", "method": "support_only_search"},
+  "expected": {"disposition": "REFUSE", "refusal_code": "FAVORED_HYPOTHESIS_TRAP", "required_receipt_survivors": ["hypothesis:H0", "pressure_requirement:direct_counterexample"], "forbidden_promotions": ["pressure_survivor"]},
+  "version": 1
+}
