@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://the-static-collective.invalid/alex/crucible/oracle.schema.json",
+  "title": "ALEX Blind Crucible ORACLE",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_id",
+    "expected_disposition",
+    "expected_reason_code",
+    "required_survivors",
+    "forbidden_outputs",
+    "metamorphic_family"
+  ],
+  "properties": {
+    "case_id": {"type": "string", "minLength": 1},
+    "expected_disposition": {
+      "type": "string",
+      "enum": ["ACCEPT", "REFUSE", "UNRESOLVED", "INSUFFICIENT_TO_TEST"]
+    },
+    "expected_reason_code": {"type": ["string", "null"]},
+    "required_survivors": {
+      "type": "array",
+      "items": {"type": "string"},
+      "uniqueItems": true
+    },
+    "forbidden_outputs": {
+      "type": "array",
+      "items": {"type": "string"},
+      "uniqueItems": true
+    },
+    "metamorphic_family": {"type": ["string", "null"]}
+  }
+}
