@@ -1,8 +1,8 @@
 # ALEX evidence model
 
 Read this reference when ingesting material, preserving multiple readings,
-correcting derived text, comparing editions, PRESSURE-testing hypotheses, or
-designing interoperable ALEX records.
+correcting derived text, comparing editions, PRESSURE-testing hypotheses,
+preserving formation traces, or designing interoperable ALEX records.
 
 ## The witness stack
 
@@ -20,6 +20,8 @@ designing interoperable ALEX records.
 | `assertion` | A claim supported, contradicted, or contextualized by evidence paths | Constitution by the substrate |
 | `hypothesis` | One attributable formulation in a PRESSURE lineage | That later survivors were present in the original seed |
 | `bridge` | One typed cross-domain move | Shared mechanism, genealogy, or authority by resemblance alone |
+| `breadcrumb` | One attributable transition in discovery or formation | That the transition supplies evidence for the destination claim |
+| `toast_ghost` | One attributable residue from an inactive, lost, killed, or divergent formation branch | Error, evidence, ancestry, or genealogy by persistence alone |
 | `dossier` | A bounded research assembly and its receipt | A universal or permanently current truth store |
 
 ## Required ancestry
@@ -107,6 +109,9 @@ Useful relations include:
 - `corrects` and `supersedes_for` — revision with a named purpose;
 - `derived_from` — generic accountable descent;
 - `resembles` — similarity without genealogy;
+- `motivated_by` — formation or discovery cause without evidentiary implication;
+- `left_residue` — inactive formation whose consequence remains attributable;
+- `replays` — a receipt regenerated a tested surface or successor under declared conditions;
 - `constitutes` — reserved for an owning human or project gate.
 
 Do not use `same_as` as a convenience for uncertain identity.
@@ -142,6 +147,15 @@ H0 — verbatim seed
 Each descendant records what changed and why. A later survivor may be more
 useful than `H0` without impersonating it.
 
+When formation loss matters, a transition should also preserve:
+
+```text
+what_survived
+what_was_removed
+why_removed
+recoverable_from_prior_state
+```
+
 A consequential PRESSURE run should seek:
 
 - supporting precedent;
@@ -151,6 +165,74 @@ A consequential PRESSURE run should seek:
 
 The first three bear on the literal hypothesis. The fourth may generate a new
 analogy or research question but does not establish common mechanism.
+
+## Discovery trace and formation records
+
+Read [formation-trace.md](formation-trace.md) when the path by which the inquiry
+formed is itself worth preserving.
+
+Keep two ledgers conceptually distinct:
+
+```text
+DISCOVERY TRACE — why we looked
+EVIDENCE PATH — why we believe, doubt, or refuse
+```
+
+A `breadcrumb` records an attributable step in the discovery or formation path.
+Its `role` should state whether it was motive, evidence, counterevidence,
+inference, analogy, coincidence, wordplay, or discriminator.
+
+A `toast_ghost` records residue from a branch that is no longer active but still
+helps explain the present formation. It should preserve what was there, why it
+left the active path, what consequence remains, and whether it can be revisited.
+
+Hard boundaries:
+
+```text
+discovery path != evidence path
+breadcrumb != evidence
+toast_ghost != evidence
+toast_ghost != genealogy
+```
+
+A breadcrumb can also be evidence only when it independently qualifies as an
+evidence-bearing record or relation. Its role in causing a search does not grant
+that status.
+
+## SLEEP suspension state
+
+When the formation protocol is active, keep one to three live formulations.
+Three is a cap, not a quota.
+
+Each suspended formulation may carry:
+
+```text
+formulation
+supporting_paths
+contradicting_paths
+unknowns
+toast_ghosts
+next_discriminator
+status
+```
+
+Evidence may strengthen, weaken, split, merge, kill, or replace a formulation.
+Do not preserve a disproved formulation as live merely for symmetry.
+
+## Replay relations
+
+A `.LEEP` result must distinguish:
+
+```text
+EXACT REPLAY
+ATTRIBUTABLE RECONSTITUTION
+DIVERGENT REPLAY
+INSUFFICIENT RECEIPT
+```
+
+`replays` does not imply `same_as`. A surface reproduced under declared
+conditions does not establish historical identity or uniqueness of formation.
+A replay delta should remain attributable rather than being cleaned away.
 
 ## Bridge Ledger
 
@@ -187,5 +269,5 @@ internal constitution:
 - plain UTF-8 and JSON Lines for durable, inspectable fallback.
 
 Internal v0 records may remain simpler as long as exact ancestry, transformation
-paths, coordinate spaces, hypothesis lineage, and locators survive round-trip
-export.
+paths, coordinate spaces, hypothesis lineage, discovery/evidence separation,
+and locators survive round-trip export.
