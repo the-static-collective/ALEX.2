@@ -113,6 +113,8 @@ bears-on
 constitutes
 ```
 
+`constitutes` is display/export-only from the desk's perspective: it may serialize an already-existing constitution receipt owned by a human or participating project. A desk action, lens, arrangement, or renderer may never create, infer, or promote a relation to `constitutes`.
+
 ALEX-local relations remain richer where required, including `transcribes`, `normalizes`, `translates`, `corrects`, `quotes`, `supports`, `contradicts`, `contextualizes`, `resembles`, `motivated_by`, `left_residue`, and `replays`.
 
 ### Palimpsest Continuity — transformation before sameness
@@ -211,6 +213,7 @@ relation_projection
   from_record_id
   to_record_id
   relation_record_id?
+  evidence_path_ids[]?
   relation_type
   status
   direction
@@ -235,6 +238,8 @@ INACTIVE
 `SUPPORTED` means the underlying evidence path bears positively within its declared scope. It does not mean universally proven.
 
 `PROPOSED` may arise from researcher intuition or spatial juxtaposition and carry no evidence at all.
+
+If `evidence_bearing` is true, `relation_record_id` and/or `evidence_path_ids` must resolve to the underlying ALEX evidence records that earn that status. A renderer or placement action cannot set evidentiary bearing by itself.
 
 ### Lens
 
@@ -420,6 +425,7 @@ Use one bounded dossier with approximately 10–15 records containing at least:
 | Destructive rearrangement trap | Moving cards cannot mutate canonical source, reading, translation, assertion, or lineage records |
 | Replay impersonation | Rebuilt desk equivalence does not establish identity with the historical research occurrence |
 | Receipt sufficiency | Delete renderer state and rebuild the desk from evidence records plus desk receipt |
+| Constitution smuggling | A desk may display an existing `constitutes` receipt but cannot create or infer one |
 
 ## Failure conditions
 
@@ -434,6 +440,7 @@ Redesign if ALEX DESK:
 - treats a pretty arrangement as explanatory or causal proof;
 - collapses multiple research paths because their conclusions look equivalent;
 - requires a master graph before a bounded desk can exist;
+- can create constitutional authority by arranging or exporting records;
 - cannot be destroyed and reconstructed without research loss.
 
 ## Relationship to the Alexandria Floor
