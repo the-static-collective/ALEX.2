@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://the-static-collective.invalid/alex/crucible/case.schema.json",
+  "title": "ALEX Blind Crucible CASE",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_id",
+    "operation_type",
+    "rule_profile",
+    "given",
+    "attempt",
+    "nonce",
+    "input_digest"
+  ],
+  "properties": {
+    "case_id": {"type": "string", "minLength": 1},
+    "operation_type": {"type": "string", "minLength": 1},
+    "rule_profile": {"type": "string", "minLength": 1},
+    "given": {"type": "object"},
+    "attempt": {"type": "object"},
+    "nonce": {"type": "string", "minLength": 1},
+    "input_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  }
+}
