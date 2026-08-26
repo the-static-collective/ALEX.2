@@ -278,3 +278,271 @@ object != scan != transcription != normalization != translation != interpretatio
 ```
 
 PRESSURE changes how a question is attacked, not what counts as evidence.
+
+---
+
+# Amendment E — formation trace: `{ PEEL. SLEEP .LEEP }`
+
+ALEX gains one optional formation-trace protocol for research in which the path of discovery materially affects what should be preserved.
+
+It does **not** change what counts as evidence.
+
+### Constitutional distinctions
+
+```text
+discovery path != evidence path
+breadcrumb != evidence
+toast-ghost != evidence
+toast-ghost != genealogy
+replay match != historical identity
+```
+
+The discovery path explains why a researcher looked somewhere. The evidence path explains why a claim is supported, contradicted, or refused.
+
+A coincidence, metaphor, dream, joke, visual resemblance, theological association, typo, or personal association may generate a useful next search without receiving evidentiary privilege.
+
+> **Serendipity may choose the door. Evidence decides what can walk through it.**
+
+## BREADCRUMBS — attributable formation steps
+
+A breadcrumb records a transition that actually occurred in the inquiry:
+
+```text
+from_state
+  -- move / reason / role -->
+to_state
+```
+
+Useful roles include:
+
+```text
+motive
+evidence
+counterevidence
+inference
+analogy
+coincidence
+wordplay
+discriminator
+```
+
+A breadcrumb may be historically important to the research run while bearing zero support for the conclusion.
+
+## TOAST-GHOSTS — attributable formation residue
+
+A toast-ghost records something no longer active in the winning path that still explains the shape of the present inquiry:
+
+- a killed hypothesis;
+- an abandoned ordering;
+- a discarded interpretation;
+- a compression loss;
+- a coincidence that redirected search;
+- an unexplained replay delta;
+- a branch that failed to become the result but left consequences.
+
+A toast-ghost is neither error nor evidence by default.
+
+> **Formation history preserves the road and the roadside.**
+
+## PEEL. — expose formation backward
+
+`PEEL.` walks a present surface backward without destroying it.
+
+It asks:
+
+> What had to happen for this surface to have this shape, and what relevant residue was left beside the winning path?
+
+A PEEL may preserve:
+
+```text
+surface
+breadcrumbs[]
+toast_ghosts[]
+losses[]
+ambiguities[]
+branches_not_taken[]
+```
+
+The period is part of the discipline: expose the layers, then stop before the first decomposition becomes the preferred reconstruction.
+
+## SLEEP — suspend 1–3 states in self-correcting equilibrium
+
+`S` means **SUSPENSION**.
+
+SLEEP may hold one to three live formulations at once:
+
+```text
+SUSPEND {
+  H1
+  H2
+  H3
+}
+```
+
+Three is a cap, not a quota. Equilibrium does not mean equal confidence. It means one candidate may not silently consume materially live alternatives.
+
+Each suspended formulation may preserve:
+
+```text
+formulation
+supporting_paths
+contradicting_paths
+unknowns
+toast_ghosts
+next_discriminator
+status
+```
+
+New evidence may strengthen, weaken, split, merge, kill, or replace a state. A disproved state must die rather than remain for symmetry. If all states fail, return to the breadcrumbs and reopen the inquiry cut.
+
+During SLEEP:
+
+```text
+no authority promotion
+no rewriting H0
+no analogy -> evidence promotion
+no coincidence -> corroboration promotion
+no cleaning away toast-ghosts
+```
+
+The naming wordplay is preserved only as formation history:
+
+```text
+PEEL + S -> PEELS
+S + LEEP -> SLEEP
+```
+
+It is a mnemonic, not a mechanism claim.
+
+## .LEEP — replay formation forward
+
+`.LEEP` walks an attributable receipt forward and asks what the receipt can lawfully regenerate.
+
+Allowed outcomes:
+
+```text
+EXACT REPLAY
+ATTRIBUTABLE RECONSTITUTION
+DIVERGENT REPLAY
+INSUFFICIENT RECEIPT
+```
+
+Treat:
+
+```text
+LEEP(PEEL(X)) = X
+```
+
+as a proposition to test, never an axiom.
+
+An exact replay reproduces the tested surface under the declared conditions. It does not establish historical identity. A divergent replay preserves the delta instead of cleaning it away.
+
+## Phi operator specimen — operation carried as receipt
+
+The golden-ratio sequence is retained as a bounded mathematical specimen showing that the operation itself can be carried as formation history.
+
+Let:
+
+```text
+x = phi^n
+Gamma_d(x) = x^3 * phi^d
+d in {0,1,2}
+```
+
+Then exactly:
+
+```text
+Gamma_d(phi^n) = phi^(3n+d)
+```
+
+In ternary exponent notation, `n -> 3n+d` appends digit `d`.
+
+The specimen discovered in the research conversation is:
+
+```text
+phi^1
+  --Gamma_0--> phi^3
+  --Gamma_0--> phi^9
+  --Gamma_0--> phi^27
+
+phi^27
+  --Gamma_0--> phi^81
+  --Gamma_1--> phi^82
+  --Gamma_2--> phi^83
+```
+
+Thus:
+
+```text
+27 = 1000_3
+81 = 10000_3
+82 = 10001_3
+```
+
+and the PEEL inverse is explicit:
+
+```text
+d = m mod 3
+parent = (m-d)/3
+x_parent = cube_root(x / phi^d)
+```
+
+This does **not** make phi a universal ALEX ontology. It demonstrates one narrow principle:
+
+> **A formation can become replayable when the operation that made it is itself preserved as part of the receipt.**
+
+## Hypothesis-loss receipt
+
+Because PRESSURE promotes a hypothesis by surviving loss, each consequential transition should be able to preserve the loss it survived:
+
+```text
+H1 -> H2
+what_survived:
+what_was_removed:
+why_removed:
+recoverable_from_prior_state: true | false
+```
+
+A polished survivor must not erase the path by which an overclaim died.
+
+## Adversarial test — SERENDIPITY TRAP
+
+Given:
+
+```text
+coincidence -> caused search -> search found real relationship
+```
+
+Attempt:
+
+```text
+therefore coincidence predicted or proved relationship
+```
+
+**Required result:** refuse. Preserve the coincidence as discovery formation and preserve the real relationship on its independently established evidence path.
+
+## Adversarial test — REPLAY IMPERSONATION
+
+Given a receipt that reproduces the same visible surface, attempt to conclude that the replay is historically the same instance or that no alternate formation could have produced the surface.
+
+**Required result:** refuse identity unless separately established.
+
+## Adversarial test — FORCED EQUILIBRIUM
+
+Given three suspended candidates where one is directly disproved, attempt to keep all three live merely because SLEEP allows up to three states.
+
+**Required result:** kill the disproved state. The cap preserves bounded plurality, not decorative indecision.
+
+## Adversarial test — GHOST PROMOTION
+
+Given an abandoned branch that later resembles the survivor, attempt to promote the ghost into evidence or genealogy by persistence alone.
+
+**Required result:** preserve it as formation residue unless an independent evidence path establishes the stronger relation.
+
+## Protocol seal
+
+> **PEEL remembers the road.**  
+> **SLEEP lets the roads coexist without lying about them.**  
+> **LEEP walks one forward again.**
+
+> **Preserve enough of what became, enough of what failed, and enough of the operation between them that the becoming can be tested again.**
