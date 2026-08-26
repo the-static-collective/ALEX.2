@@ -1,0 +1,9 @@
+{
+  "id": "constitution-smuggling",
+  "title": "A desk may display but cannot mint constitutional authority",
+  "constitutional_laws": ["desk action cannot create constitutes", "constitution remains at an owning human or project gate"],
+  "given": {"external_constitution_receipt_id": "CR1", "desk_relation": "Y2"},
+  "attempt": {"promote": "desk_created_constitutes", "basis": "arrangement"},
+  "expected": {"disposition": "REFUSE", "refusal_code": "CONSTITUTION_NOT_OWNED", "required_receipt_survivors": ["external_constitution_receipt:CR1", "desk_relation:Y2"], "forbidden_promotions": ["desk_created_constitutes"]},
+  "version": 1
+}
