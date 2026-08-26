@@ -450,6 +450,14 @@ The human review gate may:
 Until that gate acts, this document and the `@alex` skill are the admitted
 architectural floor. They are not proof of a running research system.
 
+## Crucible runtime gate
+
+**CRUCIBLE RUNTIME CONFORMANCE IS NOT YET CLAIMED**
+
+Before the one-book runtime claims constitutional conformance, a real runtime
+adapter must execute the applicable Crucible specimens. Contract self-tests and
+fake adapters are insufficient.
+
 ## References
 
 See [research precedents](../../research-precedents.md) for the exact public
