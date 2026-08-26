@@ -90,3 +90,13 @@ class CrucibleContractTests(unittest.TestCase):
             ["SURVIVES_REMOVAL", "DEGRADES", "CHANGES_VERDICT", "COLLAPSES", "INSUFFICIENT_TO_TEST"],
         )
         self.assertIn("base_replay_receipt_id", replay["required"])
+
+    def test_runtime_conformance_not_claimed_in_public_docs(self):
+        phrase = "CRUCIBLE RUNTIME CONFORMANCE IS NOT YET CLAIMED"
+        paths = [
+            ROOT / "README.md",
+            ROOT / "docs" / "superpowers" / "specs" / "2026-08-25-alexandria-floor-design.md",
+            ROOT / "docs" / "superpowers" / "specs" / "2026-08-26-alex-constitutional-hardening-design.md",
+        ]
+        for path in paths:
+            self.assertIn(phrase, path.read_text(encoding="utf-8"), str(path))
