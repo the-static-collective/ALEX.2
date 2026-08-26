@@ -116,6 +116,17 @@ class RunnerContractTests(unittest.TestCase):
         errors = crucible.validate_runtime_result(case, actual)
         self.assertTrue(any("unexpected result key" in error for error in errors), errors)
 
+    def test_duplicate_runtime_result_members_are_rejected(self):
+        self.require_new_runner_api()
+        case, _ = self.case_and_oracle()
+        actual = self.valid_result()
+        actual["receipt_survivors"] = ["search_observation:S1", "search_observation:S1"]
+        actual["derived_assertions"] = ["candidate:X", "candidate:X"]
+        errors = crucible.validate_runtime_result(case, actual)
+        joined = " ".join(errors)
+        self.assertIn("receipt_survivors must contain unique strings", joined)
+        self.assertIn("derived_assertions must contain unique strings", joined)
+
 
 class ProcessRunnerTests(unittest.TestCase):
     def write_specimen(self, directory: str) -> Path:
