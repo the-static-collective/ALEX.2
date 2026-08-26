@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://the-static-collective.invalid/alex/crucible/runtime-result.schema.json",
+  "title": "ALEX Blind Crucible runtime result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_id",
+    "input_digest",
+    "ruleset_digest",
+    "disposition",
+    "reason_code",
+    "receipt_survivors",
+    "derived_assertions",
+    "execution_trace_summary"
+  ],
+  "properties": {
+    "case_id": {"type": "string", "minLength": 1},
+    "input_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "ruleset_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "disposition": {
+      "type": "string",
+      "enum": ["ACCEPT", "REFUSE", "UNRESOLVED", "INSUFFICIENT_TO_TEST"]
+    },
+    "reason_code": {"type": ["string", "null"]},
+    "receipt_survivors": {
+      "type": "array",
+      "items": {"type": "string"},
+      "uniqueItems": true
+    },
+    "derived_assertions": {
+      "type": "array",
+      "items": {"type": "string"},
+      "uniqueItems": true
+    },
+    "execution_trace_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["terminal_state", "step_count"],
+      "properties": {
+        "terminal_state": {
+          "type": "string",
+          "enum": ["FINISHED", "SUSPENDED", "ERRORED", "CANCELLED"]
+        },
+        "step_count": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}
