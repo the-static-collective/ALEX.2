@@ -1,35 +1,113 @@
 import argparse
 import json
+import secrets
 import subprocess
 import sys
 from pathlib import Path
 
+try:
+    from tools.crucible_blind import build_case, build_oracle, ruleset_digest
+except ModuleNotFoundError:  # direct `python tools/crucible.py` execution
+    from crucible_blind import build_case, build_oracle, ruleset_digest
 
-def compare_result(specimen: dict, actual: dict) -> list[str]:
-    expected = specimen["expected"]
+
+DISPOSITIONS = {"ACCEPT", "REFUSE", "UNRESOLVED", "INSUFFICIENT_TO_TEST"}
+TERMINAL_STATES = {"FINISHED", "SUSPENDED", "ERRORED", "CANCELLED"}
+RESULT_KEYS = {
+    "case_id",
+    "input_digest",
+    "ruleset_digest",
+    "disposition",
+    "reason_code",
+    "receipt_survivors",
+    "derived_assertions",
+    "execution_trace_summary",
+}
+
+
+def _valid_string_list(value) -> bool:
+    return isinstance(value, list) and all(isinstance(item, str) for item in value)
+
+
+def _validate_unique_string_list(name: str, value) -> list[str]:
+    if not _valid_string_list(value):
+        return [f"{name} must be a list of strings"]
+    if len(value) != len(set(value)):
+        return [f"{name} must contain unique strings"]
+    return []
+
+
+def validate_runtime_result(case: dict, actual: dict) -> list[str]:
     errors: list[str] = []
 
-    if actual.get("specimen_id") != specimen["id"]:
-        errors.append("specimen_id mismatch")
-    if actual.get("disposition") != expected["disposition"]:
-        errors.append("disposition mismatch")
-    if expected.get("refusal_code") != actual.get("refusal_code"):
-        errors.append("refusal_code mismatch")
+    actual_keys = set(actual)
+    for missing in sorted(RESULT_KEYS - actual_keys):
+        errors.append(f"missing result key: {missing}")
+    for unexpected in sorted(actual_keys - RESULT_KEYS):
+        errors.append(f"unexpected result key: {unexpected}")
 
-    survivors = set(actual.get("receipt_survivors", []))
-    for required in expected["required_receipt_survivors"]:
-        if required not in survivors:
-            errors.append(f"missing required receipt survivor: {required}")
+    if actual.get("case_id") != case["case_id"]:
+        errors.append("case_id mismatch")
+    if actual.get("input_digest") != case["input_digest"]:
+        errors.append("input_digest mismatch")
+    if actual.get("ruleset_digest") != ruleset_digest(case["rule_profile"]):
+        errors.append("ruleset_digest mismatch")
 
-    promotions = set(actual.get("promotions", []))
-    for forbidden in expected["forbidden_promotions"]:
-        if forbidden in promotions:
-            errors.append(f"forbidden promotion: {forbidden}")
+    if actual.get("disposition") not in DISPOSITIONS:
+        errors.append("invalid disposition")
+
+    reason_code = actual.get("reason_code")
+    if reason_code is not None and not isinstance(reason_code, str):
+        errors.append("reason_code must be string or null")
+
+    errors.extend(_validate_unique_string_list("receipt_survivors", actual.get("receipt_survivors")))
+    errors.extend(_validate_unique_string_list("derived_assertions", actual.get("derived_assertions")))
+
+    summary = actual.get("execution_trace_summary")
+    if not isinstance(summary, dict):
+        errors.append("execution_trace_summary must be an object")
+    else:
+        summary_keys = set(summary)
+        if summary_keys != {"terminal_state", "step_count"}:
+            errors.append("execution_trace_summary keys mismatch")
+        if summary.get("terminal_state") not in TERMINAL_STATES:
+            errors.append("invalid execution terminal_state")
+        step_count = summary.get("step_count")
+        if isinstance(step_count, bool) or not isinstance(step_count, int) or step_count < 0:
+            errors.append("invalid execution step_count")
 
     return errors
 
 
-def run_fixture(fixture_path: Path, adapter_argv: list[str]) -> int:
+def compare_result(case: dict, oracle: dict, actual: dict) -> list[str]:
+    errors: list[str] = []
+
+    if oracle["case_id"] != case["case_id"]:
+        errors.append("oracle case_id mismatch")
+    if actual.get("disposition") != oracle["expected_disposition"]:
+        errors.append("disposition mismatch")
+    if actual.get("reason_code") != oracle["expected_reason_code"]:
+        errors.append("reason_code mismatch")
+
+    survivors = set(actual.get("receipt_survivors", []))
+    for required in oracle["required_survivors"]:
+        if required not in survivors:
+            errors.append(f"missing required receipt survivor: {required}")
+
+    outputs = set(actual.get("derived_assertions", []))
+    for forbidden in oracle["forbidden_outputs"]:
+        if forbidden in outputs:
+            errors.append(f"forbidden derived output: {forbidden}")
+
+    return errors
+
+
+def run_fixture(
+    fixture_path: Path,
+    adapter_argv: list[str],
+    *,
+    nonce: str | None = None,
+) -> int:
     specimen = json.loads(fixture_path.read_text(encoding="utf-8"))
     specimen_id = specimen.get("id", fixture_path.stem)
 
@@ -37,9 +115,12 @@ def run_fixture(fixture_path: Path, adapter_argv: list[str]) -> int:
         print(f"FAIL {specimen_id}: adapter command is empty")
         return 1
 
+    case = build_case(specimen, nonce=nonce or secrets.token_hex(16))
+    oracle = build_oracle(specimen, case)
+
     completed = subprocess.run(
         adapter_argv,
-        input=json.dumps(specimen),
+        input=json.dumps(case, sort_keys=True, separators=(",", ":")),
         text=True,
         capture_output=True,
         check=False,
@@ -60,7 +141,9 @@ def run_fixture(fixture_path: Path, adapter_argv: list[str]) -> int:
         print(f"FAIL {specimen_id}: adapter result must be a JSON object")
         return 1
 
-    errors = compare_result(specimen, actual)
+    errors = validate_runtime_result(case, actual)
+    if not errors:
+        errors.extend(compare_result(case, oracle, actual))
     if errors:
         print(f"FAIL {specimen_id}: {'; '.join(errors)}")
         return 1

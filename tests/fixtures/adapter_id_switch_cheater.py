@@ -1,4 +1,4 @@
-# HARNESS TEST DOUBLE ONLY. NEVER EVIDENCE OF ALEX RUNTIME CONFORMANCE.
+# HARNESS TEST DOUBLE ONLY. It returns a valid-looking result for the wrong case.
 import hashlib
 import json
 import sys
@@ -12,13 +12,13 @@ def digest(value):
 case = json.load(sys.stdin)
 json.dump(
     {
-        "case_id": case["case_id"],
+        "case_id": "foreign-case",
         "input_digest": case["input_digest"],
         "ruleset_digest": digest({"rule_profile": case["rule_profile"]}),
-        "disposition": "ACCEPT",
-        "reason_code": None,
-        "receipt_survivors": [],
-        "derived_assertions": ["source_absence"],
+        "disposition": "REFUSE",
+        "reason_code": "SEARCH_COVERAGE_INSUFFICIENT",
+        "receipt_survivors": ["search_observation:S1"],
+        "derived_assertions": [],
         "execution_trace_summary": {"terminal_state": "FINISHED", "step_count": 1},
     },
     sys.stdout,

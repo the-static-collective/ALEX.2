@@ -1,4 +1,4 @@
-# HARNESS TEST DOUBLE ONLY. NEVER EVIDENCE OF ALEX RUNTIME CONFORMANCE.
+# HARNESS TEST DOUBLE ONLY. It ignores declared surface-only relation variation.
 import hashlib
 import json
 import sys
@@ -15,10 +15,10 @@ json.dump(
         "case_id": case["case_id"],
         "input_digest": case["input_digest"],
         "ruleset_digest": digest({"rule_profile": case["rule_profile"]}),
-        "disposition": "ACCEPT",
-        "reason_code": None,
+        "disposition": "REFUSE",
+        "reason_code": "SEARCH_COVERAGE_INSUFFICIENT",
         "receipt_survivors": [],
-        "derived_assertions": ["source_absence"],
+        "derived_assertions": [],
         "execution_trace_summary": {"terminal_state": "FINISHED", "step_count": 1},
     },
     sys.stdout,
