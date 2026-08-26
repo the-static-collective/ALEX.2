@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://the-static-collective.invalid/alex/crucible/search-observation.schema.json",
+  "title": "ALEX search observation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "corpus_id", "query", "query_type", "index_id", "index_version", "fields_searched", "record_types_searched", "page_or_reading_scope", "pagination_complete", "unreadable_or_missing_ranges", "exclusions", "truncation", "filters", "result_ids", "result_count", "observed_at", "producer", "coverage_status"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "corpus_id": {"type": "string", "minLength": 1},
+    "corpus_version": {"type": "string"},
+    "query": {"type": "string"},
+    "query_type": {"type": "string", "minLength": 1},
+    "index_id": {"type": "string", "minLength": 1},
+    "index_version": {"type": "string", "minLength": 1},
+    "fields_searched": {"type": "array", "items": {"type": "string"}},
+    "record_types_searched": {"type": "array", "items": {"type": "string"}},
+    "page_or_reading_scope": {"type": "array", "items": {"type": "string"}},
+    "pagination_complete": {"type": "boolean"},
+    "unreadable_or_missing_ranges": {"type": "array", "items": {"type": "string"}},
+    "exclusions": {"type": "array", "items": {"type": "string"}},
+    "truncation": {"type": ["boolean", "string", "object"]},
+    "filters": {"type": "array", "items": {"type": ["string", "object"]}},
+    "result_ids": {"type": "array", "items": {"type": "string"}},
+    "result_count": {"type": "integer", "minimum": 0},
+    "observed_at": {"type": "string", "minLength": 1},
+    "producer": {"type": "string", "minLength": 1},
+    "coverage_status": {"enum": ["DECLARED_COMPLETE_FOR_SCOPE", "PARTIAL", "TRUNCATED", "UNKNOWN", "NOT_APPLICABLE"]}
+  }
+}
