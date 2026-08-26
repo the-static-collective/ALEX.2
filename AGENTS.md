@@ -13,6 +13,10 @@ Never silently collapse:
 - transcription, normalization, and translation;
 - similarity and genealogy;
 - evidence, interpretation, proposal, and admitted claim;
+- discovery path and evidence path;
+- breadcrumb and evidence;
+- toast-ghost and evidence or genealogy;
+- replay match and historical identity;
 - public access and permission to redistribute.
 
 Corrections and reprocessing create descendants. Preserve prior outputs and
@@ -40,6 +44,10 @@ When implementation begins:
 - test refusal paths as first-class outcomes;
 - validate exact quote-to-page return, revision ancestry, offline replay, and
   rights/egress boundaries;
+- preserve discovery motive separately from evidence support when formation
+  tracing is active;
+- treat `{ PEEL. SLEEP .LEEP }` as an optional research protocol, not a universal
+  ontology;
 - update the design when an accepted change alters a public interface or
   invariant.
 
