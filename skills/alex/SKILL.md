@@ -19,6 +19,10 @@ normalization != translation
 translation != interpretation
 interpretation != claim
 search result != evidence
+search miss != absence
+received premise != admitted premise
+apparent multiplicity != independent ancestry
+replay success != dependency robustness
 similarity != genealogy
 agreement != independent corroboration
 discovery path != evidence path
@@ -56,6 +60,11 @@ hypothesis wrapper over the smaller shapes, not a new corpus subsystem.
 TRACE, DOSSIER, AUDIT, or PRESSURE run when the path by which the inquiry formed
 is materially worth preserving. Read
 [formation-trace.md](references/formation-trace.md) before using it.
+
+Read [constitutional-hardening.md](references/constitutional-hardening.md) when
+an inquiry makes an absence claim, inherits an upstream premise, claims
+independent corroboration, compares dependency families, or uses remove-one
+replay.
 
 ## 1. Establish the inquiry cut
 
