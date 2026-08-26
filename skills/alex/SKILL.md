@@ -1,6 +1,6 @@
 ---
 name: alex
-description: Investigate questions through scanned books, manuscripts, historical editions, and other page-addressable source witnesses. Use when the user invokes @alex or $alex, asks to find, read, compare, quote, or audit older source material with page-level provenance, OCR or HTR uncertainty, competing readings, or source-to-claim traceability, or supplies a deliberately strange or overstrong hypothesis to PRESSURE — “this is insane; prove around it.” Do not use for ordinary web research that does not benefit from inspecting source witnesses or explicit hypothesis pressure.
+description: Investigate questions through scanned books, manuscripts, historical editions, and other page-addressable source witnesses. Use when the user invokes @alex or $alex, asks to find, read, compare, quote, or audit older source material with page-level provenance, OCR or HTR uncertainty, competing readings, source-to-claim traceability, deliberate PRESSURE on a strange or overstrong hypothesis, or asks to PEEL/SLEEP/LEEP a research formation path. Do not use for ordinary web research that does not benefit from inspecting source witnesses, explicit hypothesis pressure, or formation trace.
 ---
 
 # ALEX
@@ -21,6 +21,10 @@ interpretation != claim
 search result != evidence
 similarity != genealogy
 agreement != independent corroboration
+discovery path != evidence path
+breadcrumb != evidence
+toast-ghost != evidence
+replay match != historical identity
 access != permission to redistribute
 ```
 
@@ -48,6 +52,11 @@ Combine shapes only when the request needs them. Do not ingest a whole
 collection merely because one page may answer the question. PRESSURE is a
 hypothesis wrapper over the smaller shapes, not a new corpus subsystem.
 
+`{ PEEL. SLEEP .LEEP }` is an optional formation-trace protocol that may wrap a
+TRACE, DOSSIER, AUDIT, or PRESSURE run when the path by which the inquiry formed
+is materially worth preserving. Read
+[formation-trace.md](references/formation-trace.md) before using it.
+
 ## 1. Establish the inquiry cut
 
 Before searching, record:
@@ -72,7 +81,9 @@ H0 — verbatim crazy seed
   -> H3 — cross-domain survivor, if earned
 ```
 
-Record what changed at each transition and why.
+Record what changed at each transition and why. When loss is consequential,
+also record what survived, what was removed, why it was removed, and whether the
+prior state remains recoverable.
 
 Name missing constraints as fog. Do not turn an unavailable archive or an
 unindexed language into historical absence.
@@ -264,6 +275,43 @@ bridge.
 A PRESSURE run must be allowed to return `disproved`. If it cannot, it is not
 adversarial research.
 
+### Formation trace — `{ PEEL. SLEEP .LEEP }`
+
+Use formation trace when discovery itself has a meaningful causal history: a
+coincidence chose a door, an overclaim died but redirected inquiry, multiple
+live readings remain, or a replayable operation is part of what needs to be
+preserved.
+
+Read [formation-trace.md](references/formation-trace.md) and keep two ledgers
+separate:
+
+```text
+DISCOVERY TRACE — why we looked
+EVIDENCE PATH — why we believe, doubt, or refuse
+```
+
+- **BREADCRUMBS** preserve attributable formation steps and their roles.
+- **TOAST-GHOSTS** preserve inactive residue without promoting it to evidence.
+- **PEEL.** exposes the road and roadside backward, then stops.
+- **SLEEP** suspends one to three materially live formulations in a
+  self-correcting equilibrium. Three is a cap, not a quota; disproved states
+  die.
+- **.LEEP** replays an attributable receipt forward and returns `EXACT REPLAY`,
+  `ATTRIBUTABLE RECONSTITUTION`, `DIVERGENT REPLAY`, or
+  `INSUFFICIENT RECEIPT`.
+
+Treat replay identity and serendipity as adversarial boundaries:
+
+```text
+search motive != support
+replay match != historical identity
+```
+
+The phi/ternary operator in the formation-trace reference is a bounded
+mathematical specimen showing operation-as-receipt. Do not generalize it into a
+universal historical, symbolic, or theological mechanism without independent
+evidence.
+
 ## 8. Return an evidence-bearing result
 
 Lead with the answer or finding. Then provide only the apparatus the stakes
@@ -289,9 +337,22 @@ RESIDUAL WEIRDNESS
 NEXT DISCRIMINATOR
 ```
 
+For formation-trace runs, preserve at minimum:
+
+```text
+SURFACE
+BREADCRUMBS
+TOAST-GHOSTS
+SLEEP STATES (1–3)
+NEXT DISCRIMINATOR
+.LEEP RESULT
+REPLAY DELTA
+EVIDENCE-PATH BOUNDARY
+```
+
 Read [research-receipt.md](references/research-receipt.md) for durable dossiers,
-audits, PRESSURE runs, or machine-readable handoffs. Lightweight answers need
-not emit the full template.
+audits, PRESSURE runs, formation traces, or machine-readable handoffs.
+Lightweight answers need not emit the full template.
 
 ## Side-effect boundary
 
@@ -316,4 +377,7 @@ Before finishing, confirm:
   visible;
 - uncertainty has a proposed discriminator rather than decorative caveating;
 - a PRESSURE run preserved `H0`, attacked the literal claim, typed its bridges,
-  and could have returned `disproved`.
+  and could have returned `disproved`;
+- a formation-trace run kept discovery motive separate from evidence, preserved
+  relevant breadcrumbs and toast-ghosts, killed disproved SLEEP states, and did
+  not promote replay match into historical identity.
