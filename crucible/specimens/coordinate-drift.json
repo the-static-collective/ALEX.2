@@ -1,0 +1,26 @@
+{
+  "id": "coordinate-drift",
+  "title": "Derived coordinates cannot silently migrate to a parent surface",
+  "constitutional_laws": [
+    "spatial citation names the exact visual surface",
+    "derived coordinates require a proved transform"
+  ],
+  "given": {
+    "parent_surface": "S0",
+    "derived_surface": "S1",
+    "region_id": "R1",
+    "transform_to_parent": null
+  },
+  "attempt": {
+    "promote": "exact_spatial_citation_on_parent",
+    "region_id": "R1",
+    "target_surface": "S0"
+  },
+  "expected": {
+    "disposition": "REFUSE",
+    "refusal_code": "COORDINATE_TRANSFORM_MISSING",
+    "required_receipt_survivors": ["visual_surface:S0", "visual_surface:S1", "region:R1"],
+    "forbidden_promotions": ["exact_spatial_citation_on_parent"]
+  },
+  "version": 1
+}

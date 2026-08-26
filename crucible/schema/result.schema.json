@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://the-static-collective.invalid/alex/crucible/result.schema.json",
+  "title": "ALEX Crucible result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["specimen_id", "disposition", "receipt_survivors", "promotions"],
+  "properties": {
+    "specimen_id": {"type": "string", "minLength": 1},
+    "disposition": {
+      "enum": ["ACCEPT", "REFUSE", "UNRESOLVED", "INSUFFICIENT_TO_TEST"]
+    },
+    "refusal_code": {"type": "string", "minLength": 1},
+    "receipt_survivors": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "promotions": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "notes": {"type": "string"}
+  }
+}

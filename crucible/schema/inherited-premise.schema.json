@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://the-static-collective.invalid/alex/crucible/inherited-premise.schema.json",
+  "title": "ALEX inherited premise",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "formulation", "arrived_from", "entered_as", "examined", "authority_claimed", "authority_admitted", "consequences_if_false", "status", "created_at", "producer"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "formulation": {"type": "string", "minLength": 1},
+    "arrived_from": {"type": "string", "minLength": 1},
+    "source_record_ids": {"type": "array", "items": {"type": "string"}},
+    "entered_as": {"enum": ["catalog_identity", "editorial_date", "translation_choice", "quotation_attribution", "secondary_claim", "prior_summary", "bibliographic_inheritance", "question_presupposition", "human_instruction", "model_output", "other"]},
+    "evidence_path_ids": {"type": "array", "items": {"type": "string"}},
+    "examined": {"type": "boolean"},
+    "authority_claimed": {"type": "object"},
+    "authority_admitted": {"type": "object"},
+    "consequences_if_false": {"type": "array", "items": {"type": "string"}},
+    "status": {"enum": ["UNEXAMINED", "EXAMINED_SUPPORTED", "EXAMINED_CONTRADICTED", "EXAMINED_UNRESOLVED", "REPLACED", "REFUSED"]},
+    "created_at": {"type": "string", "minLength": 1},
+    "producer": {"type": "string", "minLength": 1}
+  }
+}

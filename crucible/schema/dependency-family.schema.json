@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://the-static-collective.invalid/alex/crucible/dependency-family.schema.json",
+  "title": "ALEX dependency family",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "member_record_ids", "shared_ancestor_ids", "dependency_basis", "independence_status", "scope", "evidence_record_ids", "created_at", "producer"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "member_record_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "shared_ancestor_ids": {"type": "array", "items": {"type": "string"}},
+    "dependency_basis": {"type": "array", "items": {"enum": ["same_carrier", "same_edition", "quotation_chain", "shared_scan", "shared_ocr", "shared_model_family", "shared_training_or_retrieval_lineage", "shared_bibliography", "shared_translation", "other_declared"]}},
+    "independence_status": {"enum": ["DEPENDENT", "PARTIALLY_DEPENDENT", "INDEPENDENT_WITHIN_DECLARED_SCOPE", "UNKNOWN"]},
+    "scope": {"type": ["string", "object"]},
+    "evidence_record_ids": {"type": "array", "items": {"type": "string"}},
+    "created_at": {"type": "string", "minLength": 1},
+    "producer": {"type": "string", "minLength": 1}
+  }
+}

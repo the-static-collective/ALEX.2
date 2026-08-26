@@ -1,0 +1,9 @@
+{
+  "id": "replay-impersonation",
+  "title": "Exact replay cannot impersonate historical identity",
+  "constitutional_laws": ["replay match != historical identity"],
+  "given": {"replay_receipt_id": "L1", "replay_result": "EXACT_REPLAY", "surface_match": true},
+  "attempt": {"promote": "historical_identity"},
+  "expected": {"disposition": "REFUSE", "refusal_code": "REPLAY_IDENTITY_NOT_ESTABLISHED", "required_receipt_survivors": ["replay_receipt:L1", "replay_result:EXACT_REPLAY"], "forbidden_promotions": ["historical_identity"]},
+  "version": 1
+}

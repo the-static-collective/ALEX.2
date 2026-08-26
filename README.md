@@ -92,3 +92,11 @@ page-grounded source witnesses rather than stop at summaries or search snippets.
 The next gate is human review of the written design. After that, implementation
 planning can lower the first vertical slice into tasks without smuggling later
 library-scale ambitions into v0.
+
+## Crucible runtime gate
+
+**CRUCIBLE RUNTIME CONFORMANCE IS NOT YET CLAIMED**
+
+Before the one-book runtime claims constitutional conformance, a real runtime
+adapter must execute the applicable Crucible specimens. Contract self-tests and
+fake adapters are insufficient.

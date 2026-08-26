@@ -1,0 +1,24 @@
+{
+  "id": "broken-ancestry",
+  "title": "Exact quotation refuses a broken evidence path",
+  "constitutional_laws": [
+    "exact quotation requires a resolvable page or region",
+    "derived records preserve ancestry"
+  ],
+  "given": {
+    "assertion_id": "C1",
+    "reading_id": "R1",
+    "missing_ancestry": ["region", "visual_surface"]
+  },
+  "attempt": {
+    "promote": "exact_quotation_verified",
+    "path": ["assertion:C1", "reading:R1"]
+  },
+  "expected": {
+    "disposition": "REFUSE",
+    "refusal_code": "BROKEN_ANCESTRY",
+    "required_receipt_survivors": ["assertion:C1", "reading:R1", "ancestry_gap:region"],
+    "forbidden_promotions": ["exact_quotation_verified"]
+  },
+  "version": 1
+}

@@ -1,0 +1,9 @@
+{
+  "id": "shared-lineage-corroboration",
+  "title": "Apparent multiplicity cannot become independent corroboration through shared ancestry",
+  "constitutional_laws": ["APPARENT MULTIPLICITY != INDEPENDENT ANCESTRY", "AGREEMENT != INDEPENDENT CORROBORATION"],
+  "given": {"witnesses": ["W1", "W2", "W3"], "ancestry": {"W1": "edition:E1", "W2": "edition:E1", "W3": "editorial_reading:E1-R"}},
+  "attempt": {"promote": "independent_corroboration", "claimed_count": 3},
+  "expected": {"disposition": "REFUSE", "refusal_code": "INDEPENDENCE_NOT_ESTABLISHED", "required_receipt_survivors": ["witness:W1", "witness:W2", "witness:W3", "shared_ancestor:edition:E1"], "forbidden_promotions": ["independent_corroboration"]},
+  "version": 1
+}

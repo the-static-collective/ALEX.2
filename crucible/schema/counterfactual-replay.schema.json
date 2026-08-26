@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://the-static-collective.invalid/alex/crucible/counterfactual-replay.schema.json",
+  "title": "ALEX counterfactual replay",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["base_replay_receipt_id", "removed_dependency_id", "removed_dependency_type", "base_result", "counterfactual_result", "consequence_class", "lost_outputs", "surviving_outputs", "changed_assertions", "residual_fog", "created_at", "producer"],
+  "properties": {
+    "base_replay_receipt_id": {"type": "string", "minLength": 1},
+    "removed_dependency_id": {"type": "string", "minLength": 1},
+    "removed_dependency_type": {"enum": ["source", "reading", "translation", "assumed_identity", "model", "bridge", "inherited_premise", "support_path"]},
+    "replacement_id": {"type": "string", "minLength": 1},
+    "base_result": {"type": "string", "minLength": 1},
+    "counterfactual_result": {"type": "string", "minLength": 1},
+    "consequence_class": {"enum": ["SURVIVES_REMOVAL", "DEGRADES", "CHANGES_VERDICT", "COLLAPSES", "INSUFFICIENT_TO_TEST"]},
+    "lost_outputs": {"type": "array", "items": {"type": "string"}},
+    "surviving_outputs": {"type": "array", "items": {"type": "string"}},
+    "changed_assertions": {"type": "array", "items": {"type": "string"}},
+    "residual_fog": {"type": "array", "items": {"type": "string"}},
+    "created_at": {"type": "string", "minLength": 1},
+    "producer": {"type": "string", "minLength": 1}
+  }
+}

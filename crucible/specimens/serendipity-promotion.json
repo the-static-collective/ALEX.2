@@ -1,0 +1,9 @@
+{
+  "id": "serendipity-promotion",
+  "title": "A discovery breadcrumb cannot become evidence merely because it found a real relation",
+  "constitutional_laws": ["discovery path != evidence path", "breadcrumb != evidence"],
+  "given": {"breadcrumb_id": "B1", "role": "coincidence", "evidence_path_id": "E1"},
+  "attempt": {"promote": ["breadcrumb_as_evidence", "coincidence_as_prediction"]},
+  "expected": {"disposition": "REFUSE", "refusal_code": "SERENDIPITY_NOT_EVIDENCE", "required_receipt_survivors": ["breadcrumb:B1", "evidence_path:E1"], "forbidden_promotions": ["breadcrumb_as_evidence", "coincidence_as_prediction"]},
+  "version": 1
+}

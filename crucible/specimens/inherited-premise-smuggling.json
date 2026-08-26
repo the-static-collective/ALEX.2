@@ -1,0 +1,9 @@
+{
+  "id": "inherited-premise-smuggling",
+  "title": "An inherited premise cannot silently arrive as admitted authority",
+  "constitutional_laws": ["RECEIVED PREMISE != ADMITTED PREMISE", "HISTORICAL INHERITANCE != EVIDENTIARY AUTHORITY"],
+  "given": {"inherited_premise": {"id": "P1", "formulation": "catalog identity is correct", "arrived_from": "catalog:E1", "status": "UNEXAMINED"}},
+  "attempt": {"promote": "admitted_authority", "premise_id": "P1"},
+  "expected": {"disposition": "REFUSE", "refusal_code": "PREMISE_NOT_ADMITTED", "required_receipt_survivors": ["inherited_premise:P1", "arrival_source:catalog:E1"], "forbidden_promotions": ["admitted_authority"]},
+  "version": 1
+}

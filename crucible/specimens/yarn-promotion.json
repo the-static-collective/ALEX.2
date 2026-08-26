@@ -1,0 +1,9 @@
+{
+  "id": "yarn-promotion",
+  "title": "A proposed desk relation cannot become evidence through visual arrangement",
+  "constitutional_laws": ["proximity != relation", "yarn != proof", "desk arrangement != canon"],
+  "given": {"relation_projection_id": "Y1", "status": "PROPOSED", "evidence_path_ids": []},
+  "attempt": {"promote": "evidentiary_support", "basis": "placement_and_yarn"},
+  "expected": {"disposition": "REFUSE", "refusal_code": "YARN_PROMOTION_NOT_EARNED", "required_receipt_survivors": ["relation_projection:Y1", "relation_status:PROPOSED"], "forbidden_promotions": ["evidentiary_support"]},
+  "version": 1
+}
