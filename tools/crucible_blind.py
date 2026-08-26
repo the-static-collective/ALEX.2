@@ -56,3 +56,27 @@ def build_oracle(
         "forbidden_outputs": list(expected["forbidden_promotions"]),
         "metamorphic_family": metamorphic_family,
     }
+
+
+def metamorphic_sibling(
+    case: dict,
+    *,
+    suffix: str,
+    nonce: str,
+    distractor_relation: dict | None = None,
+) -> dict:
+    sibling = copy.deepcopy(case)
+    sibling["case_id"] = case["case_id"] + suffix
+    sibling["nonce"] = nonce
+
+    relations = sibling.get("given", {}).get("relations")
+    if isinstance(relations, list):
+        relations.reverse()
+        if distractor_relation is not None:
+            relations.append(copy.deepcopy(distractor_relation))
+    elif distractor_relation is not None:
+        raise ValueError("distractor_relation requires given.relations to be a list")
+
+    sibling.pop("input_digest", None)
+    sibling["input_digest"] = sha256_json(sibling)
+    return sibling
