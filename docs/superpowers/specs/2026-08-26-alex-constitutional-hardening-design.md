@@ -485,6 +485,16 @@ Each gate should be testable and reviewable on its own. Later gates do not need 
 
 ---
 
+## Crucible runtime gate
+
+**CRUCIBLE RUNTIME CONFORMANCE IS NOT YET CLAIMED**
+
+Before the one-book runtime claims constitutional conformance, a real runtime
+adapter must execute the applicable Crucible specimens. Contract self-tests and
+fake adapters are insufficient.
+
+---
+
 ## Seal
 
 > **Search only testifies to what it could see.**
