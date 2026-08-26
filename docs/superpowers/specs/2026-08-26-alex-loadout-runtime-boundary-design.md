@@ -221,7 +221,7 @@ compile_trace_ref:
 phase:
 expires_at:
 question:
-task_shape: FIND | READ | COMPARE | TRACE | DOSSIER | AUDIT | PRESSURE | PATH
+task_shape: FIND | READ | COMPARE | TRACE | DOSSIER | AUDIT | PRESSURE
 world_cut_ref:
 context_pack_ref:
 input_record_ids: []
@@ -232,8 +232,6 @@ rule_profile:
 stop_condition:
 requested_outputs: []
 ```
-
-`PATH` remains subordinate to the evidence floor. Its presence as a task shape does not promote a path, glyph, operation, resemblance, or transformation into evidence.
 
 The envelope carries exact handles and bounded material. It does not copy the entire ambient conversation or every reachable source into ALEX.
 
@@ -284,7 +282,7 @@ EVIDENCE PATH
 TRANSFORMATION TRACE
 ```
 
-That slice remains research with `promotion: NONE`. This amendment does **not** promote every PATH proposal into runtime constitution.
+That slice remains research with `promotion: NONE`. This amendment does **not** promote `PATH` into the public task-shape contract or promote every PATH proposal into runtime constitution.
 
 It admits one narrow consequence because the runtime cannot truthfully replay its own context without it:
 
@@ -548,7 +546,7 @@ It may be emitted only after a run/branch is closed or a dependency path is conc
 
 ---
 
-# 12. Blind Crucible v1 is Gate 0
+# 12. Blind Crucible v1 is the first executable gate
 
 The current Crucible contract is valuable and the current fixture corpus remains preserved.
 
