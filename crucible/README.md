@@ -2,18 +2,35 @@
 
 ALEX Crucible is a portable constitutional fixture contract. It is not the ALEX research runtime and does not select a production implementation language.
 
+> **CRUCIBLE RUNTIME CONFORMANCE IS NOT YET CLAIMED.**
+
+## Blind adapter boundary
+
+A canonical specimen may contain its expected outcome because it is an authoring and historical artifact. Before process execution, the harness lowers that specimen into two separate objects:
+
+- **CASE** — runtime-visible input;
+- **ORACLE** — harness-only expectation used after execution for scoring.
+
+The adapter receives **CASE only**. ORACLE remains harness-only and is never written to adapter stdin.
+
+This means canonical fixtures can preserve their historical `expected` blocks without exposing those answers through the process boundary. The CASE carries the bounded operation input plus `case_id`, `operation_type`, `rule_profile`, `nonce`, and `input_digest`. A runtime result must return the matching case/input/ruleset identities, evaluator disposition, receipt survivors, derived assertions, and a separate execution-state summary.
+
+Metamorphic sibling cases provide **metamorphic, not secret** pressure. This is an open repository: siblings may vary identifiers, nonces, irrelevant relation ordering, and explicitly declared distractors, but no cryptographic hiddenness is claimed. Their purpose is to expose brittle surface memorization and answer-key dependence, not to pretend the fixture corpus is unknowable.
+
 ## Adapter protocol
 
 ```text
-stdin  -> one complete specimen JSON object
-stdout -> one complete result JSON object
+stdin  -> one complete CASE JSON object
+stdout -> one complete runtime-result JSON object
 exit 0 -> adapter produced a parseable attempted result
-nonzero -> adapter could not execute the specimen
+nonzero -> adapter could not execute the CASE
 ```
 
-Exit `0` is not conformance. The reference harness still compares the attempted result against the specimen's required disposition, refusal code, required receipt survivors, and forbidden promotions.
+Exit `0` is not conformance. The reference harness first verifies result identity and shape, then compares the attempted result against the harness-only ORACLE: required disposition, reason code, required receipt survivors, and forbidden derived outputs.
 
-A refusal is incomplete if it discards the evidence or residue the specimen says must survive. A result also fails if it performs a forbidden promotion even when its headline disposition looks correct.
+A refusal is incomplete if it discards the evidence or residue the specimen says must survive. A result also fails if it produces a forbidden derived output even when its headline disposition looks correct.
+
+Evaluator disposition and execution state are separate axes. `ACCEPT` does not mean externally admitted, and an `ERRORED` execution state is not a `REFUSE` disposition.
 
 ## Night-grown fixture family
 
@@ -32,4 +49,4 @@ Seed–key separation and causal-debt admission are deliberately not encoded her
 
 Passing `crucible-contract` proves the fixture corpus and reference harness are internally consistent. It does not prove an ALEX runtime conforms. Runtime conformance begins only when a real adapter executes the applicable fixtures and the harness reports zero constitutional mismatches.
 
-The fake adapters under `tests/fixtures/` exist only to test the harness. The expected-result adapter is not an ALEX implementation and must never be cited as runtime conformance evidence.
+The fake adapters under `tests/fixtures/` exist only to test the harness. They are not ALEX implementations and must never be cited as runtime conformance evidence. The answer-echo and identity-switch fixtures are deliberately adversarial harness tests: their failure demonstrates that the harness refuses those cheating strategies, not that a production research runtime is correct.
