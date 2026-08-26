@@ -52,3 +52,41 @@ class CrucibleContractTests(unittest.TestCase):
             self.assertTrue(specimen["constitutional_laws"])
             self.assertTrue(specimen["expected"]["required_receipt_survivors"])
             self.assertIn("forbidden_promotions", specimen["expected"])
+
+    def test_hardening_record_contracts(self):
+        search = self.load("search-observation.schema.json")
+        self.assertEqual(
+            search["properties"]["coverage_status"]["enum"],
+            ["DECLARED_COMPLETE_FOR_SCOPE", "PARTIAL", "TRUNCATED", "UNKNOWN", "NOT_APPLICABLE"],
+        )
+        for key in [
+            "id", "corpus_id", "query", "query_type", "index_id", "index_version",
+            "fields_searched", "record_types_searched", "page_or_reading_scope",
+            "pagination_complete", "unreadable_or_missing_ranges", "exclusions",
+            "truncation", "filters", "result_ids", "result_count", "observed_at",
+            "producer", "coverage_status",
+        ]:
+            self.assertIn(key, search["required"])
+
+        premise = self.load("inherited-premise.schema.json")
+        self.assertEqual(
+            premise["properties"]["status"]["enum"],
+            ["UNEXAMINED", "EXAMINED_SUPPORTED", "EXAMINED_CONTRADICTED", "EXAMINED_UNRESOLVED", "REPLACED", "REFUSED"],
+        )
+        self.assertIn("authority_claimed", premise["required"])
+        self.assertIn("authority_admitted", premise["required"])
+
+        family = self.load("dependency-family.schema.json")
+        self.assertEqual(
+            family["properties"]["independence_status"]["enum"],
+            ["DEPENDENT", "PARTIALLY_DEPENDENT", "INDEPENDENT_WITHIN_DECLARED_SCOPE", "UNKNOWN"],
+        )
+        self.assertIn("member_record_ids", family["required"])
+        self.assertIn("shared_ancestor_ids", family["required"])
+
+        replay = self.load("counterfactual-replay.schema.json")
+        self.assertEqual(
+            replay["properties"]["consequence_class"]["enum"],
+            ["SURVIVES_REMOVAL", "DEGRADES", "CHANGES_VERDICT", "COLLAPSES", "INSUFFICIENT_TO_TEST"],
+        )
+        self.assertIn("base_replay_receipt_id", replay["required"])
