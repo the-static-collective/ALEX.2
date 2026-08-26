@@ -1,0 +1,4 @@
+interface:
+  display_name: "ALEX"
+  short_description: "Research source witnesses with provenance"
+  default_prompt: "Use $alex to investigate this question through page-grounded primary sources."
