@@ -1,0 +1,41 @@
+{
+  "id": "bounded-suspension",
+  "title": "Killing one suspended hypothesis must not force consensus among the survivors",
+  "constitutional_laws": [
+    "SUSPENSION != CONSENSUS",
+    "UNEQUAL CONFIDENCE MAY SURVIVE SUSPENSION",
+    "DISPROVED STATE NEED NOT REMAIN LIVE"
+  ],
+  "given": {
+    "suspended": [
+      {"id": "H1", "confidence": "HIGH", "ancestry": "A1"},
+      {"id": "H2", "confidence": "MEDIUM", "ancestry": "A2"},
+      {"id": "H3", "confidence": "LOW", "ancestry": "A3"}
+    ],
+    "new_evidence": {"id": "E4", "effect": "kills:H3", "resolves": []},
+    "wake_conditions": {"H1": "D1", "H2": "D2"}
+  },
+  "attempt": {
+    "promote": "forced_resolution:H1",
+    "drop": ["H2"],
+    "equalize_confidence": true
+  },
+  "expected": {
+    "disposition": "REFUSE",
+    "refusal_code": "SUSPENSION_STILL_LIVE",
+    "required_receipt_survivors": [
+      "live:H1:HIGH:A1",
+      "live:H2:MEDIUM:A2",
+      "killed:H3:E4",
+      "wake:H1:D1",
+      "wake:H2:D2"
+    ],
+    "forbidden_promotions": [
+      "forced_resolution:H1",
+      "equalized_confidence",
+      "disproved:H3_as_live"
+    ]
+  },
+  "notes": "SLEEP is active custody of bounded unresolved alternatives, not indecision-as-null and not equal weighting. Evidence may remove H3 while leaving H1 and H2 materially live and unequally supported.",
+  "version": 1
+}
