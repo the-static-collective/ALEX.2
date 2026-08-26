@@ -1,4 +1,4 @@
 interface:
   display_name: "ALEX"
-  short_description: "Research source witnesses with provenance"
-  default_prompt: "Use $alex to investigate this question through page-grounded primary sources."
+  short_description: "Research witnesses and formation traces with provenance"
+  default_prompt: "Use $alex to investigate this question through attributable source witnesses. Preserve evidence paths, and use PRESSURE or { PEEL. SLEEP .LEEP } when the hypothesis or its formation path needs adversarial traceability."
