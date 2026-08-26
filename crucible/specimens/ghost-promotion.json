@@ -1,0 +1,9 @@
+{
+  "id": "ghost-promotion",
+  "title": "Toast-ghost persistence cannot become evidence or genealogy",
+  "constitutional_laws": ["toast-ghost != evidence", "toast-ghost != genealogy"],
+  "given": {"toast_ghost_id": "G1", "status": "inactive", "resembles": "H2"},
+  "attempt": {"promote": ["toast_ghost_as_evidence", "toast_ghost_as_genealogy"]},
+  "expected": {"disposition": "REFUSE", "refusal_code": "GHOST_PROMOTION_NOT_EARNED", "required_receipt_survivors": ["toast_ghost:G1"], "forbidden_promotions": ["toast_ghost_as_evidence", "toast_ghost_as_genealogy"]},
+  "version": 1
+}
