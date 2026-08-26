@@ -1,6 +1,6 @@
 ---
 name: alex
-description: Investigate questions through scanned books, manuscripts, historical editions, and other page-addressable source witnesses. Use when the user invokes @alex or $alex, or asks to find, read, compare, quote, or audit older source material with page-level provenance, OCR or HTR uncertainty, competing readings, or source-to-claim traceability. Do not use for ordinary web research that does not benefit from inspecting source witnesses.
+description: Investigate questions through scanned books, manuscripts, historical editions, and other page-addressable source witnesses. Use when the user invokes @alex or $alex, asks to find, read, compare, quote, or audit older source material with page-level provenance, OCR or HTR uncertainty, competing readings, or source-to-claim traceability, or supplies a deliberately strange or overstrong hypothesis to PRESSURE — “this is insane; prove around it.” Do not use for ordinary web research that does not benefit from inspecting source witnesses or explicit hypothesis pressure.
 ---
 
 # ALEX
@@ -20,12 +20,17 @@ translation != interpretation
 interpretation != claim
 search result != evidence
 similarity != genealogy
+agreement != independent corroboration
 access != permission to redistribute
 ```
 
 No descendant silently overwrites or impersonates the layer before it. Preserve
 plural readings, corrections, contradictions, missing pages, illegible marks,
 and unresolved questions.
+
+A spatial citation must name the exact visual surface whose coordinates it
+addresses. Derived crops, deskews, splits, rotations, resizes, and layout
+surfaces preserve their parent mapping or declare spatial loss.
 
 ## Choose the smallest task shape
 
@@ -35,9 +40,13 @@ and unresolved questions.
 - **TRACE** — walk a quotation or claim backward to its source witness.
 - **DOSSIER** — answer a bounded research question with claim-level evidence.
 - **AUDIT** — test an existing answer, citation, transcription, or source chain.
+- **PRESSURE** — preserve a deliberately compressed, strange, or overstrong
+  hypothesis verbatim, attack its literal form, search its nearest established
+  neighbors, and return the strongest formulation that survives.
 
 Combine shapes only when the request needs them. Do not ingest a whole
-collection merely because one page may answer the question.
+collection merely because one page may answer the question. PRESSURE is a
+hypothesis wrapper over the smaller shapes, not a new corpus subsystem.
 
 ## 1. Establish the inquiry cut
 
@@ -51,6 +60,19 @@ Before searching, record:
   required;
 - user authority for local reads, downloads, external model egress, durable
   writes, or publication.
+
+For PRESSURE, preserve the user's original seed verbatim as `H0` before
+literalizing or correcting it. Later formulations are descendants, not
+rewrites:
+
+```text
+H0 — verbatim crazy seed
+  -> H1 — literalized testable claim
+  -> H2 — corrected survivor
+  -> H3 — cross-domain survivor, if earned
+```
+
+Record what changed at each transition and why.
 
 Name missing constraints as fog. Do not turn an unavailable archive or an
 unindexed language into historical absence.
@@ -85,6 +107,7 @@ work or claimed work
   -> carrier or edition
   -> acquisition event
   -> page or canvas
+  -> exact visual surface
   -> region or text span
   -> reading
   -> optional normalization
@@ -96,6 +119,10 @@ Record producer, method, version, time, inputs, and confidence for machine
 readings. Confidence is useful only within the calibration that produced it.
 Human correction creates a new attributable revision; it does not rewrite the
 machine output.
+
+If a region was produced on a derived visual surface, preserve the surface
+digest, coordinate space, parent transform, and any declared loss. Refuse exact
+spatial citation when a selector cannot be mapped to the cited surface.
 
 If only extracted text is available, state that the image was not inspected.
 If only a catalog record is available, do not speak as though the work was
@@ -120,6 +147,10 @@ When a model proposes a restoration, translation, date, location, or parallel,
 label it as a proposal and show uncertainty. Expert or human choice remains a
 separate act.
 
+Treat agreement as a finding, not proof of independence. When material, record
+known shared ancestry among readers, models, OCR sources, editions, training or
+retrieval systems; otherwise use `independence: unknown`.
+
 ## 5. Form claims without collapse
 
 Classify each important statement as one of:
@@ -136,11 +167,29 @@ apparatus. A translation may support a semantic claim while remaining
 insufficient for exact-form claims. A surviving witness may establish survival
 without establishing origin, completeness, authorship, canon, or authority.
 
+Machine-readable support should preserve the evidence path actually relied
+upon rather than pointing only to a naked page or locus. For example:
+
+```text
+CLAIM
+  supported_by
+    translation T
+      derived_from normalization N
+        derived_from reading R
+          targets region X
+```
+
+The layer that bears the claim remains visible in the support relation.
+
 ## 6. Quote and cite
 
 Before using quotation marks, retrieve the exact cited locus. Prefer a stable
 page or canvas URL plus human-readable page, folio, column, line, or region.
 Preserve printed pagination separately from scan sequence.
+
+For image-region citations, preserve the exact target surface and coordinate
+space. Never render derivative coordinates against a parent image without a
+proved transform.
 
 For a claim based on translation, identify the translator or producing model
 and edition. When the wording is decisive, include or inspect the source
@@ -151,6 +200,7 @@ language. Never fabricate a page number from a chunk index.
 Before finishing a consequential dossier, try to break:
 
 - quote-to-page alignment;
+- visual-surface and coordinate-space alignment;
 - edition and scan identity;
 - OCR or HTR confidence;
 - translation and normalization assumptions;
@@ -163,20 +213,85 @@ Before finishing a consequential dossier, try to break:
 A test that cannot refuse the favored conclusion is another search, not a
 test.
 
+### PRESSURE — “this is insane; prove around it”
+
+Use PRESSURE when the user intentionally supplies a compressed, strange,
+overstrong, or cross-domain hypothesis. The seed creates search pressure; it
+receives no evidentiary privilege.
+
+Core law:
+
+> **A crazy hypothesis earns promotion by surviving loss, not by accumulating resemblance.**
+
+Run this loop:
+
+```text
+CRAZY SEED
+  ↓ preserve verbatim
+LITERALIZE
+  ↓ what exact claims would have to be true?
+ATTACK
+  ↓ direct counterexamples / null models / alternative explanations
+NEIGHBOR SEARCH
+  ↓ established phenomena adjacent to parts of the seed
+SEPARATE BRIDGES
+  ↓ evidence != inference != analogy != theological or symbolic reading
+KILL OVERCLAIMS
+  ↓
+SURVIVOR
+  ↓ strongest formulation still standing
+PREDICT
+  ↓ what should become observable if the survivor is useful?
+PRESSURE AGAIN
+```
+
+Explicitly seek four pressures:
+
+1. **supporting precedent** — real mechanisms or observations bearing positively;
+2. **direct counterexample** — evidence capable of killing the literal claim;
+3. **nearest boring explanation** — the simplest plausible account of the same observations;
+4. **independent-domain recurrence** — a similar structure arising for a materially different reason.
+
+The fourth may justify an analogy or a new question. It does not establish a
+shared mechanism, genealogy, or authority by resemblance alone.
+
+For cross-domain moves, use the Bridge Ledger in
+[research-receipt.md](references/research-receipt.md). Type each bridge as a
+documented mechanism, documented association, scholarly interpretation,
+inference, formal analogy, metaphor, theological interpretation, or unresolved
+bridge.
+
+A PRESSURE run must be allowed to return `disproved`. If it cannot, it is not
+adversarial research.
+
 ## 8. Return an evidence-bearing result
 
 Lead with the answer or finding. Then provide only the apparatus the stakes
 require:
 
-- claim-to-locus evidence;
+- claim-to-evidence-path support;
 - competing readings or counterevidence;
 - residual fog;
 - rights or egress boundaries that affected the result;
 - the smallest next action capable of resolving uncertainty.
 
+For PRESSURE, preserve at minimum:
+
+```text
+SEED
+LITERAL VERDICT
+WHAT BROKE
+WHAT SURVIVED
+WHY IT SURVIVED
+BRIDGE LEDGER
+NEW PREDICTIONS
+RESIDUAL WEIRDNESS
+NEXT DISCRIMINATOR
+```
+
 Read [research-receipt.md](references/research-receipt.md) for durable dossiers,
-audits, or machine-readable handoffs. Lightweight answers need not emit the
-full template.
+audits, PRESSURE runs, or machine-readable handoffs. Lightweight answers need
+not emit the full template.
 
 ## Side-effect boundary
 
@@ -190,11 +305,15 @@ usable with whatever lawful source adapters are actually available.
 
 Before finishing, confirm:
 
-- every load-bearing claim has a resolvable source chain;
+- every load-bearing claim has a resolvable source and transformation chain;
 - image inspection and text-only retrieval remain distinguishable;
 - every quotation was checked at its cited locus;
+- spatial selectors remain attached to the exact surface they address;
 - plural readings and contradictions were not cleaned away;
+- agreement was not promoted to independent corroboration without lineage evidence;
 - search projections did not become source authority;
 - rights, privacy, external egress, truncation, and inaccessible sources remain
   visible;
-- uncertainty has a proposed discriminator rather than decorative caveating.
+- uncertainty has a proposed discriminator rather than decorative caveating;
+- a PRESSURE run preserved `H0`, attacked the literal claim, typed its bridges,
+  and could have returned `disproved`.
