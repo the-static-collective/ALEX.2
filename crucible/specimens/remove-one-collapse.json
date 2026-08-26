@@ -1,0 +1,9 @@
+{
+  "id": "remove-one-collapse",
+  "title": "Support count cannot hide a single load-bearing dependency",
+  "constitutional_laws": ["REPLAY SUCCESS != DEPENDENCY ROBUSTNESS", "SUPPORT COUNT != LOAD-BEARING DIVERSITY"],
+  "given": {"base_replay_receipt_id": "R0", "claim_id": "C1", "apparent_support_count": 12, "removed_dependency": "D1", "counterfactual_result": "COLLAPSES"},
+  "attempt": {"promote": "robustness_from_remaining_count"},
+  "expected": {"disposition": "REFUSE", "refusal_code": "STRUCTURAL_DEPENDENCY_COLLAPSE", "required_receipt_survivors": ["base_replay_receipt:R0", "removed_dependency:D1", "consequence:COLLAPSES"], "forbidden_promotions": ["robustness_from_remaining_count"]},
+  "version": 1
+}
