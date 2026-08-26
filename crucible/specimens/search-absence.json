@@ -1,0 +1,9 @@
+{
+  "id": "search-absence",
+  "title": "A search miss cannot become source-level absence without coverage",
+  "constitutional_laws": ["SEARCH MISS != ABSENCE", "ABSENCE CLAIM REQUIRES DECLARED COVERAGE"],
+  "given": {"search_observation": {"id": "S1", "corpus_version": "book-1@v1", "query": "needle", "index_version": "fts@v1", "fields_searched": ["raw_text"], "pages_indexed": [1, 2, 3], "pagination_complete": false, "unreadable_or_missing_ranges": ["4-10"], "exclusions": [], "result_count": 0, "coverage_status": "PARTIAL"}},
+  "attempt": {"promote": "source_absence", "basis": "zero_search_results"},
+  "expected": {"disposition": "REFUSE", "refusal_code": "SEARCH_COVERAGE_INSUFFICIENT", "required_receipt_survivors": ["search_observation:S1", "coverage_status:PARTIAL"], "forbidden_promotions": ["source_absence"]},
+  "version": 1
+}
