@@ -1,0 +1,56 @@
+{
+  "id": "pressure-loss-survivor",
+  "title": "A PRESSURE descendant earns promotion by surviving declared losses rather than accumulating resemblance",
+  "constitutional_laws": [
+    "SURVIVAL UNDER LOSS != ACCUMULATED RESEMBLANCE",
+    "PRESSURE DESCENDANT != FAT PARENT",
+    "ANALOGY != EVIDENCE"
+  ],
+  "given": {
+    "parent": {
+      "id": "H0",
+      "formulation": "the primitive may be the transformation that leaves the glyph behind",
+      "domain_clothing": ["Hebrew vocabulary", "glyph vocabulary", "visual geometry", "intentional-agent assumption"]
+    },
+    "loss_sequence": [
+      {"removed": "Hebrew vocabulary", "positive_specimen": "P1", "counterexample": "C1", "boring_explanation": "B1"},
+      {"removed": "glyph vocabulary", "positive_specimen": "P2", "counterexample": "C2", "boring_explanation": "B2"},
+      {"removed": "visual geometry", "positive_specimen": "P3", "counterexample": "C3", "boring_explanation": "B3"},
+      {"removed": "intentional-agent assumption", "positive_specimen": "P4", "counterexample": "C4", "boring_explanation": "B4"}
+    ],
+    "descendant": {
+      "id": "H4",
+      "formulation": "a formation operation can leave an attributable trace that remains testable after domain-specific representation is removed"
+    }
+  },
+  "attempt": {
+    "promote": "H4",
+    "basis": "survived_declared_loss_with_controls"
+  },
+  "expected": {
+    "disposition": "ACCEPT",
+    "required_receipt_survivors": [
+      "parent:H0",
+      "descendant:H4",
+      "loss:Hebrew vocabulary",
+      "loss:glyph vocabulary",
+      "loss:visual geometry",
+      "loss:intentional-agent assumption",
+      "counterexample:C1",
+      "counterexample:C2",
+      "counterexample:C3",
+      "counterexample:C4",
+      "boring:B1",
+      "boring:B2",
+      "boring:B3",
+      "boring:B4"
+    ],
+    "forbidden_promotions": [
+      "H0_as_universal_ontology",
+      "resemblance_count_as_pressure_survival",
+      "analogy_as_evidence"
+    ]
+  },
+  "notes": "This is a positive-control specimen for PRESSURE. Acceptance belongs to the narrower descendant only; the fat parent and stripped domain clothing remain attributable formation history, not promoted law.",
+  "version": 1
+}

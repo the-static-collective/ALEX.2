@@ -40,6 +40,10 @@ class CrucibleContractTests(unittest.TestCase):
             "constitution-smuggling.json",
             "inherited-premise-smuggling.json",
             "remove-one-collapse.json",
+            "attention-trace-support-independence.json",
+            "bounded-suspension.json",
+            "pressure-loss-survivor.json",
+            "creative-recurrence-independence.json",
         }
         specimens = ROOT / "crucible" / "specimens"
         actual_names = {p.name for p in specimens.glob("*.json")} if specimens.exists() else set()

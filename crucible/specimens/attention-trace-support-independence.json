@@ -1,0 +1,38 @@
+{
+  "id": "attention-trace-support-independence",
+  "title": "A breadcrumb may redirect attention without becoming support for what the search later finds",
+  "constitutional_laws": [
+    "DISCOVERY PATH != EVIDENCE PATH",
+    "BREADCRUMB != EVIDENCE",
+    "SEARCH MOTIVE != SUPPORT WEIGHT"
+  ],
+  "given": {
+    "breadcrumb": {"id": "B1", "role": "coincidence"},
+    "search": {"id": "Q1", "caused_by": "B1"},
+    "evidence": {"id": "E1", "source": "independent_source:S1", "found_by": "Q1"},
+    "counterfactuals": {
+      "delete_breadcrumb": "support_verdict_unchanged",
+      "delete_evidence": "support_verdict_degrades"
+    }
+  },
+  "attempt": {
+    "promote": ["breadcrumb_as_support", "discovery_trace_as_evidence_weight"]
+  },
+  "expected": {
+    "disposition": "REFUSE",
+    "refusal_code": "ATTENTION_NOT_SUPPORT",
+    "required_receipt_survivors": [
+      "breadcrumb:B1",
+      "search:Q1",
+      "evidence:E1",
+      "counterfactual:delete_breadcrumb=support_verdict_unchanged",
+      "counterfactual:delete_evidence=support_verdict_degrades"
+    ],
+    "forbidden_promotions": [
+      "breadcrumb_as_support",
+      "discovery_trace_as_evidence_weight"
+    ]
+  },
+  "notes": "The breadcrumb remains causally relevant to discovery while carrying zero support weight. Deleting the discovery cause may reduce reproducibility of how the evidence was found without changing what the evidence supports.",
+  "version": 1
+}

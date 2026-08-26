@@ -1,0 +1,40 @@
+{
+  "id": "creative-recurrence-independence",
+  "title": "Repeated creative appearance cannot be counted as independent invention until dependency families are accounted for",
+  "constitutional_laws": [
+    "RECURRENCE != INDEPENDENT INVENTION",
+    "APPARENT MULTIPLICITY != INDEPENDENT ANCESTRY",
+    "INDEPENDENCE IS DECLARED-SCOPE RELATIVE"
+  ],
+  "given": {
+    "appearances": ["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8"],
+    "dependency_families": [
+      {"id": "F1", "members": ["A1", "A2", "A3", "A4", "A5"], "basis": "shared_direct_prompt", "status": "DEPENDENT"},
+      {"id": "F2", "members": ["A6", "A7"], "basis": "shared_indirect_pressure", "status": "PARTIALLY_DEPENDENT"}
+    ],
+    "unresolved": ["A8"],
+    "declared_scope": "known prompts, seeds, model lineage, corpus references, and human suggestions"
+  },
+  "attempt": {
+    "promote": "independent_invention_count:8",
+    "basis": "raw_recurrence_count"
+  },
+  "expected": {
+    "disposition": "REFUSE",
+    "refusal_code": "RAW_RECURRENCE_NOT_INDEPENDENCE",
+    "required_receipt_survivors": [
+      "raw_recurrence_count:8",
+      "dependency_family:F1",
+      "dependency_family:F2",
+      "independence_unknown:A8",
+      "scope:known prompts, seeds, model lineage, corpus references, and human suggestions"
+    ],
+    "forbidden_promotions": [
+      "independent_invention_count:8",
+      "unknown_connection_as_independent_birth",
+      "shared_pressure_as_proven_genealogy"
+    ]
+  },
+  "notes": "The correction is not to collapse every recurrence into one ancestry story. Direct descent, partial dependence, shared pressure, independence within a declared scope, and unknown relation remain distinct.",
+  "version": 1
+}
