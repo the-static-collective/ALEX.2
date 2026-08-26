@@ -1,8 +1,8 @@
 # ALEX evidence model
 
 Read this reference when ingesting material, preserving multiple readings,
-correcting derived text, comparing editions, or designing interoperable ALEX
-records.
+correcting derived text, comparing editions, PRESSURE-testing hypotheses, or
+designing interoperable ALEX records.
 
 ## The witness stack
 
@@ -12,11 +12,14 @@ records.
 | `carrier` | One physical or digital edition, object, or manifestation | Original composition or authorship |
 | `acquisition` | What bytes or remote resource were received, when, and how | Permission to republish or historical authenticity |
 | `canvas` | One ordered visual surface such as a page, folio, plate, or spread | That scan order equals printed pagination |
-| `region` | A spatial target on a canvas | The correct reading of that region |
+| `visual_surface` | One exact image state with dimensions, digest, and transform ancestry | That coordinates from another surface apply unchanged |
+| `region` | A spatial target on one exact visual surface | The correct reading of that region |
 | `reading` | One human, OCR, HTR, or model transcription | Normalized spelling, translation, or truth |
 | `normalization` | A declared transformation of a reading | Exact source form |
 | `translation` | A declared language transformation | Semantic identity or absence of interpretation |
-| `assertion` | A claim supported, contradicted, or contextualized by loci | Constitution by the substrate |
+| `assertion` | A claim supported, contradicted, or contextualized by evidence paths | Constitution by the substrate |
+| `hypothesis` | One attributable formulation in a PRESSURE lineage | That later survivors were present in the original seed |
+| `bridge` | One typed cross-domain move | Shared mechanism, genealogy, or authority by resemblance alone |
 | `dossier` | A bounded research assembly and its receipt | A universal or permanently current truth store |
 
 ## Required ancestry
@@ -31,12 +34,12 @@ Every derived record should carry:
 - creation time;
 - content digest;
 - confidence and calibration scope when meaningful;
-- status such as proposed, human-corrected, verified, refused, or unresolved.
+- status such as proposed, human-corrected, verified, refused, disproved, or unresolved.
 
 Never attach confidence to an assertion merely because its OCR ancestor supplied
 a numeric confidence.
 
-## Page and region addressing
+## Visual surfaces and region addressing
 
 Prefer existing stable coordinates:
 
@@ -49,6 +52,27 @@ Prefer existing stable coordinates:
 
 Keep labels and machine addresses separate. “p. 57” may refer to printed page
 57 while the scan sequence is 73.
+
+A region selector is valid only in the coordinate space of the exact visual
+surface it targets. Cropping, deskewing, splitting, rotation, resizing, or other
+image derivation creates a new visual surface rather than silently mutating the
+old one.
+
+A derived visual surface should preserve:
+
+```text
+target_surface_id
+target_surface_digest
+dimensions
+coordinate_space
+derived_from
+transform_to_parent
+loss_declaration
+```
+
+A region should preserve the selector plus the exact target surface identifier.
+If the transform to a requested parent surface is missing or declared lossy,
+refuse exact spatial citation rather than guessing.
 
 ## Plural readings
 
@@ -67,7 +91,11 @@ A human correction may be preferred for a task, but the corrected record must
 point to the reading it corrects. Reprocessing with a new model creates another
 reading.
 
-## Claim relations
+Agreement among readings does not prove independence. Preserve known dependence
+on a shared model family, OCR source, edition, scan, training or retrieval
+lineage when material; otherwise record `independence: unknown`.
+
+## Claim relations and evidence paths
 
 Useful relations include:
 
@@ -83,6 +111,70 @@ Useful relations include:
 
 Do not use `same_as` as a convenience for uncertain identity.
 
+Support should preserve the transformation path actually relied upon, not only
+a naked page or region. For example:
+
+```text
+assertion C
+  supported_by translation T
+    derived_from normalization N
+      derived_from reading R
+        targets region X
+          on visual surface S
+```
+
+A translation may bear a semantic claim while remaining insufficient for an
+exact-form claim. A normalization may bear a lexical comparison while remaining
+insufficient for original orthography.
+
+## PRESSURE hypothesis lineage
+
+Preserve a deliberately strange or overstrong hypothesis as an attributable
+lineage rather than silently cleaning it up:
+
+```text
+H0 — verbatim seed
+  -> H1 — literalized testable claim
+  -> H2 — corrected survivor
+  -> H3 — cross-domain survivor, if earned
+```
+
+Each descendant records what changed and why. A later survivor may be more
+useful than `H0` without impersonating it.
+
+A consequential PRESSURE run should seek:
+
+- supporting precedent;
+- a direct counterexample;
+- the nearest boring explanation;
+- an independent-domain recurrence.
+
+The first three bear on the literal hypothesis. The fourth may generate a new
+analogy or research question but does not establish common mechanism.
+
+## Bridge Ledger
+
+Cross-domain moves should be represented explicitly. Useful bridge types
+include:
+
+- `documented_mechanism`
+- `documented_association`
+- `scholarly_interpretation`
+- `inference`
+- `formal_analogy`
+- `metaphor`
+- `theological_interpretation`
+- `unresolved_bridge`
+
+A bridge should record source domain, destination domain, formulation, evidence
+bearing, and promotion limit.
+
+```text
+similarity != genealogy
+agreement != independent corroboration
+analogy != shared mechanism
+```
+
 ## Interoperability boundary
 
 ALEX should be able to export or import without making external standards its
@@ -94,5 +186,6 @@ internal constitution:
 - TEI P5 for scholarly transcription or edition export;
 - plain UTF-8 and JSON Lines for durable, inspectable fallback.
 
-Internal v0 records may remain simpler as long as exact ancestry and locators
-survive round-trip export.
+Internal v0 records may remain simpler as long as exact ancestry, transformation
+paths, coordinate spaces, hypothesis lineage, and locators survive round-trip
+export.
