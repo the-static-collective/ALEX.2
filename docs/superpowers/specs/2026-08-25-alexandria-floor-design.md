@@ -1,9 +1,13 @@
 # ALEX.2 — Alexandria Floor design
 
-**Date:** 2026-08-25  
-**Status:** approved architectural spine; written design awaiting human review  
-**Owning world:** `the-static-collective/ALEX.2`  
-**Skill handle:** `@alex`  
+**Date:** 2026-08-25
+
+**Status:** approved architectural spine; written design awaiting human review
+
+**Owning world:** `the-static-collective/ALEX.2`
+
+**Skill handle:** `@alex`
+
 **Selected approach:** local evidence floor
 
 ## Design sentence

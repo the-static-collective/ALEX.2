@@ -34,7 +34,7 @@ whose source chain may later be challenged. Scale it down for ordinary answers.
 | --- | --- | --- | --- | --- | --- |
 
 ## Contradictions and alternatives
-- 
+- (record entries here)
 
 ## Pressure
 - Quote-to-page check:
@@ -45,7 +45,7 @@ whose source chain may later be challenged. Scale it down for ordinary answers.
 - Anachronism or memorization check:
 
 ## Residual fog
-- 
+- (record entries here)
 
 ## Smallest next discriminators
 1.
