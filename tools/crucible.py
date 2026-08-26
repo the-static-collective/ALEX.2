@@ -29,6 +29,14 @@ def _valid_string_list(value) -> bool:
     return isinstance(value, list) and all(isinstance(item, str) for item in value)
 
 
+def _validate_unique_string_list(name: str, value) -> list[str]:
+    if not _valid_string_list(value):
+        return [f"{name} must be a list of strings"]
+    if len(value) != len(set(value)):
+        return [f"{name} must contain unique strings"]
+    return []
+
+
 def validate_runtime_result(case: dict, actual: dict) -> list[str]:
     errors: list[str] = []
 
@@ -52,10 +60,8 @@ def validate_runtime_result(case: dict, actual: dict) -> list[str]:
     if reason_code is not None and not isinstance(reason_code, str):
         errors.append("reason_code must be string or null")
 
-    if not _valid_string_list(actual.get("receipt_survivors")):
-        errors.append("receipt_survivors must be a list of strings")
-    if not _valid_string_list(actual.get("derived_assertions")):
-        errors.append("derived_assertions must be a list of strings")
+    errors.extend(_validate_unique_string_list("receipt_survivors", actual.get("receipt_survivors")))
+    errors.extend(_validate_unique_string_list("derived_assertions", actual.get("derived_assertions")))
 
     summary = actual.get("execution_trace_summary")
     if not isinstance(summary, dict):
