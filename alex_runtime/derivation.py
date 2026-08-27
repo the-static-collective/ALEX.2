@@ -74,6 +74,8 @@ def _matching_evidence_path(
             and path.get("claim_id") == claim_id
             and path.get("status") == "ATTRIBUTABLE"
             and isinstance(basis_ids, list)
+            and bool(basis_ids)
+            and source_id in basis_ids
             and all(isinstance(basis_id, str) and basis_id in record_ids for basis_id in basis_ids)
             and isinstance(witness_ids, list)
             and bool(witness_ids)
@@ -144,6 +146,15 @@ def _evaluation(
     }
 
 
+def _result(evaluation: dict, proposal: dict, conclusion_assertion: dict | None = None) -> dict:
+    return {
+        "proposal": proposal,
+        "evaluation": evaluation,
+        "conclusion_assertion": conclusion_assertion,
+        "execution": {"terminal_state": "FINISHED", "step_count": 1},
+    }
+
+
 def evaluate_relation_case(case: dict) -> dict:
     source = copy.deepcopy(case)
     given = source.get("given", {})
@@ -157,6 +168,8 @@ def evaluate_relation_case(case: dict) -> dict:
     subject_id = proposal.get("subject_id")
     object_id = proposal.get("object_id")
     predicate = proposal.get("predicate")
+    scope = proposal.get("scope")
+    proposal_basis_ids = proposal.get("basis_ids", [])
 
     base_survivors = []
     if isinstance(proposal_id, str):
@@ -165,38 +178,60 @@ def evaluate_relation_case(case: dict) -> dict:
         base_survivors.append(f"evaluation:{evaluation_id}")
 
     if source.get("operation_type") != "relation_derivation":
-        evaluation = _evaluation(
-            source,
+        return _result(
+            _evaluation(
+                source,
+                proposal,
+                disposition="INSUFFICIENT_TO_TEST",
+                reason_code="OPERATION_OUTSIDE_PROFILE",
+                survivors=base_survivors,
+                input_ids=list(proposal_basis_ids) if isinstance(proposal_basis_ids, list) else [],
+                conclusion_assertion_id=None,
+            ),
             proposal,
-            disposition="INSUFFICIENT_TO_TEST",
-            reason_code="OPERATION_OUTSIDE_PROFILE",
-            survivors=base_survivors,
-            input_ids=list(proposal.get("basis_ids", [])),
-            conclusion_assertion_id=None,
         )
-        return {
-            "proposal": proposal,
-            "evaluation": evaluation,
-            "conclusion_assertion": None,
-            "execution": {"terminal_state": "FINISHED", "step_count": 1},
-        }
+
+    if source.get("rule_profile") != DERIVATION_M0_PROFILE:
+        return _result(
+            _evaluation(
+                source,
+                proposal,
+                disposition="INSUFFICIENT_TO_TEST",
+                reason_code="RULE_PROFILE_OUTSIDE_PROFILE",
+                survivors=base_survivors,
+                input_ids=list(proposal_basis_ids) if isinstance(proposal_basis_ids, list) else [],
+                conclusion_assertion_id=None,
+            ),
+            proposal,
+        )
 
     if not semantic_predicate_allowed(DERIVATION_M0_PROFILE, predicate):
-        evaluation = _evaluation(
-            source,
+        return _result(
+            _evaluation(
+                source,
+                proposal,
+                disposition="REFUSE",
+                reason_code="PREDICATE_OUTSIDE_PROFILE",
+                survivors=base_survivors,
+                input_ids=list(proposal_basis_ids) if isinstance(proposal_basis_ids, list) else [],
+                conclusion_assertion_id=None,
+            ),
             proposal,
-            disposition="REFUSE",
-            reason_code="PREDICATE_OUTSIDE_PROFILE",
-            survivors=base_survivors,
-            input_ids=list(proposal.get("basis_ids", [])),
-            conclusion_assertion_id=None,
         )
-        return {
-            "proposal": proposal,
-            "evaluation": evaluation,
-            "conclusion_assertion": None,
-            "execution": {"terminal_state": "FINISHED", "step_count": 1},
-        }
+
+    if not isinstance(scope, str) or not scope.strip():
+        return _result(
+            _evaluation(
+                source,
+                proposal,
+                disposition="INSUFFICIENT_TO_TEST",
+                reason_code="MISSING_PROPOSAL_SCOPE",
+                survivors=base_survivors,
+                input_ids=list(proposal_basis_ids) if isinstance(proposal_basis_ids, list) else [],
+                conclusion_assertion_id=None,
+            ),
+            proposal,
+        )
 
     if subject_id not in records or object_id not in records:
         survivors = list(base_survivors)
@@ -204,21 +239,18 @@ def evaluate_relation_case(case: dict) -> dict:
             survivors.insert(0, f"record:{subject_id}")
         if object_id in records:
             survivors.insert(0, f"record:{object_id}")
-        evaluation = _evaluation(
-            source,
+        return _result(
+            _evaluation(
+                source,
+                proposal,
+                disposition="INSUFFICIENT_TO_TEST",
+                reason_code="MISSING_PROPOSAL_RECORD",
+                survivors=survivors,
+                input_ids=list(proposal_basis_ids) if isinstance(proposal_basis_ids, list) else [],
+                conclusion_assertion_id=None,
+            ),
             proposal,
-            disposition="INSUFFICIENT_TO_TEST",
-            reason_code="MISSING_PROPOSAL_RECORD",
-            survivors=survivors,
-            input_ids=list(proposal.get("basis_ids", [])),
-            conclusion_assertion_id=None,
         )
-        return {
-            "proposal": proposal,
-            "evaluation": evaluation,
-            "conclusion_assertion": None,
-            "execution": {"terminal_state": "FINISHED", "step_count": 1},
-        }
 
     evidence_path = _matching_evidence_path(
         given,
@@ -227,38 +259,52 @@ def evaluate_relation_case(case: dict) -> dict:
         record_ids=record_ids,
     )
     if evidence_path is not None:
+        path_id = evidence_path.get("id")
+        basis_set = set(proposal_basis_ids) if isinstance(proposal_basis_ids, list) else set()
+        if not isinstance(path_id, str) or subject_id not in basis_set or path_id not in basis_set:
+            return _result(
+                _evaluation(
+                    source,
+                    proposal,
+                    disposition="INSUFFICIENT_TO_TEST",
+                    reason_code="PROPOSAL_BASIS_INSUFFICIENT",
+                    survivors=[f"record:{subject_id}", f"record:{object_id}", *base_survivors],
+                    input_ids=list(proposal_basis_ids) if isinstance(proposal_basis_ids, list) else [],
+                    conclusion_assertion_id=None,
+                ),
+                proposal,
+            )
+
         conclusion_id = attempt.get("conclusion_assertion_id")
         conclusion = {
             "id": conclusion_id,
             "subject_id": subject_id,
             "predicate": "SUPPORTS",
             "object_id": object_id,
-            "scope": proposal.get("scope"),
+            "scope": scope,
             "derived_by_evaluation_id": evaluation_id,
         }
         survivors = [
             f"record:{subject_id}",
             f"record:{object_id}",
-            f'evidence_path:{evidence_path["id"]}',
+            f"evidence_path:{path_id}",
             *base_survivors,
             f"conclusion_assertion:{conclusion_id}",
         ]
-        input_ids = [*proposal.get("basis_ids", []), evidence_path["id"]]
-        evaluation = _evaluation(
-            source,
+        input_ids = [*proposal_basis_ids, path_id]
+        return _result(
+            _evaluation(
+                source,
+                proposal,
+                disposition="ACCEPT",
+                reason_code=None,
+                survivors=survivors,
+                input_ids=input_ids,
+                conclusion_assertion_id=conclusion_id,
+            ),
             proposal,
-            disposition="ACCEPT",
-            reason_code=None,
-            survivors=survivors,
-            input_ids=input_ids,
-            conclusion_assertion_id=conclusion_id,
+            conclusion,
         )
-        return {
-            "proposal": proposal,
-            "evaluation": evaluation,
-            "conclusion_assertion": conclusion,
-            "execution": {"terminal_state": "FINISHED", "step_count": 1},
-        }
 
     attention = _attention_chain(given, subject_id, records)
     if attention is not None:
@@ -270,34 +316,32 @@ def evaluate_relation_case(case: dict) -> dict:
             f"record:{object_id}",
             *base_survivors,
         ]
-        evaluation = _evaluation(
+        return _result(
+            _evaluation(
+                source,
+                proposal,
+                disposition="REFUSE",
+                reason_code="ATTENTION_NOT_SUPPORT",
+                survivors=survivors,
+                input_ids=[
+                    *(proposal_basis_ids if isinstance(proposal_basis_ids, list) else []),
+                    search_id,
+                    evidence_id,
+                ],
+                conclusion_assertion_id=None,
+            ),
+            proposal,
+        )
+
+    return _result(
+        _evaluation(
             source,
             proposal,
-            disposition="REFUSE",
-            reason_code="ATTENTION_NOT_SUPPORT",
-            survivors=survivors,
-            input_ids=[*proposal.get("basis_ids", []), search_id, evidence_id],
+            disposition="INSUFFICIENT_TO_TEST",
+            reason_code="NO_ATTRIBUTABLE_SUPPORT_PATH",
+            survivors=[f"record:{subject_id}", f"record:{object_id}", *base_survivors],
+            input_ids=list(proposal_basis_ids) if isinstance(proposal_basis_ids, list) else [],
             conclusion_assertion_id=None,
-        )
-        return {
-            "proposal": proposal,
-            "evaluation": evaluation,
-            "conclusion_assertion": None,
-            "execution": {"terminal_state": "FINISHED", "step_count": 1},
-        }
-
-    evaluation = _evaluation(
-        source,
+        ),
         proposal,
-        disposition="INSUFFICIENT_TO_TEST",
-        reason_code="NO_ATTRIBUTABLE_SUPPORT_PATH",
-        survivors=[f"record:{subject_id}", f"record:{object_id}", *base_survivors],
-        input_ids=list(proposal.get("basis_ids", [])),
-        conclusion_assertion_id=None,
     )
-    return {
-        "proposal": proposal,
-        "evaluation": evaluation,
-        "conclusion_assertion": None,
-        "execution": {"terminal_state": "FINISHED", "step_count": 1},
-    }
