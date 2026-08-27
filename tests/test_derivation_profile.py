@@ -4,12 +4,14 @@ import sys
 import unittest
 from pathlib import Path
 
-from tools.crucible_blind import ruleset_digest
+from tools.crucible_blind import build_case, ruleset_digest
+from tools.run_derivation_profile import _prepare_metamorphic_case
 
 ROOT = Path(__file__).resolve().parents[1]
 PROFILE = ROOT / "crucible" / "profiles" / "alex.runtime.derivation-m0.json"
 SCHEMA = ROOT / "crucible" / "schema" / "conformance-profile.schema.json"
 RUNNER = ROOT / "tools" / "run_derivation_profile.py"
+SPECIMENS = ROOT / "crucible" / "specimens"
 
 
 class DerivationProfileManifestTests(unittest.TestCase):
@@ -50,6 +52,27 @@ class DerivationProfileManifestTests(unittest.TestCase):
 
 
 class DerivationProfileExecutionTests(unittest.TestCase):
+    def test_metamorphic_siblings_are_fresh_across_builds(self):
+        specimen = json.loads(
+            (SPECIMENS / "relation-derivation-001-evidence-positive.json").read_text(encoding="utf-8")
+        )
+        case = build_case(
+            specimen,
+            nonce="parent-nonce",
+            operation_type="relation_derivation",
+            rule_profile="alex.runtime/derivation-m0",
+        )
+
+        first = _prepare_metamorphic_case(case, specimen["id"])
+        second = _prepare_metamorphic_case(case, specimen["id"])
+
+        self.assertNotEqual(first["case_id"], second["case_id"])
+        self.assertNotEqual(first["nonce"], second["nonce"])
+        self.assertNotEqual(first["input_digest"], second["input_digest"])
+        first_distractors = {r["id"] for r in first["given"]["relations"] if r["predicate"] == "derived_from"}
+        second_distractors = {r["id"] for r in second["given"]["relations"] if r["predicate"] == "derived_from"}
+        self.assertTrue(first_distractors.isdisjoint(second_distractors))
+
     def test_original_and_metamorphic_profile_passes_four_cases(self):
         result = subprocess.run(
             [sys.executable, str(RUNNER)],
