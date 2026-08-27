@@ -1,0 +1,25 @@
+{
+  "id": "loadout-handshake-valid",
+  "title": "loadout handshake valid",
+  "constitutional_laws": ["LOADOUT != ALEX", "CAPABILITY AVAILABILITY != AUTHORITY", "CONTEXT MAY DESCEND; PERMISSION MUST BE RE-EARNED"],
+  "given": {
+    "compile": {
+      "schema": "loadout.compile/v0", "compile_id": "C0", "parent_compile_id": null,
+      "issued_at": "2026-08-27T13:00:00Z", "expires_at": "2026-08-27T14:00:00Z",
+      "world_cut_ref": "world-cut:W0", "context_pack_ref": "context-pack:CP0",
+      "compile_trace": {"id": "compile-trace:CT-C0", "source_world_ref": "world-source:WS0", "operation": "bounded-selection", "preserved_invariants": ["mission", "stop_condition"], "declared_loss": ["ambient-conversation"], "producer": "loadout-fixture@1", "freshness": "2026-08-27T13:00:00Z"},
+      "capability_bindings": [{"capability": "research.read", "status": "available"}, {"capability": "repo.write", "status": "available"}],
+      "effect_fence_ref": "effect-fence:EF-C0",
+      "effective_effects": [{"effect": "research.read", "status": "allowed", "authorization_source_ref": "owner-auth:A0", "scope": "repo:ALEX.2", "valid_from": "2026-08-27T13:00:00Z", "expires_at": "2026-08-27T14:00:00Z", "revocation_ref": null, "owner_gate_ref": "owner-gate:G0"}],
+      "owner_evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "egress_policy_ref": "egress-policy:E0",
+      "compile_digest": "sha256:3a1e42a662736d29ca706e55be167e28b4a2d9742a798f466a78a01545946163"
+    },
+    "audit": {"observed_at": "2026-08-27T13:30:00Z", "current_owner_evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+  },
+  "attempt": {
+    "run_envelope": {"schema": "alex.run-envelope/v0", "run_id": "RUN-C0", "compile_id": "C0", "compile_digest": "sha256:3a1e42a662736d29ca706e55be167e28b4a2d9742a798f466a78a01545946163", "compile_trace_ref": "compile-trace:CT-C0", "phase": "EXECUTE", "expires_at": "2026-08-27T14:00:00Z", "question": "May this bounded run enter ALEX?", "task_shape": "AUDIT", "world_cut_ref": "world-cut:W0", "context_pack_ref": "context-pack:CP0", "input_record_ids": ["record:R0"], "capability_bindings": [{"capability": "research.read", "status": "available"}, {"capability": "repo.write", "status": "available"}], "effect_fence_ref": "effect-fence:EF-C0", "egress_policy_ref": "egress-policy:E0", "rule_profile": "alex.runtime/loadout-handshake-m0", "stop_condition": "one bounded handshake decision", "requested_outputs": ["handshake_receipt"]},
+    "required_capabilities": ["research.read"], "requested_effects": ["research.read"]
+  },
+  "expected": {"disposition": "ACCEPT", "required_receipt_survivors": ["compile:C0", "compile_trace:compile-trace:CT-C0", "effect_fence:effect-fence:EF-C0", "recompile_required:false"], "forbidden_promotions": ["authority_minted", "parent_permission_inherited", "external_consequence_admitted"]},
+  "notes": "Gate-3 ALEX-side LOADOUT handshake specimen.", "version": 1
+}
