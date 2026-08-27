@@ -1,0 +1,59 @@
+{
+  "id": "relation-derivation-001-evidence-positive",
+  "title": "Attributable evidence path may earn scoped support",
+  "constitutional_laws": [
+    "DISCOVERY PATH != EVIDENCE PATH",
+    "BREADCRUMB != EVIDENCE",
+    "SEARCH MOTIVE != SUPPORT WEIGHT"
+  ],
+  "given": {
+    "records": [
+      {"id": "B1", "kind": "breadcrumb"},
+      {"id": "Q1", "kind": "search"},
+      {"id": "E1", "kind": "evidence"},
+      {"id": "C1", "kind": "candidate_claim"}
+    ],
+    "relations": [
+      {"id": "R1", "subject_id": "Q1", "predicate": "caused_by", "object_id": "B1"},
+      {"id": "R2", "subject_id": "E1", "predicate": "acquired_from", "object_id": "Q1"}
+    ],
+    "evidence_paths": [
+      {
+        "id": "EP1",
+        "source_id": "E1",
+        "claim_id": "C1",
+        "basis_ids": ["E1"],
+        "witness_ids": ["independent_source:S1"],
+        "status": "ATTRIBUTABLE"
+      }
+    ]
+  },
+  "attempt": {
+    "relation_proposal": {
+      "id": "RP1",
+      "subject_id": "E1",
+      "predicate": "SUPPORTS",
+      "object_id": "C1",
+      "scope": "candidate_claim:C1",
+      "proposed_by": "crucible-fixture",
+      "basis_ids": ["E1", "EP1"]
+    },
+    "evaluation_id": "EV1",
+    "execution_step_id": "STEP1",
+    "conclusion_assertion_id": "AS1"
+  },
+  "expected": {
+    "disposition": "ACCEPT",
+    "required_receipt_survivors": [
+      "record:E1",
+      "record:C1",
+      "evidence_path:EP1",
+      "relation_proposal:RP1",
+      "evaluation:EV1",
+      "conclusion_assertion:AS1"
+    ],
+    "forbidden_promotions": []
+  },
+  "notes": "Positive sibling for RELATION-DERIVATION-001. Support is earned from an attributable evidence path, not inherited from the breadcrumb/search discovery chain.",
+  "version": 1
+}

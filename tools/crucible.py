@@ -102,21 +102,12 @@ def compare_result(case: dict, oracle: dict, actual: dict) -> list[str]:
     return errors
 
 
-def run_fixture(
-    fixture_path: Path,
-    adapter_argv: list[str],
-    *,
-    nonce: str | None = None,
-) -> int:
-    specimen = json.loads(fixture_path.read_text(encoding="utf-8"))
-    specimen_id = specimen.get("id", fixture_path.stem)
+def run_case(case: dict, oracle: dict, adapter_argv: list[str]) -> int:
+    case_id = case.get("case_id", "unknown-case")
 
     if not adapter_argv:
-        print(f"FAIL {specimen_id}: adapter command is empty")
+        print(f"FAIL {case_id}: adapter command is empty")
         return 1
-
-    case = build_case(specimen, nonce=nonce or secrets.token_hex(16))
-    oracle = build_oracle(specimen, case)
 
     completed = subprocess.run(
         adapter_argv,
@@ -128,40 +119,66 @@ def run_fixture(
     )
     if completed.returncode != 0:
         detail = completed.stderr.strip() or completed.stdout.strip() or "no adapter output"
-        print(f"FAIL {specimen_id}: adapter exited {completed.returncode}: {detail}")
+        print(f"FAIL {case_id}: adapter exited {completed.returncode}: {detail}")
         return 1
 
     try:
         actual = json.loads(completed.stdout)
     except json.JSONDecodeError as exc:
-        print(f"FAIL {specimen_id}: adapter stdout is not one JSON object: {exc}")
+        print(f"FAIL {case_id}: adapter stdout is not one JSON object: {exc}")
         return 1
 
     if not isinstance(actual, dict):
-        print(f"FAIL {specimen_id}: adapter result must be a JSON object")
+        print(f"FAIL {case_id}: adapter result must be a JSON object")
         return 1
 
     errors = validate_runtime_result(case, actual)
     if not errors:
         errors.extend(compare_result(case, oracle, actual))
     if errors:
-        print(f"FAIL {specimen_id}: {'; '.join(errors)}")
+        print(f"FAIL {case_id}: {'; '.join(errors)}")
         return 1
 
-    print(f"PASS {specimen_id}")
+    print(f"PASS {case_id}")
     return 0
+
+
+def run_fixture(
+    fixture_path: Path,
+    adapter_argv: list[str],
+    *,
+    nonce: str | None = None,
+    operation_type: str = "constitutional_evaluation",
+    rule_profile: str = "alex-crucible-v1",
+) -> int:
+    specimen = json.loads(fixture_path.read_text(encoding="utf-8"))
+    case = build_case(
+        specimen,
+        nonce=nonce or secrets.token_hex(16),
+        operation_type=operation_type,
+        rule_profile=rule_profile,
+    )
+    oracle = build_oracle(specimen, case)
+    return run_case(case, oracle, adapter_argv)
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run one ALEX Crucible specimen against an adapter")
     parser.add_argument("--fixture", required=True, type=Path)
+    parser.add_argument("--operation-type", default="constitutional_evaluation")
+    parser.add_argument("--rule-profile", default="alex-crucible-v1")
     parser.add_argument("--adapter", nargs=argparse.REMAINDER, required=True)
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
-    return run_fixture(args.fixture, args.adapter)
+    return run_fixture(
+        args.fixture,
+        args.adapter,
+        operation_type=args.operation_type,
+        rule_profile=args.rule_profile,
+    )
 
 
 if __name__ == "__main__":

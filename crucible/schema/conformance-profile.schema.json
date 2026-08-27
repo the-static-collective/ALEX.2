@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://the-static-collective.invalid/alex/crucible/conformance-profile.schema.json",
+  "title": "ALEX scoped conformance profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "id",
+    "operation_types",
+    "rule_profile",
+    "fixture_families",
+    "runtime_adapter",
+    "excluded_profiles"
+  ],
+  "properties": {
+    "$schema": {"type": "string", "minLength": 1},
+    "id": {"type": "string", "minLength": 1},
+    "operation_types": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "rule_profile": {"type": "string", "minLength": 1},
+    "fixture_families": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "version", "fixtures"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "version": {"type": "integer", "minimum": 1},
+          "fixtures": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"type": "string", "minLength": 1}
+          }
+        }
+      }
+    },
+    "runtime_adapter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "version"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "version": {"type": "integer", "minimum": 1}
+      }
+    },
+    "excluded_profiles": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    }
+  }
+}

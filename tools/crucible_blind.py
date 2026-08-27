@@ -1,24 +1,24 @@
 from __future__ import annotations
 
 import copy
-import hashlib
-import json
+import sys
+from pathlib import Path
 
-
-def canonical_json_bytes(value: dict) -> bytes:
-    return json.dumps(
-        value,
-        sort_keys=True,
-        separators=(",", ":"),
-        ensure_ascii=False,
-    ).encode("utf-8")
-
-
-def sha256_json(value: dict) -> str:
-    return "sha256:" + hashlib.sha256(canonical_json_bytes(value)).hexdigest()
+try:
+    from alex_runtime.digests import canonical_json_bytes, sha256_json
+    from alex_runtime.derivation import ruleset_manifest
+except ModuleNotFoundError:  # direct `python tools/...` execution
+    ROOT = Path(__file__).resolve().parents[1]
+    if str(ROOT) not in sys.path:
+        sys.path.insert(0, str(ROOT))
+    from alex_runtime.digests import canonical_json_bytes, sha256_json
+    from alex_runtime.derivation import ruleset_manifest
 
 
 def ruleset_digest(rule_profile: str) -> str:
+    manifest = ruleset_manifest(rule_profile)
+    if manifest is not None:
+        return sha256_json(manifest)
     return sha256_json({"rule_profile": rule_profile})
 
 

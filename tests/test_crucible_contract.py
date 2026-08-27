@@ -44,6 +44,8 @@ class CrucibleContractTests(unittest.TestCase):
             "bounded-suspension.json",
             "pressure-loss-survivor.json",
             "creative-recurrence-independence.json",
+            "relation-derivation-001-attention-negative.json",
+            "relation-derivation-001-evidence-positive.json",
         }
         specimens = ROOT / "crucible" / "specimens"
         actual_names = {p.name for p in specimens.glob("*.json")} if specimens.exists() else set()
@@ -56,6 +58,15 @@ class CrucibleContractTests(unittest.TestCase):
             self.assertTrue(specimen["constitutional_laws"])
             self.assertTrue(specimen["expected"]["required_receipt_survivors"])
             self.assertIn("forbidden_promotions", specimen["expected"])
+
+    def test_attention_ancestor_remains_historical_shape(self):
+        path = ROOT / "crucible" / "specimens" / "attention-trace-support-independence.json"
+        specimen = json.loads(path.read_text(encoding="utf-8"))
+        self.assertIn("breadcrumb", specimen["given"])
+        self.assertIn("search", specimen["given"])
+        self.assertIn("evidence", specimen["given"])
+        self.assertNotIn("records", specimen["given"])
+        self.assertNotIn("relation_proposal", specimen["attempt"])
 
     def test_hardening_record_contracts(self):
         search = self.load("search-observation.schema.json")

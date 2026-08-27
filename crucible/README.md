@@ -45,6 +45,14 @@ These fixtures sharpen one shared failure mode: **no relation is promoted merely
 
 Seed–key separation and causal-debt admission are deliberately not encoded here as ALEX-owned laws. They remain cross-project frontier specimens until an owning runtime or explicitly shared constitutional layer earns executable semantics for them.
 
+## Scoped derivation profile
+
+`alex.runtime/derivation-m0` is the first executable semantic profile. It is intentionally tiny: its only semantic predicate is `SUPPORTS`, evaluated by `RELATION-DERIVATION-001@1` through the real `tools/derivation_adapter.py@1` CASE-only process boundary.
+
+The profile runs both the explicit attention-negative descendant and the attributable-evidence positive sibling, then reruns each as a metamorphic sibling with a fresh case identity and nonce, reversed irrelevant relation ordering, and an unrelated witnessed distractor relation. The historical `attention-trace-support-independence` specimen remains an unchanged ancestor rather than being rewritten into the runtime shape.
+
+A clean `alex.runtime/derivation-m0` run testifies only that the exact tested runtime build, ruleset digest, adapter version, fixture-family version, and metamorphic pressure survived that scoped profile. It does **not** establish general ALEX runtime conformance, historical truth, source authority, canon, permission, external admission, publication, merge authority, or any other owning-world consequence. `alex.runtime/one-book-m1` and `alex.runtime/formation-trace-m2` remain explicitly outside this profile.
+
 ## Conformance boundary
 
 Passing `crucible-contract` proves the fixture corpus and reference harness are internally consistent. It does not prove an ALEX runtime conforms. Runtime conformance begins only when a real adapter executes the applicable fixtures and the harness reports zero constitutional mismatches.

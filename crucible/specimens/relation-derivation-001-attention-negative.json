@@ -1,0 +1,51 @@
+{
+  "id": "relation-derivation-001-attention-negative",
+  "title": "Attention/discovery ancestry does not grant support",
+  "constitutional_laws": [
+    "DISCOVERY PATH != EVIDENCE PATH",
+    "BREADCRUMB != EVIDENCE",
+    "SEARCH MOTIVE != SUPPORT WEIGHT"
+  ],
+  "given": {
+    "records": [
+      {"id": "B1", "kind": "breadcrumb"},
+      {"id": "Q1", "kind": "search"},
+      {"id": "E1", "kind": "evidence"},
+      {"id": "C1", "kind": "candidate_claim"}
+    ],
+    "relations": [
+      {"id": "R1", "subject_id": "Q1", "predicate": "caused_by", "object_id": "B1"},
+      {"id": "R2", "subject_id": "E1", "predicate": "acquired_from", "object_id": "Q1"}
+    ],
+    "evidence_paths": []
+  },
+  "attempt": {
+    "relation_proposal": {
+      "id": "RP1",
+      "subject_id": "B1",
+      "predicate": "SUPPORTS",
+      "object_id": "C1",
+      "scope": "candidate_claim:C1",
+      "proposed_by": "crucible-fixture",
+      "basis_ids": ["B1", "Q1", "E1"]
+    },
+    "evaluation_id": "EV1",
+    "execution_step_id": "STEP1",
+    "conclusion_assertion_id": "AS1"
+  },
+  "expected": {
+    "disposition": "REFUSE",
+    "refusal_code": "ATTENTION_NOT_SUPPORT",
+    "required_receipt_survivors": [
+      "record:B1",
+      "record:Q1",
+      "record:E1",
+      "record:C1",
+      "relation_proposal:RP1",
+      "evaluation:EV1"
+    ],
+    "forbidden_promotions": ["B1 --SUPPORTS--> C1"]
+  },
+  "notes": "Runtime descendant of attention-trace-support-independence. The historical fixture remains unchanged; this descendant adds the explicit candidate claim and proof-carrying proposal required by RELATION-DERIVATION-001.",
+  "version": 1
+}
