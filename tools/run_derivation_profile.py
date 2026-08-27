@@ -1,5 +1,6 @@
 import copy
 import json
+import secrets
 import sys
 from pathlib import Path
 
@@ -21,10 +22,11 @@ SPECIMENS = ROOT / "crucible" / "specimens"
 
 
 def _prepare_metamorphic_case(case: dict, fixture_id: str) -> dict:
+    token = secrets.token_hex(8)
     sibling = metamorphic_sibling(
         case,
-        suffix="-meta",
-        nonce=f"profile-meta-{fixture_id}",
+        suffix=f"-meta-{token}",
+        nonce=secrets.token_hex(16),
     )
 
     records = sibling.get("given", {}).get("records")
@@ -32,18 +34,21 @@ def _prepare_metamorphic_case(case: dict, fixture_id: str) -> dict:
     if not isinstance(records, list) or not isinstance(relations, list):
         raise ValueError("derivation profile requires given.records and given.relations arrays")
 
+    distractor_origin_id = f"D0-{token}"
+    distractor_result_id = f"D1-{token}"
+    distractor_relation_id = f"RD-{token}"
     records.extend(
         [
-            {"id": "D0", "kind": "distractor_origin"},
-            {"id": "D1", "kind": "distractor_result"},
+            {"id": distractor_origin_id, "kind": "distractor_origin"},
+            {"id": distractor_result_id, "kind": "distractor_result"},
         ]
     )
     relations.append(
         {
-            "id": "RD",
-            "subject_id": "D1",
+            "id": distractor_relation_id,
+            "subject_id": distractor_result_id,
             "predicate": "derived_from",
-            "object_id": "D0",
+            "object_id": distractor_origin_id,
         }
     )
     sibling.pop("input_digest", None)
@@ -73,7 +78,7 @@ def run_profile() -> tuple[int, dict]:
             specimen = json.loads(specimen_path.read_text(encoding="utf-8"))
             case = build_case(
                 specimen,
-                nonce=f"profile-original-{fixture_id}",
+                nonce=secrets.token_hex(16),
                 operation_type=operation_type,
                 rule_profile=rule_profile,
             )
