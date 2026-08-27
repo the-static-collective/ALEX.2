@@ -1,0 +1,24 @@
+{
+  "$schema": "https://the-static-collective.invalid/alex/crucible/conformance-profile.schema.json",
+  "id": "alex.runtime/derivation-m0",
+  "operation_types": ["relation_derivation"],
+  "rule_profile": "alex.runtime/derivation-m0",
+  "fixture_families": [
+    {
+      "id": "RELATION-DERIVATION-001",
+      "version": 1,
+      "fixtures": [
+        "relation-derivation-001-attention-negative",
+        "relation-derivation-001-evidence-positive"
+      ]
+    }
+  ],
+  "runtime_adapter": {
+    "path": "tools/derivation_adapter.py",
+    "version": 1
+  },
+  "excluded_profiles": [
+    "alex.runtime/one-book-m1",
+    "alex.runtime/formation-trace-m2"
+  ]
+}
