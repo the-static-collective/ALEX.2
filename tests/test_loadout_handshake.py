@@ -108,6 +108,14 @@ def make_case(compile_record: dict | None = None, audit_time: str = "2026-08-27T
     return case
 
 
+def refresh_case(case: dict) -> None:
+    compile_record = case["given"]["compile"]
+    compile_record["compile_digest"] = compile_payload_digest(compile_record)
+    case["attempt"]["run_envelope"] = make_envelope(compile_record)
+    case.pop("input_digest", None)
+    case["input_digest"] = sha256_json(case)
+
+
 class HandshakeSchemaTests(unittest.TestCase):
     def test_public_schemas_exist_and_reject_extra_properties(self):
         self.assertTrue(RUN_ENVELOPE_SCHEMA.exists())
@@ -232,6 +240,51 @@ class HandshakeEvaluationTests(unittest.TestCase):
         self.assertIn("compile:C0", result["receipt_survivors"])
         self.assertIn("compile_trace:compile-trace:CT0", result["receipt_survivors"])
         self.assertIn("effect_fence:effect-fence:EF0", result["receipt_survivors"])
+
+    def test_missing_required_capability_is_gap_not_permission(self):
+        case = make_case()
+        case["given"]["compile"]["capability_bindings"] = [
+            {"capability": "research.read", "status": "available"}
+        ]
+        case["attempt"]["required_capabilities"] = ["repo.write"]
+        case["attempt"]["requested_effects"] = []
+        refresh_case(case)
+
+        result = evaluate_loadout_handshake(case)
+
+        self.assertEqual(result["disposition"], "INSUFFICIENT_TO_TEST")
+        self.assertEqual(result["reason_code"], "CAPABILITY_GAP")
+        self.assertTrue(result["recompile_required"])
+        self.assertEqual(result["capability_gaps"], ["repo.write"])
+        self.assertIn("capability_gap:repo.write", result["receipt_survivors"])
+
+    def test_available_capability_does_not_authorize_effect_outside_fence(self):
+        case = make_case()
+        case["attempt"]["required_capabilities"] = ["repo.write"]
+        case["attempt"]["requested_effects"] = ["repo.write"]
+        case.pop("input_digest", None)
+        case["input_digest"] = sha256_json(case)
+
+        result = evaluate_loadout_handshake(case)
+
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason_code"], "EFFECT_OUTSIDE_FENCE")
+        self.assertFalse(result["recompile_required"])
+        self.assertEqual(result["capability_gaps"], [])
+        self.assertIn("effect_refused:repo.write", result["receipt_survivors"])
+
+    def test_allowed_effect_requires_attributable_current_fence_entry(self):
+        case = make_case()
+        effect = case["given"]["compile"]["effective_effects"][0]
+        effect["authorization_source_ref"] = None
+        refresh_case(case)
+
+        result = evaluate_loadout_handshake(case)
+
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason_code"], "EFFECT_FENCE_UNATTRIBUTABLE")
+        self.assertFalse(result["recompile_required"])
+        self.assertIn("effect_refused:research.read", result["receipt_survivors"])
 
     def test_handshake_does_not_mutate_case(self):
         case = make_case()
