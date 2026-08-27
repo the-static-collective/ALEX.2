@@ -123,6 +123,17 @@ class RelationDerivationTests(unittest.TestCase):
         self.assertEqual(result["evaluation"]["reason_code"], "MISSING_PROPOSAL_SCOPE")
         self.assertIsNone(result["conclusion_assertion"])
 
+    def test_accept_requires_conclusion_occurrence_identity(self):
+        case = load_case("relation-derivation-001-evidence-positive.json")
+        case["attempt"]["conclusion_assertion_id"] = ""
+        redigest(case)
+
+        result = evaluate_relation_case(case)
+
+        self.assertEqual(result["evaluation"]["disposition"], "INSUFFICIENT_TO_TEST")
+        self.assertEqual(result["evaluation"]["reason_code"], "MISSING_CONCLUSION_IDENTITY")
+        self.assertIsNone(result["conclusion_assertion"])
+
     def test_non_supports_predicate_is_outside_profile(self):
         case = load_case("relation-derivation-001-evidence-positive.json")
         case["attempt"]["relation_proposal"]["predicate"] = "RESEMBLES"
