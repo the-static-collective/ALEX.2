@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+from datetime import datetime, timezone
 
 from alex_runtime.digests import sha256_json
 
@@ -82,6 +83,16 @@ def _nonempty_string(value: object) -> bool:
     return isinstance(value, str) and bool(value.strip())
 
 
+def _parse_instant(value: str) -> datetime:
+    if not _nonempty_string(value):
+        raise ValueError("timestamp required")
+    normalized = value[:-1] + "+00:00" if value.endswith("Z") else value
+    instant = datetime.fromisoformat(normalized)
+    if instant.tzinfo is None:
+        raise ValueError("timestamp must be offset-aware")
+    return instant.astimezone(timezone.utc)
+
+
 def validate_compile_record(compile_record: dict) -> list[str]:
     errors: list[str] = []
     if not isinstance(compile_record, dict):
@@ -161,3 +172,115 @@ def validate_run_envelope(envelope: dict, compile_record: dict) -> list[str]:
         if not isinstance(envelope.get(key), list):
             errors.append(f"ENVELOPE_{key.upper()}_INVALID")
     return list(dict.fromkeys(errors))
+
+
+def _survivors(compile_record: dict, envelope: dict) -> list[str]:
+    trace = compile_record.get("compile_trace", {})
+    survivors = [
+        f'compile:{compile_record.get("compile_id")}',
+        f'compile_trace:{trace.get("id")}',
+        f'effect_fence:{compile_record.get("effect_fence_ref")}',
+        f'owner_evidence_digest:{compile_record.get("owner_evidence_digest")}',
+    ]
+    if isinstance(envelope, dict) and _nonempty_string(envelope.get("run_id")):
+        survivors.append(f'run_envelope:{envelope["run_id"]}')
+    return list(dict.fromkeys(survivors))
+
+
+def _handshake_result(
+    compile_record: dict,
+    envelope: dict,
+    *,
+    disposition: str,
+    reason_code: str | None,
+    recompile_required: bool,
+    capability_gaps: list[str] | None = None,
+) -> dict:
+    trace = compile_record.get("compile_trace", {}) if isinstance(compile_record, dict) else {}
+    return {
+        "compile_id": compile_record.get("compile_id") if isinstance(compile_record, dict) else None,
+        "compile_digest": compile_record.get("compile_digest") if isinstance(compile_record, dict) else None,
+        "compile_trace_ref": trace.get("id") if isinstance(trace, dict) else None,
+        "disposition": disposition,
+        "reason_code": reason_code,
+        "recompile_required": recompile_required,
+        "capability_gaps": list(capability_gaps or []),
+        "receipt_survivors": _survivors(compile_record, envelope) if isinstance(compile_record, dict) else [],
+        "execution": {"terminal_state": "FINISHED", "step_count": 1},
+    }
+
+
+def evaluate_loadout_handshake(case: dict, *, now: str | None = None) -> dict:
+    source = copy.deepcopy(case)
+    given = source.get("given", {}) if isinstance(source, dict) else {}
+    attempt = source.get("attempt", {}) if isinstance(source, dict) else {}
+    compile_record = given.get("compile", {}) if isinstance(given, dict) else {}
+    envelope = attempt.get("run_envelope", {}) if isinstance(attempt, dict) else {}
+
+    if source.get("operation_type") != "loadout_handshake":
+        return _handshake_result(
+            compile_record,
+            envelope,
+            disposition="INSUFFICIENT_TO_TEST",
+            reason_code="OPERATION_OUTSIDE_PROFILE",
+            recompile_required=False,
+        )
+    if source.get("rule_profile") != HANDSHAKE_M0_PROFILE:
+        return _handshake_result(
+            compile_record,
+            envelope,
+            disposition="INSUFFICIENT_TO_TEST",
+            reason_code="RULE_PROFILE_OUTSIDE_PROFILE",
+            recompile_required=False,
+        )
+
+    compile_errors = validate_compile_record(compile_record)
+    if compile_errors:
+        return _handshake_result(
+            compile_record,
+            envelope,
+            disposition="INSUFFICIENT_TO_TEST",
+            reason_code="COMPILE_INVALID",
+            recompile_required=True,
+        )
+
+    envelope_errors = validate_run_envelope(envelope, compile_record)
+    if envelope_errors:
+        return _handshake_result(
+            compile_record,
+            envelope,
+            disposition="REFUSE",
+            reason_code="ENVELOPE_INVALID",
+            recompile_required=False,
+        )
+
+    audit = given.get("audit", {}) if isinstance(given, dict) else {}
+    observed_at = now if now is not None else audit.get("observed_at")
+    try:
+        observed = _parse_instant(observed_at)
+        expires = _parse_instant(compile_record["expires_at"])
+    except (TypeError, ValueError):
+        return _handshake_result(
+            compile_record,
+            envelope,
+            disposition="INSUFFICIENT_TO_TEST",
+            reason_code="AUDIT_TIME_INVALID",
+            recompile_required=True,
+        )
+
+    if observed >= expires:
+        return _handshake_result(
+            compile_record,
+            envelope,
+            disposition="REFUSE",
+            reason_code="COMPILE_EXPIRED",
+            recompile_required=True,
+        )
+
+    return _handshake_result(
+        compile_record,
+        envelope,
+        disposition="ACCEPT",
+        reason_code=None,
+        recompile_required=False,
+    )
