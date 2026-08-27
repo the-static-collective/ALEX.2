@@ -127,6 +127,20 @@ class RunnerContractTests(unittest.TestCase):
         self.assertIn("receipt_survivors must contain unique strings", joined)
         self.assertIn("derived_assertions must contain unique strings", joined)
 
+    def test_prepared_case_seam_runs_valid_adapter(self):
+        case, oracle = self.case_and_oracle()
+        code = crucible.run_case(
+            case,
+            oracle,
+            [sys.executable, str(FIXTURES / "adapter_refuses_correctly.py")],
+        )
+        self.assertEqual(code, 0)
+
+    def test_run_fixture_accepts_explicit_operation_and_rule_profile(self):
+        params = inspect.signature(crucible.run_fixture).parameters
+        self.assertIn("operation_type", params)
+        self.assertIn("rule_profile", params)
+
 
 class ProcessRunnerTests(unittest.TestCase):
     def write_specimen(self, directory: str) -> Path:
