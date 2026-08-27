@@ -174,7 +174,7 @@ def validate_run_envelope(envelope: dict, compile_record: dict) -> list[str]:
     return list(dict.fromkeys(errors))
 
 
-def _survivors(compile_record: dict, envelope: dict) -> list[str]:
+def _survivors(compile_record: dict, envelope: dict, extras: list[str] | None = None) -> list[str]:
     trace = compile_record.get("compile_trace", {})
     survivors = [
         f'compile:{compile_record.get("compile_id")}',
@@ -184,6 +184,7 @@ def _survivors(compile_record: dict, envelope: dict) -> list[str]:
     ]
     if isinstance(envelope, dict) and _nonempty_string(envelope.get("run_id")):
         survivors.append(f'run_envelope:{envelope["run_id"]}')
+    survivors.extend(extras or [])
     return list(dict.fromkeys(survivors))
 
 
@@ -195,6 +196,7 @@ def _handshake_result(
     reason_code: str | None,
     recompile_required: bool,
     capability_gaps: list[str] | None = None,
+    extra_survivors: list[str] | None = None,
 ) -> dict:
     trace = compile_record.get("compile_trace", {}) if isinstance(compile_record, dict) else {}
     return {
@@ -205,9 +207,45 @@ def _handshake_result(
         "reason_code": reason_code,
         "recompile_required": recompile_required,
         "capability_gaps": list(capability_gaps or []),
-        "receipt_survivors": _survivors(compile_record, envelope) if isinstance(compile_record, dict) else [],
+        "receipt_survivors": _survivors(compile_record, envelope, extra_survivors) if isinstance(compile_record, dict) else [],
         "execution": {"terminal_state": "FINISHED", "step_count": 1},
     }
+
+
+def _available_capabilities(compile_record: dict) -> set[str]:
+    return {
+        binding.get("capability")
+        for binding in compile_record.get("capability_bindings", [])
+        if isinstance(binding, dict)
+        and binding.get("status") == "available"
+        and _nonempty_string(binding.get("capability"))
+    }
+
+
+def _effect_entry(compile_record: dict, effect: str) -> dict | None:
+    for entry in compile_record.get("effective_effects", []):
+        if isinstance(entry, dict) and entry.get("effect") == effect:
+            return entry
+    return None
+
+
+def _effect_entry_is_current_and_attributable(entry: dict, observed: datetime) -> bool:
+    if entry.get("status") != "allowed":
+        return False
+    if not _nonempty_string(entry.get("authorization_source_ref")):
+        return False
+    if not _nonempty_string(entry.get("owner_gate_ref")):
+        return False
+    if not _nonempty_string(entry.get("scope")):
+        return False
+    if entry.get("revocation_ref") is not None:
+        return False
+    try:
+        valid_from = _parse_instant(entry.get("valid_from"))
+        expires_at = _parse_instant(entry.get("expires_at"))
+    except (TypeError, ValueError):
+        return False
+    return valid_from <= observed < expires_at
 
 
 def evaluate_loadout_handshake(case: dict, *, now: str | None = None) -> dict:
@@ -276,6 +314,58 @@ def evaluate_loadout_handshake(case: dict, *, now: str | None = None) -> dict:
             reason_code="COMPILE_EXPIRED",
             recompile_required=True,
         )
+
+    required_capabilities = attempt.get("required_capabilities", [])
+    if not isinstance(required_capabilities, list) or not all(isinstance(item, str) for item in required_capabilities):
+        return _handshake_result(
+            compile_record,
+            envelope,
+            disposition="INSUFFICIENT_TO_TEST",
+            reason_code="CAPABILITY_REQUIREMENTS_INVALID",
+            recompile_required=False,
+        )
+    available = _available_capabilities(compile_record)
+    gaps = list(dict.fromkeys(capability for capability in required_capabilities if capability not in available))
+    if gaps:
+        return _handshake_result(
+            compile_record,
+            envelope,
+            disposition="INSUFFICIENT_TO_TEST",
+            reason_code="CAPABILITY_GAP",
+            recompile_required=True,
+            capability_gaps=gaps,
+            extra_survivors=[f"capability_gap:{capability}" for capability in gaps],
+        )
+
+    requested_effects = attempt.get("requested_effects", [])
+    if not isinstance(requested_effects, list) or not all(isinstance(item, str) for item in requested_effects):
+        return _handshake_result(
+            compile_record,
+            envelope,
+            disposition="INSUFFICIENT_TO_TEST",
+            reason_code="EFFECT_REQUESTS_INVALID",
+            recompile_required=False,
+        )
+    for effect in dict.fromkeys(requested_effects):
+        entry = _effect_entry(compile_record, effect)
+        if entry is None or entry.get("status") != "allowed":
+            return _handshake_result(
+                compile_record,
+                envelope,
+                disposition="REFUSE",
+                reason_code="EFFECT_OUTSIDE_FENCE",
+                recompile_required=False,
+                extra_survivors=[f"effect_refused:{effect}"],
+            )
+        if not _effect_entry_is_current_and_attributable(entry, observed):
+            return _handshake_result(
+                compile_record,
+                envelope,
+                disposition="REFUSE",
+                reason_code="EFFECT_FENCE_UNATTRIBUTABLE",
+                recompile_required=False,
+                extra_survivors=[f"effect_refused:{effect}"],
+            )
 
     return _handshake_result(
         compile_record,
