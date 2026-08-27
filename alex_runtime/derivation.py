@@ -276,6 +276,25 @@ def evaluate_relation_case(case: dict) -> dict:
             )
 
         conclusion_id = attempt.get("conclusion_assertion_id")
+        if not isinstance(conclusion_id, str) or not conclusion_id.strip():
+            return _result(
+                _evaluation(
+                    source,
+                    proposal,
+                    disposition="INSUFFICIENT_TO_TEST",
+                    reason_code="MISSING_CONCLUSION_IDENTITY",
+                    survivors=[
+                        f"record:{subject_id}",
+                        f"record:{object_id}",
+                        f"evidence_path:{path_id}",
+                        *base_survivors,
+                    ],
+                    input_ids=list(proposal_basis_ids),
+                    conclusion_assertion_id=None,
+                ),
+                proposal,
+            )
+
         conclusion = {
             "id": conclusion_id,
             "subject_id": subject_id,
