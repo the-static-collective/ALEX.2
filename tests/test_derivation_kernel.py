@@ -90,6 +90,39 @@ class RelationDerivationTests(unittest.TestCase):
         self.assertEqual(result["evaluation"]["reason_code"], "NO_ATTRIBUTABLE_SUPPORT_PATH")
         self.assertIsNone(result["conclusion_assertion"])
 
+    def test_evidence_path_requires_source_in_its_basis(self):
+        case = load_case("relation-derivation-001-evidence-positive.json")
+        case["given"]["evidence_paths"][0]["basis_ids"] = []
+        redigest(case)
+
+        result = evaluate_relation_case(case)
+
+        self.assertEqual(result["evaluation"]["disposition"], "INSUFFICIENT_TO_TEST")
+        self.assertEqual(result["evaluation"]["reason_code"], "NO_ATTRIBUTABLE_SUPPORT_PATH")
+        self.assertIsNone(result["conclusion_assertion"])
+
+    def test_proposal_must_carry_evidence_path_in_declared_basis(self):
+        case = load_case("relation-derivation-001-evidence-positive.json")
+        case["attempt"]["relation_proposal"]["basis_ids"] = ["E1"]
+        redigest(case)
+
+        result = evaluate_relation_case(case)
+
+        self.assertEqual(result["evaluation"]["disposition"], "INSUFFICIENT_TO_TEST")
+        self.assertEqual(result["evaluation"]["reason_code"], "PROPOSAL_BASIS_INSUFFICIENT")
+        self.assertIsNone(result["conclusion_assertion"])
+
+    def test_support_conclusion_requires_declared_scope(self):
+        case = load_case("relation-derivation-001-evidence-positive.json")
+        case["attempt"]["relation_proposal"]["scope"] = ""
+        redigest(case)
+
+        result = evaluate_relation_case(case)
+
+        self.assertEqual(result["evaluation"]["disposition"], "INSUFFICIENT_TO_TEST")
+        self.assertEqual(result["evaluation"]["reason_code"], "MISSING_PROPOSAL_SCOPE")
+        self.assertIsNone(result["conclusion_assertion"])
+
     def test_non_supports_predicate_is_outside_profile(self):
         case = load_case("relation-derivation-001-evidence-positive.json")
         case["attempt"]["relation_proposal"]["predicate"] = "RESEMBLES"
@@ -121,6 +154,17 @@ class RelationDerivationTests(unittest.TestCase):
 
         self.assertEqual(result["evaluation"]["disposition"], "INSUFFICIENT_TO_TEST")
         self.assertEqual(result["evaluation"]["reason_code"], "OPERATION_OUTSIDE_PROFILE")
+        self.assertIsNone(result["conclusion_assertion"])
+
+    def test_rule_profile_outside_derivation_m0_is_insufficient(self):
+        case = load_case("relation-derivation-001-evidence-positive.json")
+        case["rule_profile"] = "alex.runtime/other-profile"
+        redigest(case)
+
+        result = evaluate_relation_case(case)
+
+        self.assertEqual(result["evaluation"]["disposition"], "INSUFFICIENT_TO_TEST")
+        self.assertEqual(result["evaluation"]["reason_code"], "RULE_PROFILE_OUTSIDE_PROFILE")
         self.assertIsNone(result["conclusion_assertion"])
 
     def test_accept_does_not_emit_admission_state(self):
