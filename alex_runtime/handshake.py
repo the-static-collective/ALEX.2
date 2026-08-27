@@ -182,6 +182,9 @@ def _survivors(compile_record: dict, envelope: dict, extras: list[str] | None = 
         f'effect_fence:{compile_record.get("effect_fence_ref")}',
         f'owner_evidence_digest:{compile_record.get("owner_evidence_digest")}',
     ]
+    parent_compile_id = compile_record.get("parent_compile_id")
+    if _nonempty_string(parent_compile_id):
+        survivors.append(f"parent_compile:{parent_compile_id}")
     if isinstance(envelope, dict) and _nonempty_string(envelope.get("run_id")):
         survivors.append(f'run_envelope:{envelope["run_id"]}')
     survivors.extend(extras or [])
@@ -313,6 +316,26 @@ def evaluate_loadout_handshake(case: dict, *, now: str | None = None) -> dict:
             disposition="REFUSE",
             reason_code="COMPILE_EXPIRED",
             recompile_required=True,
+        )
+
+    current_owner_digest = audit.get("current_owner_evidence_digest") if isinstance(audit, dict) else None
+    frozen_owner_digest = compile_record.get("owner_evidence_digest")
+    if not _nonempty_string(current_owner_digest):
+        return _handshake_result(
+            compile_record,
+            envelope,
+            disposition="INSUFFICIENT_TO_TEST",
+            reason_code="OWNER_EVIDENCE_AUDIT_INVALID",
+            recompile_required=True,
+        )
+    if current_owner_digest != frozen_owner_digest:
+        return _handshake_result(
+            compile_record,
+            envelope,
+            disposition="INSUFFICIENT_TO_TEST",
+            reason_code="OWNER_EVIDENCE_CHANGED",
+            recompile_required=True,
+            extra_survivors=[f"owner_evidence_changed:{frozen_owner_digest}->{current_owner_digest}"],
         )
 
     required_capabilities = attempt.get("required_capabilities", [])
