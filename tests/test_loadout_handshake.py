@@ -3,9 +3,11 @@ import json
 import unittest
 from pathlib import Path
 
+from alex_runtime.digests import sha256_json
 from alex_runtime.handshake import (
     HANDSHAKE_M0_PROFILE,
     compile_payload_digest,
+    evaluate_loadout_handshake,
     handshake_ruleset_digest,
     handshake_ruleset_manifest,
     validate_compile_record,
@@ -80,6 +82,30 @@ def make_envelope(compile_record: dict) -> dict:
         "stop_condition": "one bounded handshake decision",
         "requested_outputs": ["handshake_receipt"],
     }
+
+
+def make_case(compile_record: dict | None = None, audit_time: str = "2026-08-27T13:30:00Z") -> dict:
+    compile_record = copy.deepcopy(compile_record or make_compile())
+    case = {
+        "case_id": "loadout-handshake-valid",
+        "operation_type": "loadout_handshake",
+        "rule_profile": HANDSHAKE_M0_PROFILE,
+        "given": {
+            "compile": compile_record,
+            "audit": {
+                "observed_at": audit_time,
+                "current_owner_evidence_digest": compile_record["owner_evidence_digest"],
+            },
+        },
+        "attempt": {
+            "run_envelope": make_envelope(compile_record),
+            "required_capabilities": ["research.read"],
+            "requested_effects": ["research.read"],
+        },
+        "nonce": "test-loadout-handshake",
+    }
+    case["input_digest"] = sha256_json(case)
+    return case
 
 
 class HandshakeSchemaTests(unittest.TestCase):
@@ -174,6 +200,44 @@ class EnvelopeBindingTests(unittest.TestCase):
             "ENVELOPE_CAPABILITY_BINDINGS_MISMATCH",
             validate_run_envelope(envelope, compile_record),
         )
+
+
+class HandshakeEvaluationTests(unittest.TestCase):
+    def test_valid_compile_enters_alex_without_admission_semantics(self):
+        case = make_case()
+        result = evaluate_loadout_handshake(case)
+
+        self.assertEqual(result["disposition"], "ACCEPT")
+        self.assertIsNone(result["reason_code"])
+        self.assertFalse(result["recompile_required"])
+        self.assertEqual(result["capability_gaps"], [])
+        self.assertEqual(result["compile_id"], "C0")
+        self.assertEqual(result["compile_digest"], case["given"]["compile"]["compile_digest"])
+        self.assertEqual(result["compile_trace_ref"], "compile-trace:CT0")
+        self.assertIn("compile:C0", result["receipt_survivors"])
+        self.assertIn("compile_trace:compile-trace:CT0", result["receipt_survivors"])
+        self.assertIn("effect_fence:effect-fence:EF0", result["receipt_survivors"])
+        self.assertEqual(result["execution"], {"terminal_state": "FINISHED", "step_count": 1})
+        forbidden = {"admitted", "authority", "canon", "publication", "warrant"}
+        self.assertTrue(forbidden.isdisjoint(result))
+
+    def test_expired_compile_refuses_and_requires_recompile(self):
+        case = make_case(audit_time="2026-08-27T14:00:01Z")
+        result = evaluate_loadout_handshake(case)
+
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason_code"], "COMPILE_EXPIRED")
+        self.assertTrue(result["recompile_required"])
+        self.assertEqual(result["capability_gaps"], [])
+        self.assertIn("compile:C0", result["receipt_survivors"])
+        self.assertIn("compile_trace:compile-trace:CT0", result["receipt_survivors"])
+        self.assertIn("effect_fence:effect-fence:EF0", result["receipt_survivors"])
+
+    def test_handshake_does_not_mutate_case(self):
+        case = make_case()
+        before = copy.deepcopy(case)
+        evaluate_loadout_handshake(case)
+        self.assertEqual(case, before)
 
 
 if __name__ == "__main__":
