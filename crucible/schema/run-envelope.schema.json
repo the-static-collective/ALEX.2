@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://the-static-collective.invalid/alex/run-envelope.schema.json",
+  "title": "alex.run-envelope/v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "run_id", "compile_id", "compile_digest", "compile_trace_ref",
+    "phase", "expires_at", "question", "task_shape", "world_cut_ref",
+    "context_pack_ref", "input_record_ids", "capability_bindings",
+    "effect_fence_ref", "egress_policy_ref", "rule_profile", "stop_condition",
+    "requested_outputs"
+  ],
+  "properties": {
+    "schema": {"const": "alex.run-envelope/v0"},
+    "run_id": {"type": "string", "minLength": 1},
+    "compile_id": {"type": "string", "minLength": 1},
+    "compile_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "compile_trace_ref": {"type": "string", "minLength": 1},
+    "phase": {"type": "string", "minLength": 1},
+    "expires_at": {"type": "string", "minLength": 1},
+    "question": {"type": "string", "minLength": 1},
+    "task_shape": {"enum": ["FIND", "READ", "COMPARE", "TRACE", "DOSSIER", "AUDIT", "PRESSURE"]},
+    "world_cut_ref": {"type": "string", "minLength": 1},
+    "context_pack_ref": {"type": "string", "minLength": 1},
+    "input_record_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "capability_bindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["capability", "status"],
+        "properties": {
+          "capability": {"type": "string", "minLength": 1},
+          "status": {"enum": ["available", "unavailable"]}
+        }
+      }
+    },
+    "effect_fence_ref": {"type": "string", "minLength": 1},
+    "egress_policy_ref": {"type": "string", "minLength": 1},
+    "rule_profile": {"type": "string", "minLength": 1},
+    "stop_condition": {"type": "string", "minLength": 1},
+    "requested_outputs": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+  }
+}
