@@ -7,16 +7,20 @@ from pathlib import Path
 try:
     from alex_runtime.digests import canonical_json_bytes, sha256_json
     from alex_runtime.derivation import ruleset_manifest
+    from alex_runtime.handshake import handshake_ruleset_manifest
 except ModuleNotFoundError:  # direct `python tools/...` execution
     ROOT = Path(__file__).resolve().parents[1]
     if str(ROOT) not in sys.path:
         sys.path.insert(0, str(ROOT))
     from alex_runtime.digests import canonical_json_bytes, sha256_json
     from alex_runtime.derivation import ruleset_manifest
+    from alex_runtime.handshake import handshake_ruleset_manifest
 
 
 def ruleset_digest(rule_profile: str) -> str:
     manifest = ruleset_manifest(rule_profile)
+    if manifest is None:
+        manifest = handshake_ruleset_manifest(rule_profile)
     if manifest is not None:
         return sha256_json(manifest)
     return sha256_json({"rule_profile": rule_profile})

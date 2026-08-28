@@ -46,6 +46,11 @@ class CrucibleContractTests(unittest.TestCase):
             "creative-recurrence-independence.json",
             "relation-derivation-001-attention-negative.json",
             "relation-derivation-001-evidence-positive.json",
+            "loadout-handshake-valid.json",
+            "loadout-handshake-stale-compile.json",
+            "loadout-handshake-owner-drift.json",
+            "loadout-handshake-permission-drift.json",
+            "loadout-handshake-capability-gap.json",
         }
         specimens = ROOT / "crucible" / "specimens"
         actual_names = {p.name for p in specimens.glob("*.json")} if specimens.exists() else set()

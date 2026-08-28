@@ -1,0 +1,21 @@
+{
+  "$schema": "https://the-static-collective.invalid/alex/crucible/conformance-profile.schema.json",
+  "id": "alex.runtime/loadout-handshake-m0",
+  "operation_types": ["loadout_handshake"],
+  "rule_profile": "alex.runtime/loadout-handshake-m0",
+  "fixture_families": [
+    {
+      "id": "LOADOUT-HANDSHAKE-001",
+      "version": 1,
+      "fixtures": [
+        "loadout-handshake-valid",
+        "loadout-handshake-stale-compile",
+        "loadout-handshake-owner-drift",
+        "loadout-handshake-permission-drift",
+        "loadout-handshake-capability-gap"
+      ]
+    }
+  ],
+  "runtime_adapter": {"path": "tools/loadout_handshake_adapter.py", "version": 1},
+  "excluded_profiles": ["alex.runtime/one-book-m1", "alex.runtime/formation-trace-m2"]
+}
