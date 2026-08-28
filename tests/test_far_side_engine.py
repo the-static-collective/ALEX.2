@@ -69,6 +69,86 @@ class FarSideEngineTests(unittest.TestCase):
         }
         self.assertTrue(forbidden.isdisjoint(result))
 
+    def test_dimensional_novelty_plus_passing_pressure_earns_survivor(self):
+        case = copy.deepcopy(VALID_CASE)
+        case["candidate"]["novelty"] = [
+            {
+                "type": "NEW_DERIVATION",
+                "statement": "A closed cubic route leaves a 1-regular residual field.",
+                "discriminator": "Compare the Hamiltonian-cycle sibling with a Hamiltonian path.",
+                "receipt_ref": "receipt:novelty:residual",
+            }
+        ]
+
+        result = evaluate_far_side_case(case)
+
+        self.assertEqual(result["final_status"], "FAR_SIDE_SURVIVOR")
+        self.assertEqual(len(result["novelty_delta"]), 1)
+        self.assertEqual(result["novelty_delta"][0]["type"], "NEW_DERIVATION")
+
+    def test_exact_baseline_duplicate_does_not_count_as_novelty(self):
+        case = copy.deepcopy(VALID_CASE)
+        case["candidate"]["novelty"] = [
+            {
+                "type": "NEW_RELATION",
+                "statement": "  Route   is not\n host topology. ",
+                "discriminator": "Would differ under an exhaustive-host claim.",
+                "receipt_ref": "receipt:novelty:duplicate",
+            }
+        ]
+
+        result = evaluate_far_side_case(case)
+
+        self.assertEqual(result["final_status"], "NO_NEW_DIMENSION_EARNED")
+        self.assertEqual(result["novelty_delta"], [])
+
+    def test_wording_only_delta_is_reported_but_does_not_earn_new_dimension(self):
+        case = copy.deepcopy(VALID_CASE)
+        case["candidate"]["novelty"] = [
+            {
+                "type": "NEW_WORDING",
+                "statement": "The traveled road is smaller than the road field.",
+                "discriminator": "Compare semantic content against baseline manually.",
+                "receipt_ref": "receipt:novelty:wording",
+            }
+        ]
+
+        result = evaluate_far_side_case(case)
+
+        self.assertEqual(result["final_status"], "NO_NEW_DIMENSION_EARNED")
+        self.assertEqual(result["novelty_delta"][0]["type"], "NEW_WORDING")
+
+    def test_failed_metaphor_removal_prevents_survivor(self):
+        case = copy.deepcopy(VALID_CASE)
+        case["candidate"]["novelty"] = [
+            {
+                "type": "NEW_INVARIANT",
+                "statement": "A residual relation remains after removing the route.",
+                "discriminator": "Compute graph difference after relabeling all metaphors.",
+                "receipt_ref": "receipt:novelty:invariant",
+            }
+        ]
+        for check in case["pressure"]:
+            if check["kind"] == "METAPHOR_REMOVAL":
+                check["status"] = "FAIL"
+
+        result = evaluate_far_side_case(case)
+
+        self.assertEqual(result["final_status"], "PARTIAL_SURVIVOR")
+        self.assertEqual(result["reason_code"], "HOSTILE_PRESSURE_FAILED")
+        self.assertEqual(result["pressure_failures"], ["METAPHOR_REMOVAL"])
+
+    def test_missing_required_pressure_receipt_is_insufficient(self):
+        case = copy.deepcopy(VALID_CASE)
+        case["pressure"] = [
+            check for check in case["pressure"] if check["kind"] != "HOLDOUT"
+        ]
+
+        result = evaluate_far_side_case(case)
+
+        self.assertEqual(result["final_status"], "INSUFFICIENT_RECEIPT")
+        self.assertEqual(result["reason_code"], "MISSING_REQUIRED_PRESSURE")
+
 
 if __name__ == "__main__":
     unittest.main()
