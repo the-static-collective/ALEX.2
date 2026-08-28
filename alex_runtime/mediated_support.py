@@ -83,6 +83,13 @@ def _evidence_basis(result: dict) -> list[str]:
     return [item for item in ids if isinstance(item, str) and item]
 
 
+def _formation_refs(side: dict) -> set[str]:
+    selection = side["selection"]
+    return set(side["interest_receipt_refs"]) | set(selection["receipt_refs"]) | set(
+        selection["consumed_interest_receipt_refs"]
+    )
+
+
 def _interest_signature(side: dict) -> dict[str, Any]:
     return {
         "interest_receipt_refs": sorted(side["interest_receipt_refs"]),
@@ -171,6 +178,20 @@ def evaluate_mediated_support_case(case: dict) -> dict[str, Any]:
     left_summary = _side_summary(left, left_result)
     right_summary = _side_summary(right, right_result)
     support_changed = left_summary["support_result_digest"] != right_summary["support_result_digest"]
+
+    if _formation_refs(left).intersection(_evidence_basis(left_result)) or _formation_refs(right).intersection(
+        _evidence_basis(right_result)
+    ):
+        return _result(
+            case_id=case_id,
+            claim_id=claim_id,
+            disposition="REFUSE",
+            reason_code="INTEREST_AS_SUPPORT",
+            mediation_status=None,
+            support_changed=support_changed,
+            left=left_summary,
+            right=right_summary,
+        )
 
     if _interest_signature(left) == _interest_signature(right):
         return _result(
