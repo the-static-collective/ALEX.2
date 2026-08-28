@@ -45,6 +45,10 @@ def _canonical_record_json(record: object) -> str:
     return json.dumps(asdict(record), sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 
 
+def _canonical_dict_json(record: dict) -> str:
+    return json.dumps(record, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
 def _decode(record_type: type[T], payload: str) -> T:
     data = json.loads(payload)
     if record_type is SourceLocusRecord and data.get("bbox_pdf") is not None:
@@ -145,6 +149,23 @@ class BookRoomStore:
         columns: dict[str, object],
     ) -> bool:
         payload = _canonical_record_json(record)
+        return self._append_payload(
+            table=table,
+            id_column=id_column,
+            record_id=record_id,
+            payload=payload,
+            columns=columns,
+        )
+
+    def _append_payload(
+        self,
+        *,
+        table: str,
+        id_column: str,
+        record_id: str,
+        payload: str,
+        columns: dict[str, object],
+    ) -> bool:
         existing = self.connection.execute(
             f"SELECT record_json FROM {table} WHERE {id_column} = ?", (record_id,)
         ).fetchone()
@@ -170,6 +191,14 @@ class BookRoomStore:
         if row is None:
             raise RecordNotFound(f"{table}:{record_id} not found")
         return _decode(record_type, row[0])
+
+    def _get_json_record(self, table: str, id_column: str, record_id: str) -> dict:
+        row = self.connection.execute(
+            f"SELECT record_json FROM {table} WHERE {id_column} = ?", (record_id,)
+        ).fetchone()
+        if row is None:
+            raise RecordNotFound(f"{table}:{record_id} not found")
+        return json.loads(row[0])
 
     def append_acquisition(self, record: AcquisitionRecord) -> AcquisitionRecord:
         self.get_object(record.object_digest)
@@ -340,3 +369,106 @@ class BookRoomStore:
             (room_id,),
         ).fetchall()
         return [_decode(BookModelItem, row[0]) for row in rows]
+
+    def append_research_assertion(self, record: ResearchAssertion) -> ResearchAssertion:
+        self._append_record(
+            table="research_assertions",
+            id_column="assertion_id",
+            record_id=record.assertion_id,
+            record=record,
+            columns={
+                "room_id": record.room_id,
+                "question_id": record.question_id,
+                "book_cut_id": record.book_cut_id,
+                "lifecycle": record.lifecycle,
+            },
+        )
+        return record
+
+    def get_research_assertion(self, assertion_id: str) -> ResearchAssertion:
+        return self._get_record("research_assertions", "assertion_id", assertion_id, ResearchAssertion)
+
+    def list_research_assertions(self, room_id: str) -> list[ResearchAssertion]:
+        rows = self.connection.execute(
+            "SELECT record_json FROM research_assertions WHERE room_id = ? ORDER BY rowid",
+            (room_id,),
+        ).fetchall()
+        return [_decode(ResearchAssertion, row[0]) for row in rows]
+
+    def append_research_pressure(self, record: ResearchPressure) -> ResearchPressure:
+        self.get_research_assertion(record.assertion_id)
+        self._append_record(
+            table="research_pressures",
+            id_column="pressure_id",
+            record_id=record.pressure_id,
+            record=record,
+            columns={"assertion_id": record.assertion_id, "kind": record.kind},
+        )
+        return record
+
+    def get_research_pressure(self, pressure_id: str) -> ResearchPressure:
+        return self._get_record("research_pressures", "pressure_id", pressure_id, ResearchPressure)
+
+    def list_research_pressures(self, assertion_id: str) -> list[ResearchPressure]:
+        self.get_research_assertion(assertion_id)
+        rows = self.connection.execute(
+            "SELECT record_json FROM research_pressures WHERE assertion_id = ? ORDER BY rowid",
+            (assertion_id,),
+        ).fetchall()
+        return [_decode(ResearchPressure, row[0]) for row in rows]
+
+    def append_relation_proposal(self, assertion_id: str, proposal: dict) -> dict:
+        self.get_research_assertion(assertion_id)
+        proposal_id = proposal.get("id")
+        predicate = proposal.get("predicate")
+        if not isinstance(proposal_id, str) or not proposal_id.strip():
+            raise ValueError("relation proposal requires id")
+        if not isinstance(predicate, str) or not predicate.strip():
+            raise ValueError("relation proposal requires predicate")
+        self._append_payload(
+            table="relation_proposals",
+            id_column="proposal_id",
+            record_id=proposal_id,
+            payload=_canonical_dict_json(proposal),
+            columns={"assertion_id": assertion_id, "predicate": predicate},
+        )
+        return proposal
+
+    def get_relation_proposal(self, proposal_id: str) -> dict:
+        return self._get_json_record("relation_proposals", "proposal_id", proposal_id)
+
+    def list_relation_proposals(self, assertion_id: str) -> list[dict]:
+        self.get_research_assertion(assertion_id)
+        rows = self.connection.execute(
+            "SELECT record_json FROM relation_proposals WHERE assertion_id = ? ORDER BY rowid",
+            (assertion_id,),
+        ).fetchall()
+        return [json.loads(row[0]) for row in rows]
+
+    def append_relation_evaluation(self, assertion_id: str, evaluation: dict) -> dict:
+        self.get_research_assertion(assertion_id)
+        evaluation_id = evaluation.get("evaluation_id")
+        disposition = evaluation.get("disposition")
+        if not isinstance(evaluation_id, str) or not evaluation_id.strip():
+            raise ValueError("relation evaluation requires evaluation_id")
+        if not isinstance(disposition, str) or not disposition.strip():
+            raise ValueError("relation evaluation requires disposition")
+        self._append_payload(
+            table="relation_evaluations",
+            id_column="evaluation_id",
+            record_id=evaluation_id,
+            payload=_canonical_dict_json(evaluation),
+            columns={"assertion_id": assertion_id, "disposition": disposition},
+        )
+        return evaluation
+
+    def get_relation_evaluation(self, evaluation_id: str) -> dict:
+        return self._get_json_record("relation_evaluations", "evaluation_id", evaluation_id)
+
+    def list_relation_evaluations(self, assertion_id: str) -> list[dict]:
+        self.get_research_assertion(assertion_id)
+        rows = self.connection.execute(
+            "SELECT record_json FROM relation_evaluations WHERE assertion_id = ? ORDER BY rowid",
+            (assertion_id,),
+        ).fetchall()
+        return [json.loads(row[0]) for row in rows]
