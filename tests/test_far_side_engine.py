@@ -50,6 +50,25 @@ class FarSideEngineTests(unittest.TestCase):
         self.assertEqual(result["final_status"], "COMPRESSION_FAILED_REGENERATION")
         self.assertEqual(result["reason_code"], "NO_REQUIRED_TARGET_REGENERATED")
 
+    def test_evaluator_does_not_mutate_input(self):
+        case = copy.deepcopy(VALID_CASE)
+        before = copy.deepcopy(case)
+        evaluate_far_side_case(case)
+        self.assertEqual(case, before)
+
+    def test_result_has_no_authority_surface(self):
+        result = evaluate_far_side_case(copy.deepcopy(VALID_CASE))
+        forbidden = {
+            "authority",
+            "support",
+            "evidence",
+            "canon",
+            "admitted",
+            "publication",
+            "execution_authority",
+        }
+        self.assertTrue(forbidden.isdisjoint(result))
+
 
 if __name__ == "__main__":
     unittest.main()
