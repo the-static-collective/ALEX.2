@@ -9,7 +9,17 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import TypeVar
 
-from .records import AcquisitionRecord, CanvasRecord, ReadingRecord, SourceLocusRecord
+from .records import (
+    AcquisitionRecord,
+    BookModelItem,
+    CanvasRecord,
+    ContextPack,
+    DossierReceipt,
+    ReadingRecord,
+    ResearchAssertion,
+    ResearchPressure,
+    SourceLocusRecord,
+)
 
 
 class BookRoomStoreError(RuntimeError):
@@ -39,6 +49,23 @@ def _decode(record_type: type[T], payload: str) -> T:
     data = json.loads(payload)
     if record_type is SourceLocusRecord and data.get("bbox_pdf") is not None:
         data["bbox_pdf"] = tuple(data["bbox_pdf"])
+
+    tuple_fields = {
+        BookModelItem: ("locus_refs",),
+        ResearchAssertion: ("basis_refs", "discovery_refs"),
+        ResearchPressure: ("basis_refs",),
+        ContextPack: ("record_refs", "omitted_refs", "source_refs", "residual_fog"),
+        DossierReceipt: (
+            "required_object_digests",
+            "book_model_item_ids",
+            "research_assertion_ids",
+            "evaluation_receipt_ids",
+            "source_locus_refs",
+            "residual_fog",
+        ),
+    }
+    for field_name in tuple_fields.get(record_type, ()):
+        data[field_name] = tuple(data[field_name])
     return record_type(**data)
 
 
@@ -289,3 +316,27 @@ class BookRoomStore:
 
     def get_source_locus(self, locus_id: str) -> SourceLocusRecord:
         return self._get_record("source_loci", "locus_id", locus_id, SourceLocusRecord)
+
+    def append_book_item(self, record: BookModelItem) -> BookModelItem:
+        self._append_record(
+            table="book_items",
+            id_column="item_id",
+            record_id=record.item_id,
+            record=record,
+            columns={
+                "room_id": record.room_id,
+                "kind": record.kind,
+                "book_cut_id": record.book_cut_id,
+            },
+        )
+        return record
+
+    def get_book_item(self, item_id: str) -> BookModelItem:
+        return self._get_record("book_items", "item_id", item_id, BookModelItem)
+
+    def list_book_items(self, room_id: str) -> list[BookModelItem]:
+        rows = self.connection.execute(
+            "SELECT record_json FROM book_items WHERE room_id = ? ORDER BY rowid",
+            (room_id,),
+        ).fetchall()
+        return [_decode(BookModelItem, row[0]) for row in rows]
