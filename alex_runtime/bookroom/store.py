@@ -190,6 +190,14 @@ class BookRoomStore:
     def get_canvas(self, canvas_id: str) -> CanvasRecord:
         return self._get_record("canvases", "canvas_id", canvas_id, CanvasRecord)
 
+    def list_canvases(self, acquisition_id: str) -> list[CanvasRecord]:
+        self.get_acquisition(acquisition_id)
+        rows = self.connection.execute(
+            "SELECT record_json FROM canvases WHERE acquisition_id = ? ORDER BY sequence, canvas_id",
+            (acquisition_id,),
+        ).fetchall()
+        return [_decode(CanvasRecord, row[0]) for row in rows]
+
     def append_reading(self, record: ReadingRecord) -> ReadingRecord:
         canvas = self.get_canvas(record.canvas_id)
         if canvas.room_id != record.room_id or canvas.acquisition_id != record.acquisition_id:
@@ -223,6 +231,20 @@ class BookRoomStore:
 
     def get_reading(self, reading_id: str) -> ReadingRecord:
         return self._get_record("readings", "reading_id", reading_id, ReadingRecord)
+
+    def list_readings(self, acquisition_id: str) -> list[ReadingRecord]:
+        self.get_acquisition(acquisition_id)
+        rows = self.connection.execute(
+            """
+            SELECT r.record_json
+            FROM readings AS r
+            JOIN canvases AS c ON c.canvas_id = r.canvas_id
+            WHERE c.acquisition_id = ?
+            ORDER BY c.sequence, r.reading_id
+            """,
+            (acquisition_id,),
+        ).fetchall()
+        return [_decode(ReadingRecord, row[0]) for row in rows]
 
     def search_readings(self, query: str) -> list[ReadingRecord]:
         rows = self.connection.execute(
