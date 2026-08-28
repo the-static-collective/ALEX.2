@@ -1,0 +1,219 @@
+from __future__ import annotations
+
+from typing import Any
+
+from alex_runtime.derivation import evaluate_relation_case
+from alex_runtime.digests import sha256_json
+
+MEDIATED_SUPPORT_RULE_ID = "MEDIATED-SUPPORT-001"
+_ALLOWED_CLAIM_CLASSES = {"OBJECT_LOCAL", "POPULATION_GENERALIZATION"}
+
+
+def _string_list(value: Any) -> list[str] | None:
+    if not isinstance(value, list):
+        return None
+    if any(not isinstance(item, str) or not item for item in value):
+        return None
+    if len(value) != len(set(value)):
+        return None
+    return list(value)
+
+
+def _valid_side(side: Any) -> bool:
+    if not isinstance(side, dict):
+        return False
+    if not isinstance(side.get("projection_digest"), str) or not side["projection_digest"]:
+        return False
+    if not isinstance(side.get("bounded_context_digest"), str) or not side["bounded_context_digest"]:
+        return False
+    if _string_list(side.get("interest_receipt_refs")) is None:
+        return False
+    selection = side.get("selection")
+    if not isinstance(selection, dict):
+        return False
+    if selection.get("policy_digest") is not None and (
+        not isinstance(selection["policy_digest"], str) or not selection["policy_digest"]
+    ):
+        return False
+    if _string_list(selection.get("receipt_refs")) is None:
+        return False
+    if _string_list(selection.get("consumed_interest_receipt_refs")) is None:
+        return False
+    return isinstance(side.get("derivation_case"), dict)
+
+
+def _proposal_claim_id(side: dict) -> str | None:
+    attempt = side.get("derivation_case", {}).get("attempt")
+    proposal = attempt.get("relation_proposal") if isinstance(attempt, dict) else None
+    value = proposal.get("object_id") if isinstance(proposal, dict) else None
+    return value if isinstance(value, str) and value else None
+
+
+def _support_signature(result: dict) -> dict[str, Any]:
+    evaluation = result.get("evaluation") if isinstance(result, dict) else None
+    conclusion = result.get("conclusion_assertion") if isinstance(result, dict) else None
+    if not isinstance(evaluation, dict):
+        return {
+            "disposition": "INVALID",
+            "reason_code": "INVALID_DERIVATION_RESULT",
+            "conclusion": None,
+        }
+
+    semantic_conclusion = None
+    if isinstance(conclusion, dict):
+        semantic_conclusion = {
+            "subject_id": conclusion.get("subject_id"),
+            "predicate": conclusion.get("predicate"),
+            "object_id": conclusion.get("object_id"),
+            "scope": conclusion.get("scope"),
+        }
+
+    return {
+        "disposition": evaluation.get("disposition"),
+        "reason_code": evaluation.get("reason_code"),
+        "conclusion": semantic_conclusion,
+    }
+
+
+def _evidence_basis(result: dict) -> list[str]:
+    evaluation = result.get("evaluation") if isinstance(result, dict) else None
+    ids = evaluation.get("input_ids") if isinstance(evaluation, dict) else None
+    if not isinstance(ids, list):
+        return []
+    return [item for item in ids if isinstance(item, str) and item]
+
+
+def _interest_signature(side: dict) -> dict[str, Any]:
+    return {
+        "interest_receipt_refs": sorted(side["interest_receipt_refs"]),
+        "consumed_interest_receipt_refs": sorted(side["selection"]["consumed_interest_receipt_refs"]),
+    }
+
+
+def _side_summary(side: dict, derivation_result: dict) -> dict[str, str]:
+    evidence_basis = _evidence_basis(derivation_result)
+    return {
+        "projection_digest": side["projection_digest"],
+        "bounded_context_digest": side["bounded_context_digest"],
+        "evidence_basis_digest": sha256_json({"input_ids": evidence_basis}),
+        "support_result_digest": sha256_json(_support_signature(derivation_result)),
+    }
+
+
+def _result(
+    *,
+    case_id: str,
+    claim_id: str,
+    disposition: str,
+    reason_code: str | None,
+    mediation_status: str | None,
+    support_changed: bool,
+    left: dict[str, str] | None = None,
+    right: dict[str, str] | None = None,
+    receipt_survivors: list[str] | None = None,
+) -> dict[str, Any]:
+    return {
+        "case_id": case_id,
+        "claim_id": claim_id,
+        "disposition": disposition,
+        "reason_code": reason_code,
+        "mediation_status": mediation_status,
+        "support_changed": support_changed,
+        "left": left,
+        "right": right,
+        "receipt_survivors": receipt_survivors or [],
+    }
+
+
+def evaluate_mediated_support_case(case: dict) -> dict[str, Any]:
+    case_id = case.get("case_id", "unknown-case") if isinstance(case, dict) else "unknown-case"
+    claim_id = case.get("claim_id", "unknown-claim") if isinstance(case, dict) else "unknown-claim"
+    if not isinstance(case_id, str) or not case_id:
+        case_id = "unknown-case"
+    if not isinstance(claim_id, str) or not claim_id:
+        claim_id = "unknown-claim"
+
+    if not isinstance(case, dict):
+        return _result(
+            case_id=case_id,
+            claim_id=claim_id,
+            disposition="INSUFFICIENT_TO_TEST",
+            reason_code="MALFORMED_CASE",
+            mediation_status=None,
+            support_changed=False,
+        )
+
+    claim_class = case.get("claim_class")
+    left = case.get("left")
+    right = case.get("right")
+    if claim_class not in _ALLOWED_CLAIM_CLASSES or not _valid_side(left) or not _valid_side(right):
+        return _result(
+            case_id=case_id,
+            claim_id=claim_id,
+            disposition="INSUFFICIENT_TO_TEST",
+            reason_code="MALFORMED_CASE",
+            mediation_status=None,
+            support_changed=False,
+        )
+
+    if _proposal_claim_id(left) != claim_id or _proposal_claim_id(right) != claim_id:
+        return _result(
+            case_id=case_id,
+            claim_id=claim_id,
+            disposition="INSUFFICIENT_TO_TEST",
+            reason_code="CLAIM_ID_MISMATCH",
+            mediation_status=None,
+            support_changed=False,
+        )
+
+    left_result = evaluate_relation_case(left["derivation_case"])
+    right_result = evaluate_relation_case(right["derivation_case"])
+    left_summary = _side_summary(left, left_result)
+    right_summary = _side_summary(right, right_result)
+    support_changed = left_summary["support_result_digest"] != right_summary["support_result_digest"]
+
+    if _interest_signature(left) == _interest_signature(right):
+        return _result(
+            case_id=case_id,
+            claim_id=claim_id,
+            disposition="INSUFFICIENT_TO_TEST",
+            reason_code="INTEREST_CONTROL_NOT_DIFFERENT",
+            mediation_status=None,
+            support_changed=support_changed,
+            left=left_summary,
+            right=right_summary,
+        )
+
+    if left_summary["evidence_basis_digest"] == right_summary["evidence_basis_digest"]:
+        if support_changed:
+            return _result(
+                case_id=case_id,
+                claim_id=claim_id,
+                disposition="REFUSE",
+                reason_code="INTEREST_AS_SUPPORT",
+                mediation_status=None,
+                support_changed=True,
+                left=left_summary,
+                right=right_summary,
+            )
+        return _result(
+            case_id=case_id,
+            claim_id=claim_id,
+            disposition="ACCEPT",
+            reason_code=None,
+            mediation_status="DIRECT_EFFECT_ZERO",
+            support_changed=False,
+            left=left_summary,
+            right=right_summary,
+        )
+
+    return _result(
+        case_id=case_id,
+        claim_id=claim_id,
+        disposition="INSUFFICIENT_TO_TEST",
+        reason_code="SELECTION_FORMATION_REQUIRED",
+        mediation_status=None,
+        support_changed=support_changed,
+        left=left_summary,
+        right=right_summary,
+    )
