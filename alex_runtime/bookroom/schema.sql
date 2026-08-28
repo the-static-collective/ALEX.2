@@ -82,7 +82,24 @@ CREATE TABLE IF NOT EXISTS research_pressures (
     pressure_id TEXT PRIMARY KEY,
     assertion_id TEXT NOT NULL,
     kind TEXT NOT NULL,
-    record_json TEXT NOT NULL
+    record_json TEXT NOT NULL,
+    FOREIGN KEY(assertion_id) REFERENCES research_assertions(assertion_id)
+);
+
+CREATE TABLE IF NOT EXISTS relation_proposals (
+    proposal_id TEXT PRIMARY KEY,
+    assertion_id TEXT NOT NULL,
+    predicate TEXT NOT NULL,
+    record_json TEXT NOT NULL,
+    FOREIGN KEY(assertion_id) REFERENCES research_assertions(assertion_id)
+);
+
+CREATE TABLE IF NOT EXISTS relation_evaluations (
+    evaluation_id TEXT PRIMARY KEY,
+    assertion_id TEXT NOT NULL,
+    disposition TEXT NOT NULL,
+    record_json TEXT NOT NULL,
+    FOREIGN KEY(assertion_id) REFERENCES research_assertions(assertion_id)
 );
 
 CREATE TABLE IF NOT EXISTS book_cuts (
