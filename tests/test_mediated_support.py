@@ -133,6 +133,63 @@ class MediatedSupportTests(unittest.TestCase):
         self.assertEqual(result["disposition"], "ACCEPT")
         self.assertEqual(result["mediation_status"], "DIRECT_EFFECT_ZERO")
 
+    def test_gate2_insufficient_result_prevents_mediation_claim(self):
+        case = load_pair()
+        case["right"]["derivation_case"]["given"]["evidence_paths"] = []
+
+        result = evaluate_mediated_support_case(case)
+
+        self.assertEqual(result["disposition"], "INSUFFICIENT_TO_TEST")
+        self.assertEqual(result["reason_code"], "DERIVATION_NOT_COMPARABLE")
+        self.assertIsNone(result["mediation_status"])
+
+    def test_pair_preserves_formation_and_gate2_survivors(self):
+        result = evaluate_mediated_support_case(load_pair())
+
+        for survivor in (
+            "interest:q",
+            "selection:broad-left",
+            "selection:broad-right",
+            "record:E1",
+            "record:C1",
+            "evidence_path:EP1",
+            "relation_proposal:RP1",
+            "evaluation:EV1",
+            "conclusion_assertion:AS1",
+        ):
+            self.assertIn(survivor, result["receipt_survivors"])
+
+    def test_occurrence_identity_changes_do_not_change_semantic_support(self):
+        case = load_pair()
+        attempt = case["right"]["derivation_case"]["attempt"]
+        attempt["evaluation_id"] = "EV-RIGHT-OTHER"
+        attempt["execution_step_id"] = "STEP-RIGHT-OTHER"
+        attempt["conclusion_assertion_id"] = "AS-RIGHT-OTHER"
+
+        result = evaluate_mediated_support_case(case)
+
+        self.assertEqual(result["disposition"], "ACCEPT")
+        self.assertEqual(result["mediation_status"], "DIRECT_EFFECT_ZERO")
+        self.assertFalse(result["support_changed"])
+
+    def test_blank_case_identity_is_malformed(self):
+        case = load_pair()
+        case["case_id"] = ""
+
+        result = evaluate_mediated_support_case(case)
+
+        self.assertEqual(result["disposition"], "INSUFFICIENT_TO_TEST")
+        self.assertEqual(result["reason_code"], "MALFORMED_CASE")
+
+    def test_blank_claim_identity_is_malformed(self):
+        case = load_pair()
+        case["claim_id"] = ""
+
+        result = evaluate_mediated_support_case(case)
+
+        self.assertEqual(result["disposition"], "INSUFFICIENT_TO_TEST")
+        self.assertEqual(result["reason_code"], "MALFORMED_CASE")
+
     def test_evaluator_does_not_mutate_source_case(self):
         case = load_pair()
         before = copy.deepcopy(case)
