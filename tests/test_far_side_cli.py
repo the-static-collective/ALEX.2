@@ -36,6 +36,20 @@ class FarSideCliTests(unittest.TestCase):
         result = json.loads(completed.stdout)
         self.assertEqual(result["final_status"], "NO_NEW_DIMENSION_EARNED")
 
+    def test_hostile_metaphor_failure_demotes_candidate(self):
+        completed = subprocess.run(
+            [sys.executable, str(TOOL), str(FIXTURES / "metaphor-failure.json")],
+            cwd=ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        result = json.loads(completed.stdout)
+        self.assertEqual(result["final_status"], "PARTIAL_SURVIVOR")
+        self.assertEqual(result["reason_code"], "HOSTILE_PRESSURE_FAILED")
+        self.assertEqual(result["pressure_failures"], ["METAPHOR_REMOVAL"])
+
     def test_malformed_json_exits_two_without_traceback(self):
         completed = subprocess.run(
             [sys.executable, str(TOOL), "-"],
