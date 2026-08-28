@@ -6,7 +6,7 @@
 
 **Architecture:** ALEX receives already-formed projection witnesses from two materially different worlds and compares only their declared boundary digests in a fixed order. The evaluator classifies the first leaking boundary (`LOADOUT_LEAK`, `PROJECTION_LEAK`, `DERIVATION_LEAK`, `SERIALIZATION_LEAK`, `NARRATIVE_LEAK`) and separately refuses authority changes; a narrowly declared narrative transform may authorize one narrative difference when both sides carry the same transform receipt.
 
-**Tech Stack:** Python 3.12 standard library, `unittest`, immutable JSON fixtures.
+**Tech Stack:** Python 3.12 standard library, `unittest`, immutable JSON test fixtures.
 
 **Spec:** `docs/superpowers/specs/2026-08-28-projection-invariance-frontier-design.md`
 
@@ -14,50 +14,35 @@
 
 - Do not import or reimplement the 3rdi kernel; ALEX consumes compatible projection witnesses only.
 - No new predicate manifest entries, persistence layer, network dependency, UI, authority surface, or cross-repository master runtime.
-- `world_digest` must differ while declared observer constraints and visible input remain equivalent for a valid invariance trial.
+- `world_digest` must differ while each side's declared observer constraints and visible input remain equivalent for a valid invariance trial.
 - Boundary comparison order is LOADOUT → PROJECTION → DERIVATION → SERIALIZATION → NARRATIVE → AUTHORITY.
-- A declared transform can authorize only the boundary it names and requires the same non-empty transform receipt on both sides.
+- A declared transform can authorize only the narrative boundary and requires the same non-empty transform receipt on both sides.
 - Passing the specimen never changes canon, admission, publication, warrant, or execution authority.
 - Failed hostile fixtures remain committed alongside passing controls.
+- Projection-pair fixtures live under `tests/fixtures/projection_invariance/`; `crucible/specimens/` remains the closed generic Crucible corpus.
 
 ---
 
 ### Task 1: Freeze the crucible contract with hostile fixtures
 
 **Files:**
-- Create: `crucible/specimens/projection-invariance-001-clean.json`
-- Create: `crucible/specimens/projection-invariance-001-projection-leak.json`
-- Create: `crucible/specimens/projection-invariance-001-foreshadow-control.json`
+- Create: `tests/fixtures/projection_invariance/clean.json`
+- Create: `tests/fixtures/projection_invariance/projection-leak.json`
+- Create: `tests/fixtures/projection_invariance/foreshadow-control.json`
 - Create: `tests/test_projection_invariance.py`
 
 **Interfaces:**
-- Consumes: JSON fixtures containing `case_id`, `observer_constraints_digest`, `visible_input_digest`, `left`, `right`, and optional `declared_transform`.
+- Consumes: JSON fixtures containing `case_id`, `left`, `right`, and optional `declared_transform`; each side carries world, observer-constraint, visible-input, boundary, authority, and receipt digests/refs.
 - Produces: expected callable `evaluate_projection_invariance_case(case: dict) -> dict` in `alex_runtime.projection_invariance`.
 
-- [ ] **Step 1: Write failing tests for clean invariance, projection leak, declared narrative transform, no-authority behavior, and input immutability.**
+- [x] **Step 1: Write failing tests for clean invariance, projection leak, declared narrative transform, no-authority behavior, observer/input equivalence, and input immutability.**
+- [x] **Step 2: Run the full CI test suite and verify RED.**
 
-Expected result shape:
+Witness: GitHub Actions run `33141702492` failed with the existing suite green and only `ModuleNotFoundError: alex_runtime.projection_invariance` remaining after the fixture-location correction.
 
-```python
-{
-    "case_id": "...",
-    "disposition": "ACCEPT" | "REFUSE" | "INSUFFICIENT_TO_TEST",
-    "reason_code": None | "...",
-    "leaking_boundary": None | "LOADOUT" | "PROJECTION" | "DERIVATION" | "SERIALIZATION" | "NARRATIVE" | "AUTHORITY",
-    "receipt_survivors": ["..."],
-}
-```
+- [x] **Step 3: Preserve the test fixtures outside the closed canonical Crucible corpus.**
 
-- [ ] **Step 2: Run `python -m unittest tests.test_projection_invariance -v`.**
-
-Expected: FAIL because `alex_runtime.projection_invariance` does not yet exist.
-
-- [ ] **Step 3: Commit only the plan, fixtures, and failing tests.**
-
-```bash
-git add docs/superpowers/plans/2026-08-28-projection-invariance-001.md crucible/specimens/projection-invariance-001-*.json tests/test_projection_invariance.py
-git commit -m "test: freeze projection invariance crucible"
-```
+The first RED run also proved that `crucible/specimens/` is a closed schema-controlled corpus. Projection-pair fixtures were moved to `tests/fixtures/projection_invariance/` rather than weakening that invariant.
 
 ---
 
@@ -71,13 +56,11 @@ git commit -m "test: freeze projection invariance crucible"
 - Consumes: `evaluate_projection_invariance_case(case: dict) -> dict` input contract frozen in Task 1.
 - Produces: deterministic disposition, reason code, leaking boundary, and preserved receipt references.
 
-- [ ] **Step 1: Implement structural validation.**
+- [x] **Step 1: Implement structural validation.**
 
-Return `INSUFFICIENT_TO_TEST` for: identical world digests, mismatched observer-constraint digests, mismatched visible-input digests, malformed side objects, or an invalid declared transform.
+Return `INSUFFICIENT_TO_TEST` for identical world digests, mismatched observer-constraint digests, mismatched visible-input digests, malformed side objects, or an invalid declared transform.
 
-- [ ] **Step 2: Implement ordered boundary comparison.**
-
-Compare exact digest fields in this order:
+- [x] **Step 2: Implement ordered boundary comparison.**
 
 ```text
 bounded_context_digest -> LOADOUT_LEAK
@@ -88,56 +71,36 @@ narrative_digest       -> NARRATIVE_LEAK
 authority_digest       -> AUTHORITY_CHANGED
 ```
 
-Stop at the first mismatch so the receipt names the earliest leaking boundary rather than laundering downstream symptoms.
+The evaluator stops at the first mismatch so downstream symptoms do not overwrite the actual leaking boundary.
 
-- [ ] **Step 3: Implement the one positive-control exception.**
+- [x] **Step 3: Implement the one positive-control exception.**
 
-A mismatch at the declared transform boundary is allowed only when `declared_transform.boundary == "NARRATIVE"`, `declared_transform.receipt_ref` is non-empty, and both side `receipt_refs` contain that exact reference. No other boundary may be waived.
+A narrative mismatch is allowed only when `declared_transform.boundary == "NARRATIVE"`, `receipt_ref` is non-empty, and both side `receipt_refs` contain that exact receipt. No other boundary may be waived.
 
-- [ ] **Step 4: Preserve source inputs and receipt ancestry.**
+- [x] **Step 4: Preserve source inputs and receipt ancestry.**
 
-Do not mutate `case`. Return the stable union of both sides' `receipt_refs` plus the transform receipt when applicable. Emit no authority/canon/publication/admission keys.
+The evaluator does not mutate `case`, returns the stable union of side receipt references, and emits no authority/canon/publication/admission surface.
 
-- [ ] **Step 5: Run focused tests.**
+- [x] **Step 5: Run full regression suite.**
 
-```bash
-python -m unittest tests.test_projection_invariance -v
-```
-
-Expected: PASS.
-
-- [ ] **Step 6: Run full regression suite.**
-
-```bash
-python -m unittest discover -s tests -v
-```
-
-Expected: all tests PASS.
-
-- [ ] **Step 7: Commit implementation.**
-
-```bash
-git add alex_runtime/projection_invariance.py
-git commit -m "feat: add projection invariance crucible"
-```
+Witness: GitHub Actions run `33141738957` completed successfully after the minimal evaluator landed.
 
 ---
 
-### Task 3: Document the local conformance boundary
+### Task 3: Document and reverify the local conformance boundary
 
 **Files:**
 - Modify: `crucible/README.md`
-- Test: `tests/test_crucible_readme.py` only if its existing contract requires an explicit marker.
 
 **Interfaces:**
 - Consumes: locally verified `PROJECTION-INVARIANCE-001` behavior.
-- Produces: documentation stating what the specimen proves and explicitly what it does not prove.
+- Produces: documentation stating what the evaluator checks and explicitly what it does not prove.
 
-- [ ] **Step 1: Add a compact `PROJECTION-INVARIANCE-001` section.**
+- [x] **Step 1: Add a compact `PROJECTION-INVARIANCE-001` section.**
 
-State that ALEX compares already-formed observer-local witness digests, classifies the first hidden-state leak, permits only receipted narrative transforms, and grants no external authority.
+The documentation states that ALEX compares already-formed observer-local witness digests, names the earliest hidden-state leak, permits only a doubly receipted narrative transform, preserves hostile fixtures, and grants no external authority.
 
-- [ ] **Step 2: Run the full suite again.**
+- [ ] **Step 2: Run the full suite after the documentation and plan reconciliation.**
 
 ```bash
 python -m unittest discover -s tests -v
@@ -145,16 +108,9 @@ python -m unittest discover -s tests -v
 
 Expected: all tests PASS.
 
-- [ ] **Step 3: Commit documentation.**
-
-```bash
-git add crucible/README.md tests/test_crucible_readme.py
-git commit -m "docs: receipt projection invariance crucible"
-```
-
 ## Self-Review
 
-- Spec coverage: core invariance, hostile projection leak, legal declared transform, no-authority control, leaking-boundary naming, and preserved failed fixtures are all assigned to tasks.
+- Spec coverage: core invariance, hostile projection leak, legal declared transform, no-authority control, leaking-boundary naming, observer/input equivalence, input immutability, and preserved failed fixtures are covered.
 - Scope: no event-structure primitive, universal cut object, interpretation identity schema, edge-birth schema, aperture profile, or narrative-flow runtime is implemented.
 - Type consistency: one public entry point only: `evaluate_projection_invariance_case(case: dict) -> dict`.
 - Dependency check: Python standard library only.
