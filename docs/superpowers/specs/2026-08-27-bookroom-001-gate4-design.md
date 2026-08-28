@@ -115,9 +115,11 @@ cross-room resemblance != support
 room identity != authority
 room rebuild != historical replay
 later-text availability != earlier-cut availability
+evidence relation != evaluator disposition
+evaluator disposition != external admission
 ```
 
-No Book Room, Book Model, Research Model, Novelist projection, room ledger, or generated summary may issue external authority, canon, publication, merge, or owning-world consequence.
+No Book Room, Book Model, Research Model, Novelist projection, room ledger, generated summary, or successful evaluator result may issue external authority, canon, publication, merge, or owning-world consequence.
 
 ---
 
@@ -310,10 +312,13 @@ A Research Model assertion must preserve the distinction between:
 ```text
 discovery path
 formation basis
-evidence path
-semantic evaluation
+evidence relation / evidence path
+evaluator disposition
+execution state
 external admission
 ```
+
+A research assertion may simultaneously have supporting evidence, contradicting evidence, and unresolved questions. These are not forced into one scalar status. Evaluator disposition remains the existing independent ALEX axis; external admission remains owned elsewhere.
 
 No interpretation may silently write itself backward into the Book Model as though the source had stated it.
 
@@ -332,9 +337,14 @@ BOOK MODEL ITEM / EXACT LOCUS
         v
 RESEARCH PROPOSAL
         |
-        | independent semantic evaluation
-        v
-SUPPORTED | CONTRADICTED | UNRESOLVED | REFUSED
+        +--> evidence-path proposals / contradiction records
+        |
+        +--> semantic evaluator
+                |
+                v
+          evaluator disposition
+
+external admission remains elsewhere
 ```
 
 The crossing itself must preserve its jurisdiction.
@@ -363,7 +373,15 @@ does not imply:
 C1 true_in_world
 ```
 
-This membrane is a concrete consumer of Gate 2's relation-derivation law.
+And:
+
+```text
+CONTRADICTING_LOCUS_PRESENT
+```
+
+does not by itself define the evaluator's terminal disposition for the whole research claim.
+
+This membrane is a concrete consumer of Gate 2's relation-derivation law without replacing Gate 2's four-axis discipline.
 
 ---
 
@@ -605,7 +623,8 @@ ACQUIRE
   -> RESEARCH QUESTION
   -> BOUNDED BOOK CONTEXT
   -> RESEARCH MODEL
-  -> SUPPORTED / CONTRADICTED / UNRESOLVED
+  -> EVIDENCE / CONTRADICTION / FOG RECEIPTS
+  -> SEMANTIC EVALUATION WHERE PROFILED
   -> RECEIPT
 ```
 
@@ -624,10 +643,12 @@ Book Model:
   >= 3 source-local claims or assertions
 
 Research Model:
-  1 supported research claim
-  1 contradicted hypothesis
-  1 unresolved hypothesis
+  >= 1 research claim with an accepted scoped SUPPORTS derivation under an admitted profile
+  >= 1 candidate with attributable counterevidence preserved
+  >= 1 candidate that remains explicitly unresolved / insufficient to test
 ```
+
+The second and third research witnesses do not require minting new production semantic predicates. Counterevidence may remain a typed research record until a separate semantic profile is admitted.
 
 Every consequential item must preserve exact source ancestry.
 
@@ -685,7 +706,7 @@ Expected: refuse; preserve the research proposal separately.
 
 Attack: material outside a declared Book Cut enters an earlier-cut interpretation.
 
-Expected: refuse or mark contaminated; preserve which material was unavailable.
+Expected: refuse or mark the research occurrence contaminated according to its scoped profile; preserve which material was unavailable.
 
 ### `BOOKROOM-RESEMBLANCE-001`
 
@@ -717,6 +738,12 @@ Attack: inclusion in a bounded context pack is treated as support weight.
 
 Expected: refuse `context selection -> support` laundering.
 
+### `BOOKROOM-AXIS-COLLAPSE-001`
+
+Attack: presence of counterevidence or absence of support is used to synthesize an execution state, external admission state, or unprofiled semantic verdict.
+
+Expected: refuse the collapse; preserve evidence relations, evaluator disposition, execution state, and external admission as separate axes.
+
 ---
 
 ## 16. Failure paths
@@ -724,7 +751,7 @@ Expected: refuse `context selection -> support` laundering.
 - **Acquisition incomplete:** room exists only for held scope; missing pages remain explicit.
 - **OCR/reading fails:** successful neighboring readings survive; failed locus remains fog.
 - **Book Model extraction ambiguous:** preserve competing candidates or unresolved status.
-- **Research interpretation unsupported:** preserve proposal/refusal without rewriting the Book Model.
+- **Research interpretation unsupported:** preserve proposal and evaluator result separately without rewriting the Book Model.
 - **Projection corrupt or deleted:** rebuild from ALEX records; do not reacquire merely to repair a view.
 - **Later correction changes a reading:** append descendant reading and affected source-local model descendants; preserve previous occurrence.
 - **Cross-room question appears during Gate 4:** record as future research proposal; do not create Library-wide semantics inside BOOKROOM-001.
@@ -750,7 +777,8 @@ BOOKROOM-001 does not yet:
 - create a cross-library graph database;
 - automatically publish research conclusions;
 - grant source, room, model, or tool authority;
-- collapse BOOK MODEL and RESEARCH MODEL under a shared mutable `truth` field.
+- collapse BOOK MODEL and RESEARCH MODEL under a shared mutable `truth` field;
+- collapse evidence relation, evaluator disposition, execution state, and external admission into one research status.
 
 ---
 
