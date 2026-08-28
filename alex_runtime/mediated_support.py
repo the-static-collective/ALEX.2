@@ -90,6 +90,20 @@ def _formation_refs(side: dict) -> set[str]:
     )
 
 
+def _formation_survivors(left: dict, right: dict) -> list[str]:
+    return sorted(_formation_refs(left) | _formation_refs(right))
+
+
+def _selection_formation_complete(side: dict) -> bool:
+    selection = side["selection"]
+    policy = selection["policy_digest"]
+    receipts = selection["receipt_refs"]
+    consumed = selection["consumed_interest_receipt_refs"]
+    if not isinstance(policy, str) or not policy or not receipts:
+        return False
+    return set(consumed).issubset(set(side["interest_receipt_refs"]))
+
+
 def _interest_signature(side: dict) -> dict[str, Any]:
     return {
         "interest_receipt_refs": sorted(side["interest_receipt_refs"]),
@@ -178,6 +192,7 @@ def evaluate_mediated_support_case(case: dict) -> dict[str, Any]:
     left_summary = _side_summary(left, left_result)
     right_summary = _side_summary(right, right_result)
     support_changed = left_summary["support_result_digest"] != right_summary["support_result_digest"]
+    survivors = _formation_survivors(left, right)
 
     if _formation_refs(left).intersection(_evidence_basis(left_result)) or _formation_refs(right).intersection(
         _evidence_basis(right_result)
@@ -191,6 +206,22 @@ def evaluate_mediated_support_case(case: dict) -> dict[str, Any]:
             support_changed=support_changed,
             left=left_summary,
             right=right_summary,
+            receipt_survivors=survivors,
+        )
+
+    if claim_class == "POPULATION_GENERALIZATION" and (
+        not _selection_formation_complete(left) or not _selection_formation_complete(right)
+    ):
+        return _result(
+            case_id=case_id,
+            claim_id=claim_id,
+            disposition="INSUFFICIENT_TO_TEST",
+            reason_code="SELECTION_FORMATION_REQUIRED",
+            mediation_status=None,
+            support_changed=support_changed,
+            left=left_summary,
+            right=right_summary,
+            receipt_survivors=survivors,
         )
 
     if _interest_signature(left) == _interest_signature(right):
@@ -203,9 +234,11 @@ def evaluate_mediated_support_case(case: dict) -> dict[str, Any]:
             support_changed=support_changed,
             left=left_summary,
             right=right_summary,
+            receipt_survivors=survivors,
         )
 
-    if left_summary["evidence_basis_digest"] == right_summary["evidence_basis_digest"]:
+    evidence_changed = left_summary["evidence_basis_digest"] != right_summary["evidence_basis_digest"]
+    if not evidence_changed:
         if support_changed:
             return _result(
                 case_id=case_id,
@@ -216,6 +249,7 @@ def evaluate_mediated_support_case(case: dict) -> dict[str, Any]:
                 support_changed=True,
                 left=left_summary,
                 right=right_summary,
+                receipt_survivors=survivors,
             )
         return _result(
             case_id=case_id,
@@ -226,6 +260,30 @@ def evaluate_mediated_support_case(case: dict) -> dict[str, Any]:
             support_changed=False,
             left=left_summary,
             right=right_summary,
+            receipt_survivors=survivors,
+        )
+
+    consuming_sides = [
+        side
+        for side in (left, right)
+        if bool(side["selection"]["consumed_interest_receipt_refs"])
+    ]
+    context_changed = left["bounded_context_digest"] != right["bounded_context_digest"]
+    if (
+        context_changed
+        and consuming_sides
+        and all(_selection_formation_complete(side) for side in consuming_sides)
+    ):
+        return _result(
+            case_id=case_id,
+            claim_id=claim_id,
+            disposition="ACCEPT",
+            reason_code=None,
+            mediation_status="LAWFUL_MEDIATION",
+            support_changed=support_changed,
+            left=left_summary,
+            right=right_summary,
+            receipt_survivors=survivors,
         )
 
     return _result(
@@ -237,4 +295,5 @@ def evaluate_mediated_support_case(case: dict) -> dict[str, Any]:
         support_changed=support_changed,
         left=left_summary,
         right=right_summary,
+        receipt_survivors=survivors,
     )
