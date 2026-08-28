@@ -1,10 +1,10 @@
 # Mediated Support × Counterfactual Rectangle — ALEX Frontier Design
 
 **Date:** 2026-08-28  
-**Status:** approved direction; written-spec review pending; no runtime conformance claimed  
+**Status:** approved design; `MEDIATED-SUPPORT-001` implemented on PR #22; rectangle remains HOLD  
 **Owning world:** `the-static-collective/ALEX.2`  
 **Primary executable pressure target:** `MEDIATED-SUPPORT-001`  
-**Reusable relational harness:** `COUNTERFACTUAL-RECTANGLE-001`  
+**Reusable relational harness:** `COUNTERFACTUAL-RECTANGLE-001` — HOLD / not implemented  
 **Upstream candidate:** `INTEREST-CONSUMPTION-001`  
 **Executable ancestors:** `PROJECTION-INVARIANCE-001`, `PROJECTION-BREAK-001`  
 **Context owner:** LOADOUT-compatible selection/constitution semantics  
@@ -39,9 +39,7 @@ PROJECTION-BREAK-001
     -> first lawful future divergence
 ```
 
-The next executable frontier should therefore not duplicate either one.
-
-The new target is narrower:
+The next executable frontier was therefore deliberately narrower:
 
 ```text
 MEDIATED-SUPPORT-001
@@ -49,13 +47,15 @@ MEDIATED-SUPPORT-001
 
 It asks whether an interest/selection signal may lawfully affect eventual support **only by changing the evidence basis that ALEX actually evaluates**, while remaining forbidden from directly increasing or decreasing semantic support when that evidence basis is held fixed.
 
-The second artifact is not a new ontology primitive. It is a reusable hostile harness:
+That target is now implemented as a composition wrapper over `RELATION-DERIVATION-001`. It does not rewrite Gate-2 semantics.
+
+The second artifact remains a candidate hostile harness rather than a runtime primitive:
 
 ```text
 COUNTERFACTUAL-RECTANGLE-001
 ```
 
-which crosses two controlled differences and checks whether their interaction reveals a hidden dependency that neither one-dimensional pair exposes alone.
+which would cross two controlled differences and check whether their interaction reveals a hidden dependency that neither one-dimensional pair exposes alone.
 
 No universal `CONSUMES`, `INTERESTS`, `MEDIATES`, `DELTA`, or `EQUIVALENT-WORLD` relation is introduced by this design.
 
@@ -150,9 +150,9 @@ gamma = 0
 
 while the mediated term may be non-zero when the selected evidence actually differs.
 
-This equation is a research model, not the planned runtime representation. ALEX currently evaluates receipted digests and typed cases rather than estimating causal coefficients.
+This equation is a research model, not the runtime representation. ALEX evaluates receipted digests and typed cases rather than estimating causal coefficients.
 
-The executable question is therefore qualitative and exact:
+The executable question is qualitative and exact:
 
 ```text
 same evaluated evidence basis
@@ -183,7 +183,7 @@ and never through interest as semantic support
 
 ### 3.1 Contract goal
 
-`MEDIATED-SUPPORT-001` must distinguish four things that ordinary provenance often collapses:
+`MEDIATED-SUPPORT-001` distinguishes four things that ordinary provenance often collapses:
 
 ```text
 interest_claims
@@ -192,7 +192,7 @@ observed/evaluated evidence
 support derivation
 ```
 
-The evaluator should answer:
+The evaluator answers:
 
 1. Did an attributable selector actually consume the interest receipt?
 2. Did that consumption change the bounded context or evidence basis?
@@ -201,7 +201,7 @@ The evaluator should answer:
 
 The final question is the hostile core.
 
-### 3.2 Required case family
+### 3.2 Executed case family
 
 #### Case A — inert interest
 
@@ -211,15 +211,13 @@ W1: interest receipt i for q
 selector ignores i
 ```
 
-Expected:
+Required:
 
 ```text
-bounded_context(W0) == bounded_context(W1)
-evidence_basis(W0) == evidence_basis(W1)
-support(W0) == support(W1)
+same evidence basis
+same semantic support result
+DIRECT_EFFECT_ZERO
 ```
-
-The interest difference remains causally inert for this run.
 
 #### Case B — lawful mediated divergence
 
@@ -227,37 +225,14 @@ The interest difference remains causally inert for this run.
 W0: no interest receipt for q
 W1: interest receipt i for q
 policy P explicitly consumes i
-```
-
-and:
-
-```text
 READ(i, P)
     -> different bounded context
     -> different genuine evidence basis
 ```
 
-Expected:
-
-```text
-support MAY differ
-```
-
-but the support receipt must peel through:
-
-```text
-support result
-  -> evaluated evidence
-  -> changed bounded context
-  -> selector consumption occurrence
-  -> interest receipt + selector policy
-```
-
-The receipt chain records why the evidence field changed without treating that history as evidence for the claim.
+Support may differ only through that changed evidence basis. Formation receipts survive without becoming semantic support inputs.
 
 #### Case C — direct-effect hostile control
-
-Provide two runs with:
 
 ```text
 different interest ancestry
@@ -266,63 +241,39 @@ same evaluated evidence basis
 same evaluator conditions
 ```
 
-Expected:
-
-```text
-support_left == support_right
-```
-
-Any support divergence is:
+Any semantic support divergence is:
 
 ```text
 REFUSE: INTEREST_AS_SUPPORT
 ```
 
-This is the exact runtime analogue of requiring the direct coefficient `gamma` to be zero.
+The implementation also refuses a stronger laundering attempt: if interest/selection/consumption receipt references are inserted directly into Gate-2 semantic support inputs, the pair is `INTEREST_AS_SUPPORT` even before ordinary pair comparison could misclassify it.
 
 #### Case D — stripped formation ancestry
 
-Give two runs the same final evidence set, but remove the selection/consumption ancestry from one.
+For an object-local claim with genuine evidence, absent selection history does not weaken the evidence.
 
-For an object-local claim whose evidence is sufficient:
-
-```text
-support may remain identical
-```
-
-because formation provenance does not invalidate genuine object evidence.
-
-For a population/generalization claim that depends on sampling conditions:
-
-```text
-formation ancestry may condition whether the inference is testable
-```
-
-The first implementation should **not** attempt a general statistical-sampling engine. It should preserve the distinction and refuse to infer population validity merely from matching final evidence sets.
-
-Recommended initial disposition for such a generalization case:
+For a population/generalization claim whose inference depends on sampling/selection conditions:
 
 ```text
 INSUFFICIENT_TO_TEST: SELECTION_FORMATION_REQUIRED
 ```
 
-#### Case E — semantic inflation despite valid mediation
+The implementation does not attempt a statistical sampling engine.
 
-Even if interest lawfully changed the evidence set, an evaluator that adds independent support weight because the actor was interested must fail.
+#### Case E — nested derivation insufficiency
 
-Expected:
+If either underlying Gate-2 derivation is itself insufficient to test, the wrapper does not mint a mediation conclusion:
 
 ```text
-REFUSE: INTEREST_AS_SUPPORT
+INSUFFICIENT_TO_TEST: DERIVATION_NOT_COMPARABLE
 ```
-
-Lawful indirect effect does not legalize a direct semantic edge.
 
 ---
 
 ## 4. Ownership and boundary order
 
-The implementation must preserve the current stack split.
+The implementation preserves the stack split.
 
 ### LOADOUT-compatible boundary
 
@@ -334,7 +285,7 @@ which selector policy participated
 which attributable input/receipt was actually consumed
 ```
 
-ALEX must not invent LOADOUT selection semantics.
+ALEX does not invent LOADOUT selection semantics.
 
 ### 3rdi boundary
 
@@ -346,7 +297,7 @@ projection identity / digest
 cut / decoder / observer-local constraints where applicable
 ```
 
-ALEX must not duplicate the 3rdi projection kernel.
+ALEX does not duplicate the 3rdi projection kernel.
 
 ### ALEX boundary
 
@@ -367,7 +318,7 @@ May serialize or expose the result but cannot retroactively justify an earlier s
 
 ## 5. Why `PROJECTION-BREAK-001` changes the design
 
-`PROJECTION-BREAK-001` now proves a useful sibling contract:
+`PROJECTION-BREAK-001` proves a sibling contract:
 
 ```text
 T0: observer-equivalent worlds
@@ -387,7 +338,7 @@ LOADOUT
 
 while preserving hidden-structure receipts and refusing authority change.
 
-Therefore `MEDIATED-SUPPORT-001` should not reimplement future-break detection.
+Therefore `MEDIATED-SUPPORT-001` does not reimplement future-break detection.
 
 Instead:
 
@@ -406,13 +357,9 @@ They are complementary.
 
 ---
 
-## 6. `COUNTERFACTUAL-RECTANGLE-001`
+## 6. `COUNTERFACTUAL-RECTANGLE-001` — HOLD
 
-### 6.1 Purpose
-
-Pairwise tests can miss interactions.
-
-Construct a four-run family over two controlled binary coordinates:
+Pairwise tests can miss interactions. The candidate rectangle remains:
 
 ```text
                  interest / selector state
@@ -422,118 +369,35 @@ world W0       F(W0,I0)          F(W0,I1)
 world W1       F(W1,I0)          F(W1,I1)
 ```
 
-The first practical coordinate pair should be:
-
-```text
-W := hidden-world difference that should remain outside the observer-local basis
-I := interest/selection difference
-```
-
-At each declared boundary, compare:
-
-```text
-world delta
-interest delta
-mixed interaction
-```
-
-### 6.2 Algebraic research model
-
-For a binary response surface:
+with algebraic research neighbor:
 
 ```text
 F(w,i) = a + b*w + c*i + d*w*i
 ```
 
-then:
+and mixed finite difference `d` representing an interaction that may be invisible in one-dimensional tests.
 
-```text
-world effect at i=0 = b
-world effect at i=1 = b + d
-mixed finite difference = d
-```
+However, no rectangle coordinator is implemented by PR #22. Promotion remains conditional on demonstrating a failure class that existing pairwise evaluators cannot already name compositionally.
 
-A hidden-world invariance requirement therefore fails if either:
-
-```text
-b != 0
-```
-
-or:
-
-```text
-d != 0
-```
-
-The second case is important: hidden state may fail to leak by itself yet still alter how the system reacts to a selector or interest signal.
-
-Again, the runtime should not require numeric subtraction over digests. The algebra only defines the pattern we are looking for.
-
-### 6.3 Operational digest harness
-
-For each boundary `B`, define an equality indicator:
-
-```text
-EQ_B(run_x, run_y)
-```
-
-The harness evaluates the rectangle's equality pattern.
-
-A hostile interaction exists when, for example:
-
-```text
-W0/I0 == W1/I0 at B
-```
-
-but after an interest/selection state is introduced:
-
-```text
-W0/I1 != W1/I1 at B
-```
-
-and no declared world-sensitive selector or release explains the difference.
-
-This is not ordinary direct hidden leakage. It is a **conditional leak / interaction leak**.
-
-Recommended reason code:
-
-```text
-HIDDEN_SELECTION_INTERACTION
-```
-
-The harness must report the earliest boundary where the conditional divergence appears.
-
-### 6.4 Composition requirement
-
-`COUNTERFACTUAL-RECTANGLE-001` should compose existing evaluators rather than become a parallel epistemic engine.
-
-Preferred architecture:
+Preferred future composition remains:
 
 ```text
 pair checks
   -> PROJECTION-INVARIANCE-001 where invariance is required
   -> PROJECTION-BREAK-001 where a shared intervention is declared
   -> MEDIATED-SUPPORT-001 where derivation/support effects are under pressure
-  -> rectangle coordinator reports interaction pattern
+  -> rectangle coordinator only if a residual interaction gap survives
 ```
-
-The rectangle owns orchestration and comparison, not projection semantics or support semantics.
 
 ---
 
 ## 7. Policy-indexed equivalence — research hold
 
-The combined frontier suggests a useful mathematical description:
+Useful explanatory notation remains:
 
 ```text
 W1 ≡_(observer, policy, cut, decoder) W2
 ```
-
-Two worlds may be equivalent for one observer/policy boundary and distinguishable for another.
-
-A lawful reveal, decoder change, or selector consumption may refine the observer's partition of possible worlds without changing the worlds themselves.
-
-This is useful explanatory language for 3rdi and future visualization work, but it is **not** an implementation target in this spec.
 
 HOLD:
 
@@ -542,32 +406,17 @@ POLICY-EQUIVALENCE-001
 PARTITION-REFINEMENT-001
 ```
 
-Do not add either to the kernel until the mediation and rectangle specimens demonstrate a concrete missing contract.
+No kernel implementation follows from PR #22.
 
 ---
 
 ## 8. Adaptive epistemic topology — research hold
 
-The AFTERMATHALS and access-engineering slices add a further frontier:
-
-```text
-observation history
-  -> selection state
-  -> reachability topology
-  -> next observation possibilities
-```
-
-If consuming a receipt changes which relations are reachable next, two runs may have the same rendered surface while carrying different lawful futures.
-
-Candidate state model:
+Candidate state model remains:
 
 ```text
 X_t = (surface_t, formation_digest_t)
 ```
-
-where the formation digest is only promoted into necessary runtime state if deleting it makes future reachability ambiguous or unreplayable.
-
-This remains outside the first implementation.
 
 HOLD:
 
@@ -575,7 +424,7 @@ HOLD:
 ADAPTIVE-EPISTEMIC-TOPOLOGY-001
 ```
 
-The existing `PROJECTION-BREAK-001` should be used as the hostile neighbor before any new topology primitive is considered.
+The existing `PROJECTION-BREAK-001` remains the hostile neighbor before any new topology primitive is considered.
 
 ---
 
@@ -596,149 +445,76 @@ The frontier suggests a reusable investigation procedure:
 10. LEEP the law on a materially different specimen
 ```
 
-Possible classifications:
-
-```text
-FORBIDDEN_LEAK
-DECLARED_RELEASE
-LAWFUL_MEDIATION
-ORDINARY_DOWNSTREAM_CONSEQUENCE
-INSUFFICIENT_TO_TEST
-```
-
-`DELTA-PEEL` is a method name only. It does not introduce a new ALEX relation or runtime object.
+`DELTA-PEEL` remains a method name only. It does not introduce a new ALEX relation or runtime object.
 
 ---
 
 ## 10. First neutral hostile vector
 
-The implementation plan should freeze one compact deterministic fixture family before runtime changes.
+The implemented bounded vector uses ordinary Gate-2 evidence cases and controlled pair mutations rather than a statistical simulator.
 
-Suggested world:
-
-```text
-100 bounded objects
-10 have property P
-```
-
-Two claims:
+It pressures:
 
 ```text
-C_local:
-object x has property P
+fixed evidence + changed interest
+    -> DIRECT_EFFECT_ZERO
 
-C_population:
-P is common in the underlying world
+interest receipt inserted into semantic basis
+    -> REFUSE / INTEREST_AS_SUPPORT
+
+consumed interest + changed context + changed evidence
+    -> LAWFUL_MEDIATION
+
+population claim + stripped selection formation
+    -> INSUFFICIENT_TO_TEST / SELECTION_FORMATION_REQUIRED
+
+object-local evidence + absent selection history
+    -> evidence remains supportable
 ```
 
-Three selection paths:
-
-```text
-BROAD
-selection independent of P
-
-INTEREST_GUIDED
-selector consumes an attributable interest receipt and preferentially exposes likely-P objects
-
-STRIPPED
-receives the same final object set as INTEREST_GUIDED but without sufficient selection-formation ancestry
-```
-
-Required behavior:
-
-```text
-C_local:
-genuine object evidence is not weakened merely because interest guided discovery
-
-C_population:
-selection formation materially conditions the inference
-```
-
-The first runtime target should remain deterministic and synthetic. It does not need to prove a complete statistical sampling model.
-
-Add the direct hostile pair:
-
-```text
-same evidence set
-same claim
-same evaluator
-interest differs
-```
-
-Expected:
-
-```text
-same support result
-```
-
-Then add the rectangle hostile case:
-
-```text
-hidden world difference alone does not alter the projection
-interest state alone follows declared behavior
-combined hidden-world + interest state causes an undeclared boundary divergence
-```
-
-Expected:
-
-```text
-REFUSE at earliest boundary
-reason: HIDDEN_SELECTION_INTERACTION
-```
+Run-local occurrence identities are also varied to prove they do not change semantic support equality, while their receipt ancestry remains preserved.
 
 ---
 
-## 11. Required result identity
+## 11. Result identity
 
-To remain attributable and comparable across runs, the future evaluator/harness should preserve at least:
+The implemented pair result preserves:
 
 ```text
 case_id
 claim_id
-projection_digest
-compile/context identity where supplied
-evidence_basis_digest
-selection/consumption receipt refs where supplied
-evaluator identity or rule profile
-support disposition/result digest
-first divergent boundary where applicable
-receipt survivors
-reason code
+projection_digest per side
+bounded_context_digest per side
+evidence_basis_digest per side
+support_result_digest per side
+mediation_status
+support_changed
+formation + Gate-2 receipt survivors
+reason/disposition
 ```
 
-Exact field names belong to the implementation plan after existing runtime contracts are inspected.
+Run-local evaluation/assertion identities are excluded from the semantic support digest so semantically identical support does not appear different merely because it occurred in a different execution.
 
-Do not force LOADOUT or 3rdi to adopt ALEX field names merely to satisfy this harness.
+No LOADOUT or 3rdi owner is required to adopt ALEX field names.
 
 ---
 
-## 12. Kill conditions
+## 12. Kill / revisit conditions
 
-### Kill or narrow `MEDIATED-SUPPORT-001` if:
+The implementation remains narrow. Revisit or remove it if a future review proves:
 
-- existing Gate-2 support provenance already proves the direct-effect-zero condition without ambiguity;
-- no hostile fixture can distinguish valid mediation from ordinary evidence-basis change;
-- the proposed evaluator would require ALEX to own LOADOUT selection semantics;
-- the design accidentally weakens valid evidence merely because interest influenced discovery.
+- Gate-2 itself can express the same pairwise direct-effect-zero condition without ambiguity;
+- the wrapper begins owning selector semantics rather than consuming attributable testimony;
+- interest-guided discovery is treated as evidence invalidation;
+- a future rectangle merely rephrases pairwise failures already named by current evaluators.
 
-### Kill or narrow `COUNTERFACTUAL-RECTANGLE-001` if:
-
-- it is only a verbose wrapper around existing pairwise evaluators and finds no interaction class they cannot already name;
-- interaction detection requires invented semantics rather than declared boundary equivalence;
-- it duplicates `PROJECTION-BREAK-001` instead of composing it;
-- the four-run fixture cannot identify a materially different failure mode from ordinary hidden leakage.
-
-### Do not promote policy-indexed equivalence or adaptive topology if:
-
-- they remain explanatory metaphors with no executable missing contract;
-- they require a shared cross-repo ontology;
-- they import authority from projection or retrieval history.
+Do not promote policy-indexed equivalence or adaptive topology unless an executable missing contract appears.
 
 ---
 
 ## 13. Explicit non-claims
 
-Passing these specimens would **not** prove:
+Passing these specimens does **not** prove:
 
 - that an interest receipt is true merely because it was recorded;
 - that inferred interest accurately represents a person's internal state;
@@ -755,44 +531,43 @@ Passing these specimens would **not** prove:
 
 ## 14. Promotion ladder
 
-The approved sequence is:
+Completed for `MEDIATED-SUPPORT-001`:
 
 ```text
-1. written spec review
-2. implementation plan for MEDIATED-SUPPORT-001
-3. RED hostile fixture family
-4. minimal ALEX evaluator / composition
-5. full regression
-6. COUNTERFACTUAL-RECTANGLE-001 coordinator only if pairwise tests leave the interaction gap real
-7. LEEP onto a materially different domain
-8. only then revisit policy-equivalence / adaptive-topology candidates
+written spec
+implementation plan
+RED hostile fixtures
+minimal comparison wrapper
+semantic-inflation hostile control
+lawful-mediation + selection-provenance pressure
+identity / ancestry hardening
+full regression
 ```
 
-The first materially different LEEP candidate should be one of:
+Still gated:
 
 ```text
-Novelist reveal / foreshadowing
-Free Graph neutral-vs-interest-guided traversal
-RAG/personalization retrieval
-Derek-style same-surface / different-reachability world state
+COUNTERFACTUAL-RECTANGLE-001
+LEEP onto a materially different domain
+policy-equivalence / adaptive-topology candidates
 ```
 
-No kernel promotion follows automatically from one green specimen.
+No kernel promotion follows automatically from this one green specimen family.
 
 ---
 
 ## 15. Compression
 
-The frontier now has a sharper law than `interest != evidence`:
+The implemented law is:
 
 > **Interest may causally change the evidence world an actor reaches. That can lawfully change support through the evidence. But if the evidence is held fixed, interest must have zero direct effect on support.**
 
-And the rectangle adds the second law:
+The still-held rectangle hypothesis is:
 
-> **A hidden variable may leak not only by changing an output directly, but by changing how the system responds to another otherwise-lawful input. Pairwise invariance is therefore sometimes insufficient; the interaction itself must be tested.**
+> **A hidden variable may leak not only by changing an output directly, but by changing how the system responds to another otherwise-lawful input. Pairwise invariance may therefore be insufficient—but the residual interaction class still has to earn implementation.**
 
 Working seals:
 
 > **WHY WE LOOKED MAY CHANGE WHAT WE FOUND. IT MAY NOT CHANGE WHAT THE FOUND EVIDENCE MEANS BY ITSELF.**
 
-> **CHANGE ONE RELATION AND WATCH WHAT MOVES. CHANGE TWO AND WATCH WHETHER THE SECOND ONE REVEALS A DEPENDENCE THE FIRST COULD NOT SEE.**
+> **CHANGE ONE RELATION AND WATCH WHAT MOVES. CHANGE TWO ONLY AFTER THE FIRST TESTS LEAVE SOMETHING REAL UNEXPLAINED.**
