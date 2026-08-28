@@ -1,8 +1,17 @@
 import copy
+import json
 import unittest
+from pathlib import Path
 
 from experiments.far_side.engine import evaluate_far_side_case
 from tests.test_far_side_model import VALID_CASE
+
+ROOT = Path(__file__).resolve().parents[1]
+FAR_SIDE_FIXTURES = ROOT / "tests" / "fixtures" / "far_side"
+
+
+def load_far_side_fixture(name: str) -> dict:
+    return json.loads((FAR_SIDE_FIXTURES / name).read_text(encoding="utf-8"))
 
 
 class FarSideEngineTests(unittest.TestCase):
@@ -166,6 +175,27 @@ class FarSideEngineTests(unittest.TestCase):
         self.assertEqual(left_result["traversal_axes"], right_result["traversal_axes"])
         self.assertEqual(left_result["surviving_invariants"], right_result["surviving_invariants"])
         self.assertEqual(left_result["missing_targets"], right_result["missing_targets"])
+
+    def test_durable_survivor_fixture(self):
+        result = evaluate_far_side_case(load_far_side_fixture("survivor.json"))
+        self.assertEqual(result["final_status"], "FAR_SIDE_SURVIVOR")
+
+    def test_durable_no_novelty_fixture(self):
+        result = evaluate_far_side_case(load_far_side_fixture("no-new-dimension.json"))
+        self.assertEqual(result["final_status"], "NO_NEW_DIMENSION_EARNED")
+
+    def test_durable_partial_fixture(self):
+        result = evaluate_far_side_case(load_far_side_fixture("partial-regeneration.json"))
+        self.assertEqual(result["final_status"], "PARTIAL_SURVIVOR")
+
+    def test_durable_hostile_failure_fixture(self):
+        result = evaluate_far_side_case(load_far_side_fixture("metaphor-failure.json"))
+        self.assertEqual(result["final_status"], "PARTIAL_SURVIVOR")
+        self.assertEqual(result["reason_code"], "HOSTILE_PRESSURE_FAILED")
+
+    def test_durable_insufficient_baseline_fixture(self):
+        result = evaluate_far_side_case(load_far_side_fixture("insufficient-baseline.json"))
+        self.assertEqual(result["final_status"], "INSUFFICIENT_BASELINE")
 
 
 if __name__ == "__main__":
