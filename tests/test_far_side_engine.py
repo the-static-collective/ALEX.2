@@ -149,6 +149,24 @@ class FarSideEngineTests(unittest.TestCase):
         self.assertEqual(result["final_status"], "INSUFFICIENT_RECEIPT")
         self.assertEqual(result["reason_code"], "MISSING_REQUIRED_PRESSURE")
 
+    def test_relabeling_case_and_receipt_ids_does_not_change_structural_status(self):
+        left = copy.deepcopy(VALID_CASE)
+        right = copy.deepcopy(VALID_CASE)
+        right["case_id"] = "far-side:banana-labels"
+        for index, traversal in enumerate(right["traversals"]):
+            traversal["id"] = f"banana:{index}"
+            traversal["receipt_ref"] = f"receipt:banana:{index}"
+        for index, check in enumerate(right["pressure"]):
+            check["receipt_ref"] = f"receipt:pressure:banana:{index}"
+
+        left_result = evaluate_far_side_case(left)
+        right_result = evaluate_far_side_case(right)
+
+        self.assertEqual(left_result["final_status"], right_result["final_status"])
+        self.assertEqual(left_result["traversal_axes"], right_result["traversal_axes"])
+        self.assertEqual(left_result["surviving_invariants"], right_result["surviving_invariants"])
+        self.assertEqual(left_result["missing_targets"], right_result["missing_targets"])
+
 
 if __name__ == "__main__":
     unittest.main()
