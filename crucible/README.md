@@ -84,6 +84,28 @@ The pair fixtures live under `tests/fixtures/projection_invariance/`, outside th
 
 A passing result means only that the supplied pair respected the declared projection-invariance boundary. It grants no truth, historical identity, source authority, canon, publication, permission, admission, warrant, merge authority, or execution consequence.
 
+## PROJECTION-BREAK-001
+
+`PROJECTION-BREAK-001` is the hostile sibling of projection invariance. It asks whether two worlds that were observer-equivalent at `T0` can lawfully diverge after the **same attributable intervention** contacts a hidden structural difference.
+
+The evaluator first reuses `PROJECTION-INVARIANCE-001` as a hard precondition. The pre-intervention pair must be materially distinct yet equivalent through bounded context, projection, derivation, serialization, narrative, and authority. It then requires the post-intervention pair to carry the same intervention receipt under equivalent observer constraints and visible input, while preserving separate receipts for the hidden structural difference in each world.
+
+If the post-intervention worlds diverge, the evaluator names the earliest observed break:
+
+```text
+LOADOUT / bounded context
+        -> observer projection
+        -> ALEX derivation
+        -> serialization
+        -> narrative exposure
+```
+
+That divergence is not classified as a leak merely because the worlds were previously equivalent: the intervention is the declared event that made the hidden difference operationally relevant. Authority is excluded from the lawful break surface; any authority change is still `REFUSE / AUTHORITY_CHANGED`.
+
+A passing `PROJECTION-BREAK-001` result does **not** prove the hidden difference was sufficient, dominant, historically real, or globally causal. It proves only the bounded specimen: pre-invariance, one shared attributable intervention, preserved hidden-difference receipts, equivalent declared input, and a first future divergence at the named boundary.
+
+The first fixture lives under `tests/fixtures/projection_break/hidden-adjacency.json`. No new universal `CONSUMES` or intervention-edge ontology is introduced; ordinary receipt ancestry plus the explicit intervention occurrence remains sufficient for this specimen.
+
 ## Conformance boundary
 
 Passing `crucible-contract` proves the fixture corpus and reference harness are internally consistent. It does not prove an ALEX runtime conforms. Runtime conformance begins only when a real adapter executes the applicable fixtures and the harness reports zero constitutional mismatches.
