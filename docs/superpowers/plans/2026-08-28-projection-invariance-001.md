@@ -100,13 +100,9 @@ Witness: GitHub Actions run `33141738957` completed successfully after the minim
 
 The documentation states that ALEX compares already-formed observer-local witness digests, names the earliest hidden-state leak, permits only a doubly receipted narrative transform, preserves hostile fixtures, and grants no external authority.
 
-- [ ] **Step 2: Run the full suite after the documentation and plan reconciliation.**
+- [x] **Step 2: Run the full suite after the documentation and plan reconciliation.**
 
-```bash
-python -m unittest discover -s tests -v
-```
-
-Expected: all tests PASS.
+Witness: GitHub Actions run `33141803348` completed successfully on the documentation + reconciled-plan head.
 
 ## Self-Review
 
