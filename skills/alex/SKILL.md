@@ -61,6 +61,14 @@ TRACE, DOSSIER, AUDIT, or PRESSURE run when the path by which the inquiry formed
 is materially worth preserving. Read
 [formation-trace.md](references/formation-trace.md) before using it.
 
+`UNGATE` is an optional decoder-ring archaeology protocol for cases where later
+vocalization, segmentation, normalization, translation, commentary,
+institutional convention, model choice, or other transmission layers may have
+changed which readings remain reachable around an attributable nucleus. Read
+[ungate.md](references/ungate.md) before using it. UNGATE reopens candidate
+possibility-space; it does not promote older, unpointed, or newly reachable
+readings into truth without a historical filter and REGATE test.
+
 Read [constitutional-hardening.md](references/constitutional-hardening.md) when
 an inquiry makes an absence claim, inherits an upstream premise, claims
 independent corroboration, compares dependency families, or uses remove-one
@@ -321,6 +329,41 @@ mathematical specimen showing operation-as-receipt. Do not generalize it into a
 universal historical, symbolic, or theological mechanism without independent
 evidence.
 
+### UNGATE — decoder-ring archaeology
+
+Use UNGATE when the research object includes a surviving nucleus plus later
+layers that may have changed reading reachability without replacing the
+nucleus. Read [ungate.md](references/ungate.md).
+
+The minimum loop is:
+
+```text
+NUCLEUS
+  -> RING LEDGER
+  -> OMEGA BEFORE / AFTER
+  -> suspend exactly one ring
+  -> reopen candidate readings
+  -> historical filter
+  -> SLEEP, if plurality remains
+  -> hostile triangulation, if independent encoders exist
+  -> REGATE
+  -> preserve delta
+```
+
+Keep these refusals live:
+
+```text
+constraint != hostility
+older != truer
+reopened != attested
+closed != true
+```
+
+A ring becomes hostile only when stronger evidence supports adversarial intent
+or structurally hostile effects such as erased alternatives, concealed
+provenance, self-authentication, blocked inversion, or silent authority
+expansion.
+
 ## 8. Return an evidence-bearing result
 
 Lead with the answer or finding. Then provide only the apparatus the stakes
@@ -359,6 +402,20 @@ REPLAY DELTA
 EVIDENCE-PATH BOUNDARY
 ```
 
+For UNGATE runs, preserve at minimum:
+
+```text
+NUCLEUS
+RING LEDGER
+OMEGA BEFORE
+OMEGA AFTER
+DELTA OMEGA
+UNGATED CANDIDATES
+HISTORICAL FILTER
+REGATE RESULT
+WHAT THE RING ACTUALLY CHANGED
+```
+
 Read [research-receipt.md](references/research-receipt.md) for durable dossiers,
 audits, PRESSURE runs, formation traces, or machine-readable handoffs.
 Lightweight answers need not emit the full template.
@@ -389,4 +446,7 @@ Before finishing, confirm:
   and could have returned `disproved`;
 - a formation-trace run kept discovery motive separate from evidence, preserved
   relevant breadcrumbs and toast-ghosts, killed disproved SLEEP states, and did
-  not promote replay match into historical identity.
+  not promote replay match into historical identity;
+- an UNGATE run preserved the nucleus and each tested ring, reopened possibility
+  without truth promotion, applied a historical filter, and REGATE-tested the
+  attributed layer instead of erasing it.
