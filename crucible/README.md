@@ -53,6 +53,14 @@ The profile runs both the explicit attention-negative descendant and the attribu
 
 A clean `alex.runtime/derivation-m0` run testifies only that the exact tested runtime build, ruleset digest, adapter version, fixture-family version, and metamorphic pressure survived that scoped profile. It does **not** establish general ALEX runtime conformance, historical truth, source authority, canon, permission, external admission, publication, merge authority, or any other owning-world consequence. `alex.runtime/one-book-m1` and `alex.runtime/formation-trace-m2` remain explicitly outside this profile.
 
+## Scoped LOADOUT handshake profile
+
+`alex.runtime/loadout-handshake-m0` is the ALEX-side receiving boundary for a LOADOUT-issued `loadout.compile/v0` plus its bound `alex.run-envelope/v0`. ALEX validates testimony about the compile; it does not become the LOADOUT compiler and does not enlarge the carried fence.
+
+The profile proves only the following scoped mechanics: exact compile/envelope binding, compile expiry, owner-evidence-digest drift detection, required-capability gaps, current attributable effect-fence membership, and non-inheritance of parent permission by a child compile. Five original specimens are each rerun with a fresh metamorphic sibling whose compile, trace, fence, run identity, nonce, and compile digest differ while the constitutional condition remains the same.
+
+`ACCEPT` in this profile means only that the bounded run request may enter ALEX under that exact compile and fence testimony. It does **not** mean truth, source authority, canon, permission beyond the carried fence, publication, deployment, external admission, merge authority, or owning-world consequence. It also does not claim `alex.runtime/one-book-m1` or `alex.runtime/formation-trace-m2` conformance.
+
 ## Conformance boundary
 
 Passing `crucible-contract` proves the fixture corpus and reference harness are internally consistent. It does not prove an ALEX runtime conforms. Runtime conformance begins only when a real adapter executes the applicable fixtures and the harness reports zero constitutional mismatches.
