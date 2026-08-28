@@ -47,6 +47,17 @@ class MediatedSupportTests(unittest.TestCase):
             result["right"]["support_result_digest"],
         )
 
+    def test_interest_receipt_may_not_enter_gate2_support_basis(self):
+        case = load_pair()
+        right = case["right"]
+        right["selection"]["consumed_interest_receipt_refs"] = ["interest:q"]
+        right["derivation_case"]["attempt"]["relation_proposal"]["basis_ids"].append("interest:q")
+
+        result = evaluate_mediated_support_case(case)
+
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason_code"], "INTEREST_AS_SUPPORT")
+
     def test_evaluator_does_not_mutate_source_case(self):
         case = load_pair()
         before = copy.deepcopy(case)
