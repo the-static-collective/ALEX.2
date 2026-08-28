@@ -1,0 +1,44 @@
+name: passage-world-owner-receipts
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Export exact LOADOUT/ALEX/LOADIN.STEAD receipts
+        shell: bash
+        run: |
+          set +e
+          python tools/export_passage_world_owner_receipts.py --output passage-owner-receipts >export.stdout 2>export.stderr
+          status=$?
+          echo "$status" > export.status
+          cat export.stdout || true
+          cat export.stderr >&2 || true
+          exit "$status"
+      - name: Upload owner receipt artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: passage-world-alex-owner-receipts
+          path: passage-owner-receipts
+          if-no-files-found: error
+      - name: Upload export diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: passage-world-export-diagnostics
+          path: |
+            export.stdout
+            export.stderr
+            export.status
+          if-no-files-found: error

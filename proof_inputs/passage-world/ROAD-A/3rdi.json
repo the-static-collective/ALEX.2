@@ -1,0 +1,23 @@
+{
+  "attention_event_ids": [
+    "attention-e1-road-a"
+  ],
+  "contact_ids": [
+    "contact-e1-road-a"
+  ],
+  "cut_id": "ROAD-A",
+  "decoder_application_ids": [],
+  "field_id": "passage-world-001",
+  "observer": "road-a",
+  "projection_digest": "sha256:d90103d6362eabcd643c2b9c7737035591288f572a029fd3baa4003f38c56a02",
+  "schema": "mortal_actor.3rdi-handoff/v0",
+  "stance_ids": [],
+  "visible_causal_edge_ids": [],
+  "visible_occurrence_ids": [
+    "distractor-visible-no-contact",
+    "evidence-e1",
+    "source-room-r0",
+    "token-formation-point"
+  ],
+  "visible_relevance_edge_ids": []
+}
