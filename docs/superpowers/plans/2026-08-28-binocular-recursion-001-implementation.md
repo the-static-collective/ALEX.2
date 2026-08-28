@@ -19,7 +19,7 @@
 - Expansion may use only admitted premises plus branch-local explicitly introduced premises or return `REFUSE / UNDECLARED_PREMISE_INJECTION`.
 - Live consequences with status `ENTAILED`, `INFERRED`, or `UNRESOLVED` may not be erased by compression unless explicitly withdrawn by the update.
 - A material trajectory is an ordered list with repetitions preserved exactly; it is never sorted or deduplicated.
-- Field changes require an attributable update receipt; authority must remain equal to the case-level authority digest.
+- Field changes require an attributable update receipt; authority remains equal to the case-level authority digest.
 - Successful terminal labels are only `FIXED`, `CYCLE`, `RESIDUAL`, and `DIVERGENT`.
 - `pass_limit` is required, integer, at least 1, and bounds `len(passes)`.
 - No external dependency, network call, model call, hidden time dependence, randomness, or filesystem mutation inside evaluator logic.
@@ -38,19 +38,10 @@ tools/run_binocular_recursion.py
   JSON transport only; no research semantics.
 
 tests/fixtures/binocular_recursion/lawful-residual.json
-  Canonical accepted residual specimen.
-
-tests/fixtures/binocular_recursion/fixed.json
-  Canonical fixed specimen.
-
-tests/fixtures/binocular_recursion/cycle.json
-  Canonical cycle specimen.
-
-tests/fixtures/binocular_recursion/divergent.json
-  Canonical bounded divergent specimen.
+  Canonical accepted residual specimen and mutation base for hostile cases.
 
 tests/test_binocular_recursion.py
-  Evaluator and hostile-contract tests.
+  Evaluator, hostile-contract, and exact terminal-state tests.
 
 tests/test_run_binocular_recursion.py
   CLI transport tests.
@@ -78,9 +69,9 @@ tests/test_binocular_recursion_reference.py
 - Consumes: a decoded `alex.binocular-recursion-case/v0` dictionary.
 - Produces: `evaluate_binocular_recursion_case(case: dict) -> dict[str, object]`.
 
-- [ ] **Step 1: Create the lawful residual fixture**
+- [ ] **Step 1: Create `lawful-residual.json`**
 
-Use this complete fixture as `tests/fixtures/binocular_recursion/lawful-residual.json`:
+Use this complete fixture:
 
 ```json
 {
@@ -122,22 +113,8 @@ Use this complete fixture as `tests/fixtures/binocular_recursion/lawful-residual
           }
         ]
       },
-      "tensions": [
-        {
-          "type": "STABLE_MATCH",
-          "left_refs": ["sha256:proposal-0"],
-          "right_refs": ["c1"],
-          "receipt_refs": ["receipt:t0"]
-        }
-      ],
-      "update": {
-        "kind": "NONE",
-        "receipt_refs": [],
-        "admit_premise_refs": [],
-        "withdraw_premise_refs": [],
-        "withdraw_consequence_refs": [],
-        "authority_digest": "sha256:authority-0"
-      },
+      "tensions": [{"type": "STABLE_MATCH", "left_refs": ["sha256:proposal-0"], "right_refs": ["c1"], "receipt_refs": ["receipt:t0"]}],
+      "update": {"kind": "NONE", "receipt_refs": [], "admit_premise_refs": [], "withdraw_premise_refs": [], "withdraw_consequence_refs": [], "authority_digest": "sha256:authority-0"},
       "post_field_digest": "sha256:field-0"
     },
     {
@@ -155,44 +132,12 @@ Use this complete fixture as `tests/fixtures/binocular_recursion/lawful-residual
       "expansion": {
         "profile_digest": "sha256:expand-v1",
         "branches": [
-          {
-            "branch_id": "b1",
-            "parent_refs": ["p1"],
-            "rule_ref": "rule:r1",
-            "condition_refs": [],
-            "consequence_ref": "c1",
-            "status": "INFERRED",
-            "used_premise_refs": ["p1"],
-            "introduced_premise_refs": []
-          },
-          {
-            "branch_id": "b2",
-            "parent_refs": ["p2"],
-            "rule_ref": "rule:r2",
-            "condition_refs": [],
-            "consequence_ref": "c2",
-            "status": "UNRESOLVED",
-            "used_premise_refs": ["p2"],
-            "introduced_premise_refs": []
-          }
+          {"branch_id": "b1", "parent_refs": ["p1"], "rule_ref": "rule:r1", "condition_refs": [], "consequence_ref": "c1", "status": "INFERRED", "used_premise_refs": ["p1"], "introduced_premise_refs": []},
+          {"branch_id": "b2", "parent_refs": ["p2"], "rule_ref": "rule:r2", "condition_refs": [], "consequence_ref": "c2", "status": "UNRESOLVED", "used_premise_refs": ["p2"], "introduced_premise_refs": []}
         ]
       },
-      "tensions": [
-        {
-          "type": "UNEXPLAINED_RESIDUAL",
-          "left_refs": ["sha256:proposal-1"],
-          "right_refs": ["c2"],
-          "receipt_refs": ["receipt:t1"]
-        }
-      ],
-      "update": {
-        "kind": "NONE",
-        "receipt_refs": [],
-        "admit_premise_refs": [],
-        "withdraw_premise_refs": [],
-        "withdraw_consequence_refs": [],
-        "authority_digest": "sha256:authority-0"
-      },
+      "tensions": [{"type": "UNEXPLAINED_RESIDUAL", "left_refs": ["sha256:proposal-1"], "right_refs": ["c2"], "receipt_refs": ["receipt:t1"]}],
+      "update": {"kind": "NONE", "receipt_refs": [], "admit_premise_refs": [], "withdraw_premise_refs": [], "withdraw_consequence_refs": [], "authority_digest": "sha256:authority-0"},
       "post_field_digest": "sha256:field-0"
     }
   ]
@@ -201,7 +146,7 @@ Use this complete fixture as `tests/fixtures/binocular_recursion/lawful-residual
 
 - [ ] **Step 2: Write the initial failing tests**
 
-Create `tests/test_binocular_recursion.py` with this nucleus:
+Create `tests/test_binocular_recursion.py`:
 
 ```python
 import copy
@@ -241,17 +186,17 @@ if __name__ == "__main__":
     unittest.main()
 ```
 
-- [ ] **Step 3: Run the focused test and verify it fails**
+- [ ] **Step 3: Run the test and verify import failure**
 
 ```bash
 python -m unittest tests.test_binocular_recursion -v
 ```
 
-Expected: import failure for `alex_runtime.binocular_recursion`.
+Expected: `alex_runtime.binocular_recursion` cannot be imported.
 
-- [ ] **Step 4: Implement the minimum evaluator**
+- [ ] **Step 4: Implement the structural nucleus**
 
-Create `alex_runtime/binocular_recursion.py` with these constants and result shape:
+Create `alex_runtime/binocular_recursion.py` with:
 
 ```python
 from __future__ import annotations
@@ -259,38 +204,12 @@ from __future__ import annotations
 from typing import Any
 
 _TERMINALS = {"FIXED", "CYCLE", "RESIDUAL", "DIVERGENT"}
-_TENSION_TYPES = {
-    "MISSING_CONSEQUENCE",
-    "SURPLUS_GENERATOR",
-    "UNEXPLAINED_RESIDUAL",
-    "BRANCH_DEPENDENCE",
-    "CONTRADICTION",
-    "TRAJECTORY_DEPENDENCE",
-    "STABLE_MATCH",
-}
+_TENSION_TYPES = {"MISSING_CONSEQUENCE", "SURPLUS_GENERATOR", "UNEXPLAINED_RESIDUAL", "BRANCH_DEPENDENCE", "CONTRADICTION", "TRAJECTORY_DEPENDENCE", "STABLE_MATCH"}
 _BRANCH_STATUSES = {"ENTAILED", "INFERRED", "SPECULATIVE", "CONTRADICTED", "UNRESOLVED"}
-_UPDATE_KINDS = {
-    "NONE",
-    "EVIDENCE_ADDED",
-    "PREMISE_ADMITTED",
-    "PREMISE_WITHDRAWN",
-    "READING_CORRECTED",
-    "RULE_PROFILE_CHANGED",
-    "CONTRADICTION_RESOLVED",
-    "OWNER_DECISION",
-}
+_UPDATE_KINDS = {"NONE", "EVIDENCE_ADDED", "PREMISE_ADMITTED", "PREMISE_WITHDRAWN", "READING_CORRECTED", "RULE_PROFILE_CHANGED", "CONTRADICTION_RESOLVED", "OWNER_DECISION"}
 
 
-def _result(
-    case_id: str,
-    disposition: str,
-    reason_code: str | None,
-    authority_digest: str,
-    terminal: str | None,
-    validated_passes: int,
-    tension_types: set[str] | None = None,
-    receipt_survivors: set[str] | None = None,
-) -> dict[str, object]:
+def _result(case_id: str, disposition: str, reason_code: str | None, authority_digest: str, terminal: str | None, validated_passes: int, tension_types: set[str] | None = None, receipt_survivors: set[str] | None = None) -> dict[str, object]:
     return {
         "schema": "alex.binocular-recursion-result/v0",
         "case_id": case_id,
@@ -304,11 +223,11 @@ def _result(
     }
 ```
 
-Implement top-level checks for dictionary input, exact schema, non-empty case/authority digests, valid terminal, integer `pass_limit >= 1`, `1 <= len(passes) <= pass_limit`, contiguous pass indices, pass-zero ancestry, pass-to-pass ancestry, and both `compression` and `expansion` being dictionaries. Malformed/absent structural data returns `INSUFFICIENT_TO_TEST` with a stable reason code; it does not raise an ordinary validation exception.
+The public evaluator validates: dictionary input; exact schema; non-empty `case_id`, field digest, and authority digest; valid terminal; integer `pass_limit >= 1`; `1 <= len(passes) <= pass_limit`; contiguous zero-based `pass_index`; pass-zero ancestry; pass-to-pass ancestry; and both `compression` and `expansion` dictionaries. Structural malformation returns `INSUFFICIENT_TO_TEST`, never a normal validation exception.
 
-For the lawful fixture, validate the declared tension vocabulary and return `ACCEPT` only after Task 2–3 validations are implemented; during this first task, implement enough structure for the two initial tests to pass without adding any truth or authority verdict.
+For Task 1, the lawful fixture may return `ACCEPT` after these structural checks and tension-vocabulary collection. Tasks 2–3 add the constitutional and terminal validators that must pass before the implementation PR is complete.
 
-- [ ] **Step 5: Run the focused test**
+- [ ] **Step 5: Run the focused tests**
 
 ```bash
 python -m unittest tests.test_binocular_recursion -v
@@ -333,11 +252,11 @@ git commit -m "feat: add binocular recursion evaluator nucleus"
 
 **Interfaces:**
 - Consumes: Task 1 evaluator and lawful fixture.
-- Produces stable reason codes for the approved refusal/insufficiency boundaries.
+- Produces the approved refusal/insufficiency boundaries without changing source cases.
 
 - [ ] **Step 1: Add explicit hostile tests**
 
-Append these tests to `BinocularRecursionTests`:
+Append:
 
 ```python
     def test_discovery_trigger_cannot_be_claim_support(self):
@@ -352,7 +271,7 @@ Append these tests to `BinocularRecursionTests`:
         result = evaluate_binocular_recursion_case(case)
         self.assertEqual((result["disposition"], result["reason_code"]), ("REFUSE", "UNDECLARED_PREMISE_INJECTION"))
 
-    def test_branch_local_introduced_premise_is_not_global_but_is_locally_legal(self):
+    def test_branch_local_introduced_premise_is_locally_legal(self):
         case = load_case()
         branch = case["passes"][0]["expansion"]["branches"][0]
         branch["used_premise_refs"] = ["local:p3"]
@@ -369,14 +288,7 @@ Append these tests to `BinocularRecursionTests`:
     def test_explicitly_withdrawn_consequence_may_leave_reexpansion_surface(self):
         case = load_case()
         case["passes"][1]["compression"]["reexpanded_live_consequence_refs"] = ["c1"]
-        case["passes"][1]["update"] = {
-            "kind": "EVIDENCE_ADDED",
-            "receipt_refs": ["receipt:withdraw-c2"],
-            "admit_premise_refs": [],
-            "withdraw_premise_refs": [],
-            "withdraw_consequence_refs": ["c2"],
-            "authority_digest": "sha256:authority-0"
-        }
+        case["passes"][1]["update"] = {"kind": "EVIDENCE_ADDED", "receipt_refs": ["receipt:withdraw-c2"], "admit_premise_refs": [], "withdraw_premise_refs": [], "withdraw_consequence_refs": ["c2"], "authority_digest": "sha256:authority-0"}
         result = evaluate_binocular_recursion_case(case)
         self.assertEqual(result["disposition"], "ACCEPT")
 
@@ -394,10 +306,8 @@ Append these tests to `BinocularRecursionTests`:
 
     def test_material_trajectory_repetitions_survive_validation(self):
         case = load_case()
-        original = list(case["passes"][0]["trajectory"])
         evaluate_binocular_recursion_case(case)
-        self.assertEqual(case["passes"][0]["trajectory"], original)
-        self.assertEqual(original, ["A", "B", "A"])
+        self.assertEqual(case["passes"][0]["trajectory"], ["A", "B", "A"])
 
     def test_broken_pass_ancestry_is_refused(self):
         case = load_case()
@@ -431,26 +341,22 @@ Append these tests to `BinocularRecursionTests`:
         self.assertEqual((result["disposition"], result["reason_code"]), ("INSUFFICIENT_TO_TEST", "UNKNOWN_TENSION_TYPE"))
 ```
 
-- [ ] **Step 2: Run the hostile tests and verify failures**
+- [ ] **Step 2: Run and verify hostile failures**
 
 ```bash
 python -m unittest tests.test_binocular_recursion.BinocularRecursionTests -v
 ```
 
-Expected: the new hostile tests fail until the contract checks are implemented.
+Expected: new hostile tests fail before validation is added.
 
-- [ ] **Step 3: Implement support, premise, live-consequence, trajectory, ancestry, update, and authority validation**
+- [ ] **Step 3: Implement the constitutional checks**
 
-Add these exact helpers:
+Add:
 
 ```python
 def _live_consequence_refs(expansion: dict[str, Any]) -> set[str]:
     live_statuses = {"ENTAILED", "INFERRED", "UNRESOLVED"}
-    return {
-        branch["consequence_ref"]
-        for branch in expansion["branches"]
-        if branch["status"] in live_statuses
-    }
+    return {branch["consequence_ref"] for branch in expansion["branches"] if branch["status"] in live_statuses}
 
 
 def _support_uses_discovery_trigger(compression: dict[str, Any], discovery_triggers: set[str]) -> bool:
@@ -463,44 +369,46 @@ def _branch_uses_only_declared_premises(branch: dict[str, Any], admitted: set[st
     return used <= (admitted | introduced)
 ```
 
-Validation order inside each pass:
+Validate each pass in this order:
 
 ```text
-1. both eyes and required dictionaries/lists exist
-2. trajectory validity
-3. branch/tension/update vocabularies
+1. both eyes and required envelope fields
+2. material trajectory shape
+3. branch, tension, and update vocabularies
 4. discovery-trigger/support separation
-5. branch premise declaration
+5. branch-local premise declaration
 6. live consequence preservation after explicit withdrawals
 7. authority equality
 8. field-change attribution
 ```
 
-For compression loss use:
+Use:
 
 ```python
 required_live = _live_consequence_refs(expansion) - set(update["withdraw_consequence_refs"])
 regenerated = set(compression["reexpanded_live_consequence_refs"])
-if required_live - regenerated:
-    return REFUSE / COMPRESSION_ERASED_LIVE_CONSEQUENCE
 ```
 
-For field updates use:
+and refuse with `COMPRESSION_ERASED_LIVE_CONSEQUENCE` when `required_live - regenerated` is non-empty.
+
+Use:
 
 ```python
 field_changed = pass_["pre_field_digest"] != pass_["post_field_digest"]
 attributed = update["kind"] != "NONE" and bool(update["receipt_refs"])
 ```
 
-Refuse only when `field_changed and not attributed`.
+and refuse with `UNATTRIBUTED_UPDATE` only when `field_changed and not attributed`.
 
-- [ ] **Step 4: Run the evaluator tests**
+Malformed branch or update envelopes return `INSUFFICIENT_TO_TEST / MALFORMED_PASS`. Unknown branch status returns `INSUFFICIENT_TO_TEST / UNKNOWN_BRANCH_STATUS`. Unknown update kind returns `INSUFFICIENT_TO_TEST / UNKNOWN_UPDATE_KIND`.
+
+- [ ] **Step 4: Run Task 1–2 tests**
 
 ```bash
 python -m unittest tests.test_binocular_recursion -v
 ```
 
-Expected: all Task 1–2 tests pass.
+Expected: all current tests pass.
 
 - [ ] **Step 5: Commit Task 2**
 
@@ -515,60 +423,103 @@ git commit -m "feat: enforce binocular recursion refusals"
 
 **Files:**
 - Modify: `alex_runtime/binocular_recursion.py`
-- Create: `tests/fixtures/binocular_recursion/fixed.json`
-- Create: `tests/fixtures/binocular_recursion/cycle.json`
-- Create: `tests/fixtures/binocular_recursion/divergent.json`
 - Modify: `tests/test_binocular_recursion.py`
 
 **Interfaces:**
 - Consumes: constitutionally valid pass envelopes.
-- Produces: deterministic state digests and structural validation of `FIXED`, `CYCLE`, `RESIDUAL`, and `DIVERGENT`.
+- Produces: canonical state digests and structural validation of `FIXED`, `CYCLE`, `RESIDUAL`, and `DIVERGENT`.
 
-- [ ] **Step 1: Create terminal fixtures from the lawful fixture**
+- [ ] **Step 1: Add exact terminal-case builders to the test module**
 
-Create `fixed.json` by using two passes whose compression profile, proposal digest, expansion profile, live consequence set, and tension signature are identical, with terminal `FIXED`.
+Add below `load_case`:
 
-Create `cycle.json` with three passes whose canonical states are `A, B, A`, with terminal `CYCLE`.
+```python
+def stable_pass(template: dict, index: int, proposal: str, tension_type: str = "STABLE_MATCH") -> dict:
+    pass_ = copy.deepcopy(template)
+    pass_["pass_index"] = index
+    pass_["compression"]["proposal_digest"] = proposal
+    pass_["tensions"] = [{
+        "type": tension_type,
+        "left_refs": [proposal],
+        "right_refs": ["c1"],
+        "receipt_refs": [f"receipt:t{index}"],
+    }]
+    return pass_
 
-Create `divergent.json` with `pass_limit: 3`, exactly three distinct canonical states, no repeated state digest, and a final transition whose material tension signature differs from pass 1, with terminal `DIVERGENT`.
 
-Use only the same allowed branch/tension/update vocabularies as `lawful-residual.json`; keep authority unchanged and field ancestry contiguous.
+def make_fixed_case() -> dict:
+    case = load_case()
+    template = copy.deepcopy(case["passes"][0])
+    first = stable_pass(template, 0, "sha256:fixed-proposal")
+    second = stable_pass(template, 1, "sha256:fixed-proposal")
+    second["pre_field_digest"] = first["post_field_digest"]
+    case["passes"] = [first, second]
+    case["terminal"] = "FIXED"
+    case["pass_limit"] = 4
+    return case
 
-- [ ] **Step 2: Add terminal tests**
+
+def make_cycle_case() -> dict:
+    case = load_case()
+    template = copy.deepcopy(case["passes"][0])
+    first = stable_pass(template, 0, "sha256:cycle-a")
+    middle = stable_pass(template, 1, "sha256:cycle-b")
+    last = stable_pass(template, 2, "sha256:cycle-a")
+    middle["pre_field_digest"] = first["post_field_digest"]
+    last["pre_field_digest"] = middle["post_field_digest"]
+    case["passes"] = [first, middle, last]
+    case["terminal"] = "CYCLE"
+    case["pass_limit"] = 4
+    return case
+
+
+def make_divergent_case() -> dict:
+    case = load_case()
+    template = copy.deepcopy(case["passes"][0])
+    first = stable_pass(template, 0, "sha256:div-a")
+    middle = stable_pass(template, 1, "sha256:div-b", "BRANCH_DEPENDENCE")
+    last = stable_pass(template, 2, "sha256:div-c", "UNEXPLAINED_RESIDUAL")
+    middle["pre_field_digest"] = first["post_field_digest"]
+    last["pre_field_digest"] = middle["post_field_digest"]
+    case["passes"] = [first, middle, last]
+    case["terminal"] = "DIVERGENT"
+    case["pass_limit"] = 3
+    return case
+```
+
+- [ ] **Step 2: Add exact terminal tests**
 
 Append:
 
 ```python
     def test_fixed_requires_last_two_equal_states_under_same_profiles(self):
-        result = evaluate_binocular_recursion_case(load_case("fixed.json"))
+        result = evaluate_binocular_recursion_case(make_fixed_case())
         self.assertEqual((result["disposition"], result["terminal"]), ("ACCEPT", "FIXED"))
 
     def test_fixed_fails_when_compression_profile_changes(self):
-        case = load_case("fixed.json")
+        case = make_fixed_case()
         case["passes"][-1]["compression"]["profile_digest"] = "sha256:compress-v2"
         result = evaluate_binocular_recursion_case(case)
         self.assertEqual((result["disposition"], result["reason_code"]), ("INSUFFICIENT_TO_TEST", "TERMINAL_NOT_DEMONSTRATED"))
 
     def test_cycle_requires_repeated_state_with_distinct_intervening_state(self):
-        result = evaluate_binocular_recursion_case(load_case("cycle.json"))
+        result = evaluate_binocular_recursion_case(make_cycle_case())
         self.assertEqual((result["disposition"], result["terminal"]), ("ACCEPT", "CYCLE"))
 
     def test_residual_requires_final_nonstable_tension(self):
         case = load_case()
-        case["passes"][-1]["tensions"] = [
-            {"type": "STABLE_MATCH", "left_refs": ["sha256:proposal-1"], "right_refs": ["c1", "c2"], "receipt_refs": ["receipt:stable"]}
-        ]
+        case["passes"][-1]["tensions"] = [{"type": "STABLE_MATCH", "left_refs": ["sha256:proposal-1"], "right_refs": ["c1", "c2"], "receipt_refs": ["receipt:stable"]}]
         result = evaluate_binocular_recursion_case(case)
         self.assertEqual((result["disposition"], result["reason_code"]), ("INSUFFICIENT_TO_TEST", "TERMINAL_NOT_DEMONSTRATED"))
 
     def test_divergent_requires_reaching_declared_bound(self):
-        case = load_case("divergent.json")
+        case = make_divergent_case()
         case["pass_limit"] = 4
         result = evaluate_binocular_recursion_case(case)
         self.assertEqual((result["disposition"], result["reason_code"]), ("INSUFFICIENT_TO_TEST", "TERMINAL_NOT_DEMONSTRATED"))
 
     def test_divergent_rejects_repeated_state(self):
-        case = load_case("divergent.json")
+        case = make_divergent_case()
         case["passes"][2]["compression"] = copy.deepcopy(case["passes"][0]["compression"])
         case["passes"][2]["expansion"] = copy.deepcopy(case["passes"][0]["expansion"])
         case["passes"][2]["tensions"] = copy.deepcopy(case["passes"][0]["tensions"])
@@ -576,15 +527,15 @@ Append:
         self.assertEqual((result["disposition"], result["reason_code"]), ("INSUFFICIENT_TO_TEST", "TERMINAL_NOT_DEMONSTRATED"))
 ```
 
-- [ ] **Step 3: Run terminal tests and verify failure**
+- [ ] **Step 3: Run terminal tests and verify failures**
 
 ```bash
 python -m unittest tests.test_binocular_recursion -v
 ```
 
-Expected: terminal-specific tests fail until canonical hashing and classifiers exist.
+Expected: terminal-specific tests fail before canonical hashing/classification is added.
 
-- [ ] **Step 4: Implement canonical binocular-state hashing**
+- [ ] **Step 4: Implement canonical hashing and terminal rules**
 
 Add:
 
@@ -599,11 +550,7 @@ def _sha256_json(value: object) -> str:
 
 
 def _tension_signature(tension: dict[str, Any]) -> dict[str, object]:
-    return {
-        "type": tension["type"],
-        "left_refs": sorted(tension["left_refs"]),
-        "right_refs": sorted(tension["right_refs"]),
-    }
+    return {"type": tension["type"], "left_refs": sorted(tension["left_refs"]), "right_refs": sorted(tension["right_refs"])}
 
 
 def _binocular_state_digest(pass_: dict[str, Any]) -> str:
@@ -617,32 +564,18 @@ def _binocular_state_digest(pass_: dict[str, Any]) -> str:
     return _sha256_json(payload)
 ```
 
-The tension-list order is preserved. Only set-like refs within each tension are sorted.
+Preserve tension-list order; sort only set-like refs inside a tension.
 
-Implement terminal rules exactly:
+Implement:
 
 ```text
-FIXED
-  len(passes) >= 2
-  last two state digests equal
-  last two compression.profile_digest equal
-  last two expansion.profile_digest equal
-
-CYCLE
-  some state digest repeats
-  at least one distinct state occurs between its two occurrences
-
-RESIDUAL
-  final pass has at least one tension type != STABLE_MATCH
-
-DIVERGENT
-  len(passes) == pass_limit
-  len(passes) >= 2
-  all state digests unique
-  final transition changes the ordered material tension-signature list
+FIXED: >=2 passes; last two state digests equal; last two compression and expansion profile digests equal.
+CYCLE: a state digest repeats with at least one distinct state between occurrences.
+RESIDUAL: final pass contains a tension type other than STABLE_MATCH.
+DIVERGENT: len(passes) == pass_limit >= 2; all state digests unique; final ordered tension-signature list differs from the previous pass.
 ```
 
-Return `INSUFFICIENT_TO_TEST / TERMINAL_NOT_DEMONSTRATED` when the supplied terminal fails its structural rule.
+A supplied label that fails its rule returns `INSUFFICIENT_TO_TEST / TERMINAL_NOT_DEMONSTRATED`.
 
 - [ ] **Step 5: Run evaluator and full repository tests**
 
@@ -656,13 +589,13 @@ Expected: all tests pass.
 - [ ] **Step 6: Commit Task 3**
 
 ```bash
-git add alex_runtime/binocular_recursion.py tests/test_binocular_recursion.py tests/fixtures/binocular_recursion/fixed.json tests/fixtures/binocular_recursion/cycle.json tests/fixtures/binocular_recursion/divergent.json
+git add alex_runtime/binocular_recursion.py tests/test_binocular_recursion.py
 git commit -m "feat: validate binocular terminal states"
 ```
 
 ---
 
-### Task 4: Add the JSON runner and ALEX research-method reference
+### Task 4: Add the JSON runner and expose the ALEX research method
 
 **Files:**
 - Create: `tools/run_binocular_recursion.py`
@@ -674,7 +607,7 @@ git commit -m "feat: validate binocular terminal states"
 **Interfaces:**
 - CLI consumes one JSON object from an optional file path or stdin.
 - CLI writes one compact JSON result; exit `0` for `ACCEPT`, `1` for evaluator refusal/insufficiency, `2` for transport/JSON failures.
-- Skill reference explains the human research protocol without claiming autonomous research generation.
+- Skill reference explains the protocol without claiming autonomous research generation.
 
 - [ ] **Step 1: Write failing CLI tests**
 
@@ -694,48 +627,25 @@ SPECIMENS = ROOT / "tests" / "fixtures" / "binocular_recursion"
 
 class BinocularRunnerTests(unittest.TestCase):
     def test_file_input_accepts_lawful_case(self):
-        completed = subprocess.run(
-            [sys.executable, str(RUNNER), str(SPECIMENS / "lawful-residual.json")],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
+        completed = subprocess.run([sys.executable, str(RUNNER), str(SPECIMENS / "lawful-residual.json")], capture_output=True, text=True, check=False)
         self.assertEqual(completed.returncode, 0)
         self.assertEqual(json.loads(completed.stdout)["disposition"], "ACCEPT")
 
     def test_stdin_input_accepts_lawful_case(self):
         payload = (SPECIMENS / "lawful-residual.json").read_text(encoding="utf-8")
-        completed = subprocess.run(
-            [sys.executable, str(RUNNER)],
-            input=payload,
-            capture_output=True,
-            text=True,
-            check=False,
-        )
+        completed = subprocess.run([sys.executable, str(RUNNER)], input=payload, capture_output=True, text=True, check=False)
         self.assertEqual(completed.returncode, 0)
         self.assertEqual(json.loads(completed.stdout)["terminal"], "RESIDUAL")
 
     def test_evaluator_refusal_maps_to_exit_one(self):
         case = json.loads((SPECIMENS / "lawful-residual.json").read_text(encoding="utf-8"))
         case["passes"][0]["compression"]["claim_support_refs"].append("trigger:prompt-001")
-        completed = subprocess.run(
-            [sys.executable, str(RUNNER)],
-            input=json.dumps(case),
-            capture_output=True,
-            text=True,
-            check=False,
-        )
+        completed = subprocess.run([sys.executable, str(RUNNER)], input=json.dumps(case), capture_output=True, text=True, check=False)
         self.assertEqual(completed.returncode, 1)
         self.assertEqual(json.loads(completed.stdout)["reason_code"], "DISCOVERY_TRIGGER_AS_SUPPORT")
 
     def test_malformed_json_maps_to_exit_two(self):
-        completed = subprocess.run(
-            [sys.executable, str(RUNNER)],
-            input="{not-json",
-            capture_output=True,
-            text=True,
-            check=False,
-        )
+        completed = subprocess.run([sys.executable, str(RUNNER)], input="{not-json", capture_output=True, text=True, check=False)
         self.assertEqual(completed.returncode, 2)
         self.assertEqual(completed.stdout, "")
         self.assertIn("binocular recursion failed to execute:", completed.stderr)
@@ -753,9 +663,7 @@ python -m unittest tests.test_run_binocular_recursion -v
 
 Expected: runner-not-found failures.
 
-- [ ] **Step 3: Implement the thin CLI**
-
-Create `tools/run_binocular_recursion.py`:
+- [ ] **Step 3: Implement `tools/run_binocular_recursion.py`**
 
 ```python
 import argparse
@@ -774,7 +682,6 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Audit an ALEX BINOCULAR-RECURSION-001 trace")
     parser.add_argument("path", nargs="?", help="JSON case path; omit to read stdin")
     args = parser.parse_args()
-
     try:
         raw = Path(args.path).read_text(encoding="utf-8") if args.path else sys.stdin.read()
         case = json.loads(raw)
@@ -784,7 +691,6 @@ def main() -> int:
     except Exception as exc:
         print(f"binocular recursion failed to execute: {exc}", file=sys.stderr)
         return 2
-
     print(json.dumps(result, sort_keys=True, separators=(",", ":")))
     return 0 if result["disposition"] == "ACCEPT" else 1
 
@@ -817,17 +723,11 @@ SKILL = ROOT / "skills" / "alex" / "SKILL.md"
 class BinocularReferenceTests(unittest.TestCase):
     def test_reference_preserves_core_non_collapses(self):
         text = REFERENCE.read_text(encoding="utf-8")
-        for phrase in (
-            "FREEZE → COMPRESS || EXPAND → TENSION → UPDATE → REPEAT",
-            "discovery trigger != support",
-            "introduced premise != admitted premise",
-            "ACCEPT != researched claim accepted as true",
-        ):
+        for phrase in ("FREEZE → COMPRESS || EXPAND → TENSION → UPDATE → REPEAT", "discovery trigger != support", "introduced premise != admitted premise", "ACCEPT != researched claim accepted as true"):
             self.assertIn(phrase, text)
 
     def test_alex_skill_routes_binocular_recursion(self):
-        text = SKILL.read_text(encoding="utf-8")
-        self.assertIn("references/binocular-recursion.md", text)
+        self.assertIn("references/binocular-recursion.md", SKILL.read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":
@@ -842,9 +742,7 @@ python -m unittest tests.test_binocular_recursion_reference -v
 
 Expected: missing-reference failure.
 
-- [ ] **Step 7: Create the exact research-method reference**
-
-Create `skills/alex/references/binocular-recursion.md` with this content:
+- [ ] **Step 7: Create `skills/alex/references/binocular-recursion.md` with this exact body**
 
 ```markdown
 # BINOCULAR-RECURSION-001
@@ -892,15 +790,13 @@ python tools/run_binocular_recursion.py tests/fixtures/binocular_recursion/lawfu
 Exit `0` means the formation contract was accepted. Exit `1` means the supplied trace was refused or insufficient to test. Exit `2` means the JSON transport could not be executed.
 ```
 
-- [ ] **Step 8: Add this routing paragraph to `skills/alex/SKILL.md`**
-
-Insert near the other optional research protocols:
+- [ ] **Step 8: Add this exact routing paragraph to `skills/alex/SKILL.md`**
 
 ```markdown
 `BINOCULAR-RECURSION-001` is an optional dual-pressure research protocol for cases where compression toward a minimum surviving generator and expansion through the lawful consequences of NOW should remain simultaneously live. Read [binocular-recursion.md](references/binocular-recursion.md) before using it. The executable auditor validates a supplied formation trace; it does not generate claims, admit premises, or promote tension into evidence.
 ```
 
-- [ ] **Step 9: Run documentation, CLI, evaluator, and full-suite verification**
+- [ ] **Step 9: Run all verification**
 
 ```bash
 python -m unittest tests.test_binocular_recursion_reference -v
@@ -910,7 +806,7 @@ python -m unittest discover -s tests -p "test_*.py" -v
 python tools/run_binocular_recursion.py tests/fixtures/binocular_recursion/lawful-residual.json
 ```
 
-Expected: all unit tests pass; the smoke command exits `0` and prints a result whose `disposition` is `ACCEPT` and `terminal` is `RESIDUAL`.
+Expected: all tests pass; smoke command exits `0` and prints `disposition: ACCEPT`, `terminal: RESIDUAL` inside the required result envelope.
 
 - [ ] **Step 10: Commit Task 4**
 
@@ -933,7 +829,7 @@ python -m unittest discover -s tests -p "test_*.py" -v
 python tools/run_binocular_recursion.py tests/fixtures/binocular_recursion/lawful-residual.json
 ```
 
-Inspect `git diff main...HEAD` and confirm all seven boundaries:
+Inspect `git diff main...HEAD` and confirm:
 
 ```text
 1. no Dogram runtime dependency
