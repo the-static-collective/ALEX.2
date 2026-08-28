@@ -61,6 +61,29 @@ The profile proves only the following scoped mechanics: exact compile/envelope b
 
 `ACCEPT` in this profile means only that the bounded run request may enter ALEX under that exact compile and fence testimony. It does **not** mean truth, source authority, canon, permission beyond the carried fence, publication, deployment, external admission, merge authority, or owning-world consequence. It also does not claim `alex.runtime/one-book-m1` or `alex.runtime/formation-trace-m2` conformance.
 
+## PROJECTION-INVARIANCE-001
+
+`PROJECTION-INVARIANCE-001` is a local cross-organ adversarial check over **already-formed witness digests**. ALEX does not reconstruct or replace 3rdi projection semantics here. It receives two witnesses from materially different worlds and asks whether a hidden difference crossed a boundary that was declared equivalent for the observer.
+
+The evaluator checks the earliest boundary first:
+
+```text
+LOADOUT / bounded context
+        -> observer projection
+        -> ALEX derivation
+        -> serialization
+        -> narrative exposure
+        -> authority state
+```
+
+If more than one downstream result differs, the earliest mismatch names the failure. A projection mismatch that later changes derivation is therefore `PROJECTION_LEAK`, not a derivation failure.
+
+One positive-control exception is intentionally narrow: a narrative difference may survive when a declared `NARRATIVE` transform names one non-empty receipt and **both** world witnesses carry that exact receipt. This models an attributable foreshadow/reveal transform without turning hidden author state into ambient permission. No transform may waive LOADOUT, projection, derivation, serialization, or authority differences.
+
+The pair fixtures live under `tests/fixtures/projection_invariance/`, outside the closed canonical Crucible specimen corpus. The hostile projection-leak fixture remains preserved beside the clean and declared-transform controls rather than being rewritten after the evaluator passes.
+
+A passing result means only that the supplied pair respected the declared projection-invariance boundary. It grants no truth, historical identity, source authority, canon, publication, permission, admission, warrant, merge authority, or execution consequence.
+
 ## Conformance boundary
 
 Passing `crucible-contract` proves the fixture corpus and reference harness are internally consistent. It does not prove an ALEX runtime conforms. Runtime conformance begins only when a real adapter executes the applicable fixtures and the harness reports zero constitutional mismatches.
