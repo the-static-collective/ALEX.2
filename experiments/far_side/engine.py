@@ -29,6 +29,42 @@ def _surviving_invariants(case: dict[str, Any]) -> list[str]:
     return sorted(set.intersection(*invariant_sets))
 
 
+def _baseline_statements(case: dict[str, Any]) -> set[str]:
+    return {
+        normalize_statement(item["statement"])
+        for item in case["baseline"]["claims"]
+    }
+
+
+def _novelty_delta(case: dict[str, Any]) -> list[dict[str, str]]:
+    baseline = _baseline_statements(case)
+    delta: list[dict[str, str]] = []
+    for item in case["candidate"]["novelty"]:
+        normalized = normalize_statement(item["statement"])
+        if normalized in baseline:
+            continue
+        delta.append(
+            {
+                "type": item["type"],
+                "statement": normalized,
+                "discriminator": normalize_statement(item["discriminator"]),
+                "receipt_ref": item["receipt_ref"],
+            }
+        )
+    return sorted(delta, key=lambda item: (item["type"], item["statement"], item["receipt_ref"]))
+
+
+def _pressure_state(case: dict[str, Any]) -> tuple[list[str], list[str]]:
+    by_kind = {item["kind"]: item for item in case["pressure"]}
+    missing = sorted(REQUIRED_PRESSURES - set(by_kind))
+    failures = sorted(
+        kind
+        for kind, item in by_kind.items()
+        if kind in REQUIRED_PRESSURES and item["status"] == "FAIL"
+    )
+    return missing, failures
+
+
 def _result(
     case_id: str,
     final_status: str,
@@ -122,17 +158,54 @@ def evaluate_far_side_case(case: object) -> dict[str, object]:
             receipts,
         )
 
-    # Novelty and pressure gates are added in Task 3.
+    missing_pressure, pressure_failures = _pressure_state(case)
+    if missing_pressure:
+        return _result(
+            case_id,
+            "INSUFFICIENT_RECEIPT",
+            "MISSING_REQUIRED_PRESSURE",
+            baseline_digest,
+            axes,
+            survivors,
+            regenerated,
+            [],
+            [],
+            [],
+            receipts,
+        )
+
+    novelty_delta = _novelty_delta(case)
+
+    if pressure_failures:
+        return _result(
+            case_id,
+            "PARTIAL_SURVIVOR",
+            "HOSTILE_PRESSURE_FAILED",
+            baseline_digest,
+            axes,
+            survivors,
+            regenerated,
+            [],
+            novelty_delta,
+            pressure_failures,
+            receipts,
+        )
+
+    dimensional_delta = [
+        item for item in novelty_delta if item["type"] in DIMENSIONAL_NOVELTY_TYPES
+    ]
+    final_status = "FAR_SIDE_SURVIVOR" if dimensional_delta else "NO_NEW_DIMENSION_EARNED"
+
     return _result(
         case_id,
-        "NO_NEW_DIMENSION_EARNED",
+        final_status,
         None,
         baseline_digest,
         axes,
         survivors,
         regenerated,
         [],
-        [],
+        novelty_delta,
         [],
         receipts,
     )
