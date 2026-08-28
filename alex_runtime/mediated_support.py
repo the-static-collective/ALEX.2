@@ -7,6 +7,7 @@ from alex_runtime.digests import sha256_json
 
 MEDIATED_SUPPORT_RULE_ID = "MEDIATED-SUPPORT-001"
 _ALLOWED_CLAIM_CLASSES = {"OBJECT_LOCAL", "POPULATION_GENERALIZATION"}
+_COMPARABLE_DERIVATION_DISPOSITIONS = {"ACCEPT", "REFUSE"}
 
 
 def _string_list(value: Any) -> list[str] | None:
@@ -83,6 +84,13 @@ def _evidence_basis(result: dict) -> list[str]:
     return [item for item in ids if isinstance(item, str) and item]
 
 
+def _derivation_comparable(result: dict) -> bool:
+    evaluation = result.get("evaluation") if isinstance(result, dict) else None
+    if not isinstance(evaluation, dict):
+        return False
+    return evaluation.get("disposition") in _COMPARABLE_DERIVATION_DISPOSITIONS
+
+
 def _formation_refs(side: dict) -> set[str]:
     selection = side["selection"]
     return set(side["interest_receipt_refs"]) | set(selection["receipt_refs"]) | set(
@@ -90,8 +98,14 @@ def _formation_refs(side: dict) -> set[str]:
     )
 
 
-def _formation_survivors(left: dict, right: dict) -> list[str]:
-    return sorted(_formation_refs(left) | _formation_refs(right))
+def _receipt_survivors(left: dict, right: dict, left_result: dict, right_result: dict) -> list[str]:
+    survivors = _formation_refs(left) | _formation_refs(right)
+    for result in (left_result, right_result):
+        evaluation = result.get("evaluation") if isinstance(result, dict) else None
+        refs = evaluation.get("required_survivors") if isinstance(evaluation, dict) else None
+        if isinstance(refs, list):
+            survivors.update(ref for ref in refs if isinstance(ref, str) and ref)
+    return sorted(survivors)
 
 
 def _selection_formation_complete(side: dict) -> bool:
@@ -146,36 +160,39 @@ def _result(
     }
 
 
+def _malformed_result(case_id: Any, claim_id: Any) -> dict[str, Any]:
+    safe_case_id = case_id if isinstance(case_id, str) and case_id else "unknown-case"
+    safe_claim_id = claim_id if isinstance(claim_id, str) and claim_id else "unknown-claim"
+    return _result(
+        case_id=safe_case_id,
+        claim_id=safe_claim_id,
+        disposition="INSUFFICIENT_TO_TEST",
+        reason_code="MALFORMED_CASE",
+        mediation_status=None,
+        support_changed=False,
+    )
+
+
 def evaluate_mediated_support_case(case: dict) -> dict[str, Any]:
-    case_id = case.get("case_id", "unknown-case") if isinstance(case, dict) else "unknown-case"
-    claim_id = case.get("claim_id", "unknown-claim") if isinstance(case, dict) else "unknown-claim"
-    if not isinstance(case_id, str) or not case_id:
-        case_id = "unknown-case"
-    if not isinstance(claim_id, str) or not claim_id:
-        claim_id = "unknown-claim"
-
     if not isinstance(case, dict):
-        return _result(
-            case_id=case_id,
-            claim_id=claim_id,
-            disposition="INSUFFICIENT_TO_TEST",
-            reason_code="MALFORMED_CASE",
-            mediation_status=None,
-            support_changed=False,
-        )
+        return _malformed_result(None, None)
 
+    case_id = case.get("case_id")
+    claim_id = case.get("claim_id")
     claim_class = case.get("claim_class")
     left = case.get("left")
     right = case.get("right")
-    if claim_class not in _ALLOWED_CLAIM_CLASSES or not _valid_side(left) or not _valid_side(right):
-        return _result(
-            case_id=case_id,
-            claim_id=claim_id,
-            disposition="INSUFFICIENT_TO_TEST",
-            reason_code="MALFORMED_CASE",
-            mediation_status=None,
-            support_changed=False,
-        )
+
+    if (
+        not isinstance(case_id, str)
+        or not case_id
+        or not isinstance(claim_id, str)
+        or not claim_id
+        or claim_class not in _ALLOWED_CLAIM_CLASSES
+        or not _valid_side(left)
+        or not _valid_side(right)
+    ):
+        return _malformed_result(case_id, claim_id)
 
     if _proposal_claim_id(left) != claim_id or _proposal_claim_id(right) != claim_id:
         return _result(
@@ -192,7 +209,20 @@ def evaluate_mediated_support_case(case: dict) -> dict[str, Any]:
     left_summary = _side_summary(left, left_result)
     right_summary = _side_summary(right, right_result)
     support_changed = left_summary["support_result_digest"] != right_summary["support_result_digest"]
-    survivors = _formation_survivors(left, right)
+    survivors = _receipt_survivors(left, right, left_result, right_result)
+
+    if not _derivation_comparable(left_result) or not _derivation_comparable(right_result):
+        return _result(
+            case_id=case_id,
+            claim_id=claim_id,
+            disposition="INSUFFICIENT_TO_TEST",
+            reason_code="DERIVATION_NOT_COMPARABLE",
+            mediation_status=None,
+            support_changed=support_changed,
+            left=left_summary,
+            right=right_summary,
+            receipt_survivors=survivors,
+        )
 
     if _formation_refs(left).intersection(_evidence_basis(left_result)) or _formation_refs(right).intersection(
         _evidence_basis(right_result)
