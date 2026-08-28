@@ -149,22 +149,22 @@ Any mutation, canonization, publication, execution, or project-local consequence
 
 ## 4. Minimal cross-stack receipt envelope
 
-The systems may share a **small structural envelope** for experiments. This is not a universal ontology and must remain semantically sparse.
+The systems may share a **small structural envelope** for experiments. “Shared” here means shape-level convenience for testing and translation, not semantic interoperability, common persistence, or common authority. This is not a universal ontology and must remain semantically sparse.
 
 Candidate descriptive shape:
 
 ```json
 {
   "event_id": "e42",
-  "operator": "INSERT_IN_EDGE",
+  "operator": "EXPERIMENT_STEP",
   "operator_version": "1",
-  "pre_state": "sha256:...",
+  "pre_state": null,
   "inputs": [],
   "basis_refs": [],
   "edge_receipts": [],
   "decoder_ref": null,
   "projection_scope": null,
-  "post_state": "sha256:...",
+  "post_state": null,
   "authority": "none"
 }
 ```
@@ -173,14 +173,14 @@ Required principles:
 
 1. `event_id` identifies the occurrence, not merely its payload.
 2. `operator` identifies the transformation class actually executed.
-3. `pre_state` and `post_state` bind stateful transformations when applicable.
+3. `pre_state` and `post_state` bind stateful transformations when applicable and remain null when no state transition is claimed.
 4. `basis_refs` are descriptive pointers only; each owner decides what they mean locally.
 5. `edge_receipts` may record relation changes but do not imply semantic support.
 6. `decoder_ref` is present only where decoding matters.
 7. `projection_scope` is present only where a declared projection matters.
 8. `authority` defaults to `none` for these experiments and may not be silently widened by consumers.
 
-A project may wrap, extend, or translate this shape locally. No project is required to persist it verbatim.
+A project may wrap, extend, or translate this shape locally. No project is required to persist it verbatim, and matching field names do not imply matching semantics unless an explicit owner-level adapter says so.
 
 ---
 
