@@ -1,0 +1,77 @@
+{
+  "case_id": "projection-break-hidden-adjacency",
+  "pre": {
+    "left": {
+      "world_digest": "sha256:left-world-before",
+      "observer_constraints_digest": "sha256:observer-constraints",
+      "visible_input_digest": "sha256:pre-visible-input",
+      "bounded_context_digest": "sha256:pre-context",
+      "projection_digest": "sha256:pre-projection",
+      "derivation_digest": "sha256:pre-derivation",
+      "serialization_digest": "sha256:pre-serialization",
+      "narrative_digest": "sha256:pre-narrative",
+      "authority_digest": "sha256:authority-unchanged",
+      "receipt_refs": [
+        "receipt:hidden-adjacency-left",
+        "receipt:observer-cut"
+      ]
+    },
+    "right": {
+      "world_digest": "sha256:right-world-before",
+      "observer_constraints_digest": "sha256:observer-constraints",
+      "visible_input_digest": "sha256:pre-visible-input",
+      "bounded_context_digest": "sha256:pre-context",
+      "projection_digest": "sha256:pre-projection",
+      "derivation_digest": "sha256:pre-derivation",
+      "serialization_digest": "sha256:pre-serialization",
+      "narrative_digest": "sha256:pre-narrative",
+      "authority_digest": "sha256:authority-unchanged",
+      "receipt_refs": [
+        "receipt:hidden-adjacency-right",
+        "receipt:observer-cut"
+      ]
+    }
+  },
+  "intervention": {
+    "receipt_ref": "intervention:edge-touch-001",
+    "policy_digest": "sha256:same-edge-local-touch"
+  },
+  "hidden_difference": {
+    "left_receipt_ref": "receipt:hidden-adjacency-left",
+    "right_receipt_ref": "receipt:hidden-adjacency-right"
+  },
+  "post": {
+    "left": {
+      "world_digest": "sha256:left-world-after",
+      "observer_constraints_digest": "sha256:observer-constraints",
+      "visible_input_digest": "sha256:shared-intervention-input",
+      "bounded_context_digest": "sha256:post-context-shared",
+      "projection_digest": "sha256:left-post-projection",
+      "derivation_digest": "sha256:left-post-derivation",
+      "serialization_digest": "sha256:left-post-serialization",
+      "narrative_digest": "sha256:left-post-narrative",
+      "authority_digest": "sha256:authority-unchanged",
+      "receipt_refs": [
+        "receipt:hidden-adjacency-left",
+        "receipt:observer-cut",
+        "intervention:edge-touch-001"
+      ]
+    },
+    "right": {
+      "world_digest": "sha256:right-world-after",
+      "observer_constraints_digest": "sha256:observer-constraints",
+      "visible_input_digest": "sha256:shared-intervention-input",
+      "bounded_context_digest": "sha256:post-context-shared",
+      "projection_digest": "sha256:right-post-projection",
+      "derivation_digest": "sha256:right-post-derivation",
+      "serialization_digest": "sha256:right-post-serialization",
+      "narrative_digest": "sha256:right-post-narrative",
+      "authority_digest": "sha256:authority-unchanged",
+      "receipt_refs": [
+        "receipt:hidden-adjacency-right",
+        "receipt:observer-cut",
+        "intervention:edge-touch-001"
+      ]
+    }
+  }
+}
