@@ -49,6 +49,24 @@ class FarSideCliTests(unittest.TestCase):
         self.assertIn("invalid JSON", completed.stderr)
         self.assertNotIn("Traceback", completed.stderr)
 
+    def test_repeated_identical_input_is_byte_stable(self):
+        command = [sys.executable, str(TOOL), str(FIXTURES / "survivor.json")]
+        left = subprocess.run(
+            command,
+            cwd=ROOT,
+            check=False,
+            capture_output=True,
+        )
+        right = subprocess.run(
+            command,
+            cwd=ROOT,
+            check=False,
+            capture_output=True,
+        )
+        self.assertEqual(left.returncode, 0, left.stderr.decode())
+        self.assertEqual(right.returncode, 0, right.stderr.decode())
+        self.assertEqual(left.stdout, right.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()
