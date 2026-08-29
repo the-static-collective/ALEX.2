@@ -79,6 +79,10 @@ def evaluate_world_bridge(record: object) -> dict[str, Any]:
         return _refuse("invalid_evidence_refs")
     if record["bridge_type"] in DOCUMENTED_BRIDGE_TYPES and not evidence_refs:
         return _refuse("documented_bridge_requires_evidence")
+    if record["bridge_type"] in DOCUMENTED_BRIDGE_TYPES:
+        endpoints = {record["source_ref"], record["target_ref"]}
+        if any(ref in endpoints for ref in evidence_refs):
+            return _refuse("bridge_evidence_must_be_distinct")
 
     bridge_digest = sha256_json(record)
     return {
