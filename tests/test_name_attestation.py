@@ -1,6 +1,7 @@
 import copy
 import unittest
 
+from alex_runtime.digests import sha256_json
 from alex_runtime.name_attestation import (
     evaluate_name_attestation,
     evaluate_text_transform,
@@ -24,7 +25,7 @@ BASE_ATTESTATION = {
 BASE_TRANSFORM = {
     "schema": "alex.text-transform/v0",
     "transform_id": "case-normalize-001",
-    "input_ref": "sha256:" + "a" * 64,
+    "input_ref": sha256_json({"text": "Ἰησοῦς"}),
     "operation": "CASE_NORMALIZE",
     "input_text": "Ἰησοῦς",
     "output_text": "ΙΗΣΟΥΣ",
@@ -46,6 +47,17 @@ class NameAttestationTests(unittest.TestCase):
         self.assertEqual(result["receipt"]["authority"], "none")
         self.assertTrue(result["receipt"]["attestation_digest"].startswith("sha256:"))
 
+    def test_attestation_receipt_exposes_exact_raw_form_carrier_digest(self):
+        result = evaluate_name_attestation(copy.deepcopy(BASE_ATTESTATION))
+        self.assertEqual(
+            result["receipt"]["raw_form_digest"],
+            sha256_json({"text": "Ἰησοῦς"}),
+        )
+        self.assertNotEqual(
+            result["receipt"]["raw_form_digest"],
+            result["receipt"]["attestation_digest"],
+        )
+
     def test_unicode_change_changes_attestation_identity(self):
         first = evaluate_name_attestation(copy.deepcopy(BASE_ATTESTATION))
         second_record = copy.deepcopy(BASE_ATTESTATION)
@@ -55,8 +67,12 @@ class NameAttestationTests(unittest.TestCase):
             first["receipt"]["attestation_digest"],
             second["receipt"]["attestation_digest"],
         )
+        self.assertNotEqual(
+            first["receipt"]["raw_form_digest"],
+            second["receipt"]["raw_form_digest"],
+        )
 
-    def test_source_world_is_part_of_attestation_identity(self):
+    def test_source_world_is_part_of_attestation_identity_but_not_text_carrier(self):
         first = evaluate_name_attestation(copy.deepcopy(BASE_ATTESTATION))
         second_record = copy.deepcopy(BASE_ATTESTATION)
         second_record["source_world"] = "D"
@@ -64,6 +80,10 @@ class NameAttestationTests(unittest.TestCase):
         self.assertNotEqual(
             first["receipt"]["attestation_digest"],
             second["receipt"]["attestation_digest"],
+        )
+        self.assertEqual(
+            first["receipt"]["raw_form_digest"],
+            second["receipt"]["raw_form_digest"],
         )
 
     def test_rejects_invalid_source_world(self):
@@ -108,6 +128,7 @@ class TextTransformTests(unittest.TestCase):
         receipt = result["receipt"]
         self.assertEqual(receipt["operation"], "CASE_NORMALIZE")
         self.assertEqual(receipt["output_text"], "ΙΗΣΟΥΣ")
+        self.assertEqual(receipt["input_ref"], sha256_json({"text": "Ἰησοῦς"}))
         self.assertNotEqual(receipt["transform_digest"], receipt["output_digest"])
         self.assertEqual(receipt["authority"], "none")
 
@@ -126,6 +147,13 @@ class TextTransformTests(unittest.TestCase):
         result = evaluate_text_transform(record)
         self.assertEqual(result["disposition"], "REFUSE")
         self.assertEqual(result["reason"], "invalid_input_ref")
+
+    def test_rejects_valid_but_unrelated_input_ref(self):
+        record = copy.deepcopy(BASE_TRANSFORM)
+        record["input_ref"] = sha256_json({"text": "unrelated carrier"})
+        result = evaluate_text_transform(record)
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason"], "input_ref_mismatch")
 
     def test_rejects_duplicate_declared_loss(self):
         record = copy.deepcopy(BASE_TRANSFORM)
