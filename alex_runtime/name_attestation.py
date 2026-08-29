@@ -39,6 +39,7 @@ TRANSFORM_OPERATIONS = frozenset(
 )
 TRANSFORM_REQUIRED = (
     "transform_id",
+    "parent_ref",
     "input_ref",
     "operation",
     "input_text",
@@ -114,6 +115,8 @@ def evaluate_text_transform(record: object) -> dict[str, Any]:
         return _refuse(TRANSFORM_RESULT_SCHEMA, "missing_required_field")
     if record["operation"] not in TRANSFORM_OPERATIONS:
         return _refuse(TRANSFORM_RESULT_SCHEMA, "invalid_operation")
+    if not SHA256_REF.fullmatch(record["parent_ref"]):
+        return _refuse(TRANSFORM_RESULT_SCHEMA, "invalid_parent_ref")
     if not SHA256_REF.fullmatch(record["input_ref"]):
         return _refuse(TRANSFORM_RESULT_SCHEMA, "invalid_input_ref")
     if record["input_ref"] != _text_digest(record["input_text"]):
@@ -130,6 +133,7 @@ def evaluate_text_transform(record: object) -> dict[str, Any]:
         "receipt": {
             "schema": TRANSFORM_RECEIPT_SCHEMA,
             "transform_id": record["transform_id"],
+            "parent_ref": record["parent_ref"],
             "input_ref": record["input_ref"],
             "transform_digest": transform_digest,
             "output_digest": output_digest,
