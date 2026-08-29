@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import re
+import subprocess
 from dataclasses import dataclass
 from enum import Enum
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 
@@ -56,6 +57,14 @@ class Resolution:
     reason_code: str | None
     entry: ChronobodyEntry | None
     candidate_body_time_ids: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class MaterializationCheck:
+    disposition: str
+    reason_code: str | None
+    observed_sha: str | None
+    source_repo: str | None
 
 
 _ALLOWED_BY_MODE = {
@@ -244,3 +253,65 @@ def resolve_body(
         return Resolution("AMBIGUOUS", "MULTIPLE_ELIGIBLE_BODIES", None, eligible_ids)
 
     return Resolution("ROUTED", None, eligible[0], eligible_ids)
+
+
+def _git_read(root: Path, *args: str) -> str | None:
+    try:
+        completed = subprocess.run(
+            ["git", "-C", str(root), *args],
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+    except OSError:
+        return None
+    if completed.returncode != 0:
+        return None
+    return completed.stdout.strip()
+
+
+def _normalize_github_repo(value: str) -> str | None:
+    candidate = value.strip()
+    if candidate.startswith("git@github.com:"):
+        candidate = candidate[len("git@github.com:") :]
+    elif candidate.startswith("https://github.com/"):
+        candidate = candidate[len("https://github.com/") :]
+    else:
+        return None
+    if candidate.endswith(".git"):
+        candidate = candidate[:-4]
+    parts = candidate.split("/")
+    if len(parts) != 2 or not all(parts):
+        return None
+    return f"{parts[0]}/{parts[1]}"
+
+
+def verify_materialization(entry: ChronobodyEntry, root: Path | str) -> MaterializationCheck:
+    root_path = Path(root)
+    if not root_path.is_dir():
+        return MaterializationCheck("REFUSED", "NOT_A_GIT_BODY", None, None)
+
+    observed_sha = _git_read(root_path, "rev-parse", "HEAD")
+    if observed_sha is None or not _SHA_RE.fullmatch(observed_sha):
+        return MaterializationCheck("REFUSED", "NOT_A_GIT_BODY", None, None)
+
+    if entry.source_sha is not None and observed_sha != entry.source_sha:
+        return MaterializationCheck("REFUSED", "BODY_SHA_MISMATCH", observed_sha, None)
+
+    status = _git_read(root_path, "status", "--porcelain")
+    if status is None:
+        return MaterializationCheck("REFUSED", "NOT_A_GIT_BODY", observed_sha, None)
+    if status:
+        return MaterializationCheck("REFUSED", "DIRTY_BODY", observed_sha, None)
+
+    origin = _git_read(root_path, "remote", "get-url", "origin")
+    observed_repo = _normalize_github_repo(origin) if origin is not None else None
+    if observed_repo != entry.source_repo:
+        return MaterializationCheck("REFUSED", "SOURCE_REPO_MISMATCH", observed_sha, observed_repo)
+
+    entrypoint = root_path / PurePosixPath(entry.entrypoint)
+    if not entrypoint.is_file():
+        return MaterializationCheck("REFUSED", "ENTRYPOINT_MISSING", observed_sha, observed_repo)
+
+    return MaterializationCheck("VERIFIED", None, observed_sha, observed_repo)
