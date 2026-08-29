@@ -1,9 +1,15 @@
 import copy
 import unittest
 
-from alex_runtime.chronobody import RegistryError, parse_registry
+from alex_runtime.chronobody import (
+    BodyMode,
+    RegistryError,
+    parse_registry,
+    resolve_body,
+)
 
 FAR_SIDE_SHA = "52c678767017c170506ce1895d3a610b6ef115b4"
+SECOND_SHA = "1111111111111111111111111111111111111111"
 
 
 def registry_value():
@@ -33,6 +39,31 @@ def registry_value():
                 "parents": [],
             }
         ],
+    }
+
+
+def second_body(*, status="INCUBATING", capability="far_side_pressure"):
+    return {
+        "organ_id": "far-side-pass-next",
+        "body_time_id": f"far-side-pass-next@{SECOND_SHA}",
+        "status": status,
+        "capabilities": [capability],
+        "source": {
+            "repo": "the-static-collective/ALEX.2",
+            "branch": "feature/far-side-pass-next",
+            "sha": SECOND_SHA,
+        },
+        "runtime": {
+            "contract": "python-json-stdio/v0",
+            "entrypoint": "tools/far_side_lab.py",
+        },
+        "verification": {
+            "workflow": "crucible-contract",
+            "run_id": 1,
+            "result": "GREEN",
+        },
+        "authority": "none",
+        "parents": [],
     }
 
 
@@ -100,6 +131,112 @@ class ChronobodyRegistryTests(unittest.TestCase):
         value = copy.deepcopy(registry_value())
         value["organs"][0]["runtime"]["contract"] = "shell/v0"
         self.assert_registry_error(value, "RUNTIME_CONTRACT_UNSUPPORTED")
+
+
+class ChronobodyResolutionTests(unittest.TestCase):
+    def setUp(self):
+        self.entries = parse_registry(registry_value())
+
+    def test_present_only_does_not_fall_back_to_incubating(self):
+        result = resolve_body(self.entries, "far_side_pressure", BodyMode.PRESENT_ONLY)
+        self.assertEqual(result.disposition, "UNAVAILABLE")
+        self.assertEqual(result.reason_code, "NO_ELIGIBLE_BODY")
+        self.assertIsNone(result.entry)
+
+    def test_experimental_routes_one_incubating_body(self):
+        result = resolve_body(self.entries, "far_side_pressure", BodyMode.EXPERIMENTAL)
+        self.assertEqual(result.disposition, "ROUTED")
+        self.assertIsNone(result.reason_code)
+        self.assertEqual(result.entry.body_time_id, f"far-side-pass@{FAR_SIDE_SHA}")
+
+    def test_two_eligible_bodies_are_ambiguous_not_latest_wins(self):
+        value = registry_value()
+        value["organs"].append(second_body())
+        entries = parse_registry(value)
+        result = resolve_body(entries, "far_side_pressure", BodyMode.EXPERIMENTAL)
+        self.assertEqual(result.disposition, "AMBIGUOUS")
+        self.assertEqual(result.reason_code, "MULTIPLE_ELIGIBLE_BODIES")
+        self.assertIsNone(result.entry)
+        self.assertEqual(
+            result.candidate_body_time_ids,
+            tuple(sorted((f"far-side-pass@{FAR_SIDE_SHA}", f"far-side-pass-next@{SECOND_SHA}"))),
+        )
+
+    def test_explicit_organ_disambiguates_without_recency_rule(self):
+        value = registry_value()
+        value["organs"].append(second_body())
+        entries = parse_registry(value)
+        result = resolve_body(
+            entries,
+            "far_side_pressure",
+            BodyMode.EXPERIMENTAL,
+            organ_id="far-side-pass-next",
+        )
+        self.assertEqual(result.disposition, "ROUTED")
+        self.assertEqual(result.entry.body_time_id, f"far-side-pass-next@{SECOND_SHA}")
+
+    def test_replay_requires_exact_body_time_id(self):
+        value = registry_value()
+        value["organs"][0]["status"] = "RETIRED"
+        entries = parse_registry(value)
+        result = resolve_body(entries, "far_side_pressure", BodyMode.REPLAY)
+        self.assertEqual(result.disposition, "REFUSED")
+        self.assertEqual(result.reason_code, "EXACT_BODY_TIME_REQUIRED")
+
+    def test_retired_body_routes_only_by_exact_replay(self):
+        value = registry_value()
+        value["organs"][0]["status"] = "RETIRED"
+        entries = parse_registry(value)
+        result = resolve_body(
+            entries,
+            "far_side_pressure",
+            BodyMode.REPLAY,
+            body_time_id=f"far-side-pass@{FAR_SIDE_SHA}",
+        )
+        self.assertEqual(result.disposition, "ROUTED")
+        self.assertEqual(result.entry.status.value, "RETIRED")
+
+    def test_held_body_explicit_request_is_refused(self):
+        value = registry_value()
+        value["organs"][0]["status"] = "HELD"
+        entries = parse_registry(value)
+        result = resolve_body(
+            entries,
+            "far_side_pressure",
+            BodyMode.EXPERIMENTAL,
+            body_time_id=f"far-side-pass@{FAR_SIDE_SHA}",
+        )
+        self.assertEqual(result.disposition, "REFUSED")
+        self.assertEqual(result.reason_code, "BODY_NOT_EXECUTABLE")
+
+    def test_reconstituted_body_is_experimental_only(self):
+        value = registry_value()
+        value["organs"][0]["status"] = "RECONSTITUTED"
+        entries = parse_registry(value)
+        experimental = resolve_body(entries, "far_side_pressure", BodyMode.EXPERIMENTAL)
+        present = resolve_body(entries, "far_side_pressure", BodyMode.PRESENT_ONLY)
+        self.assertEqual(experimental.disposition, "ROUTED")
+        self.assertEqual(present.disposition, "UNAVAILABLE")
+
+    def test_explicit_body_with_wrong_capability_is_refused(self):
+        result = resolve_body(
+            self.entries,
+            "binocular_formation_audit",
+            BodyMode.EXPERIMENTAL,
+            body_time_id=f"far-side-pass@{FAR_SIDE_SHA}",
+        )
+        self.assertEqual(result.disposition, "REFUSED")
+        self.assertEqual(result.reason_code, "CAPABILITY_MISMATCH")
+
+    def test_explicit_body_in_wrong_mode_is_refused(self):
+        result = resolve_body(
+            self.entries,
+            "far_side_pressure",
+            BodyMode.REPLAY,
+            body_time_id=f"far-side-pass@{FAR_SIDE_SHA}",
+        )
+        self.assertEqual(result.disposition, "REFUSED")
+        self.assertEqual(result.reason_code, "BODY_MODE_MISMATCH")
 
 
 if __name__ == "__main__":
