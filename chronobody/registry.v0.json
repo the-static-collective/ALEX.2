@@ -1,0 +1,53 @@
+{
+  "schema": "alex.chronobody-registry/v0",
+  "organs": [
+    {
+      "organ_id": "far-side-pass",
+      "body_time_id": "far-side-pass@52c678767017c170506ce1895d3a610b6ef115b4",
+      "status": "INCUBATING",
+      "capabilities": [
+        "far_side_pressure"
+      ],
+      "source": {
+        "repo": "the-static-collective/ALEX.2",
+        "branch": "feature/far-side-pass-m0",
+        "sha": "52c678767017c170506ce1895d3a610b6ef115b4"
+      },
+      "runtime": {
+        "contract": "python-json-stdio/v0",
+        "entrypoint": "tools/far_side_lab.py"
+      },
+      "verification": {
+        "workflow": "crucible-contract",
+        "run_id": 33219406091,
+        "result": "GREEN"
+      },
+      "authority": "none",
+      "parents": []
+    },
+    {
+      "organ_id": "binocular-recursion",
+      "body_time_id": "binocular-recursion@c26620efc3c601eb0686825e1cfcbe1f1951f49e",
+      "status": "INCUBATING",
+      "capabilities": [
+        "binocular_formation_audit"
+      ],
+      "source": {
+        "repo": "the-static-collective/ALEX.2",
+        "branch": "impl/binocular-recursion-001",
+        "sha": "c26620efc3c601eb0686825e1cfcbe1f1951f49e"
+      },
+      "runtime": {
+        "contract": "python-json-stdio/v0",
+        "entrypoint": "tools/run_binocular_recursion.py"
+      },
+      "verification": {
+        "workflow": "crucible-contract",
+        "run_id": 33219240427,
+        "result": "GREEN"
+      },
+      "authority": "none",
+      "parents": []
+    }
+  ]
+}
