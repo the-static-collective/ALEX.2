@@ -14,6 +14,7 @@ from .digests import canonical_json_bytes, sha256_json
 
 _SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 _ALLOWED_RUNTIME_CONTRACTS = {"python-json-stdio/v0"}
+_EVALUATED_EXIT_CODES = {0, 1}
 
 
 class BodyStatus(str, Enum):
@@ -407,7 +408,7 @@ def execute_body(
         return ExecutionResult("FAILED", "PROCESS_START_FAILED", receipt, None, str(exc))
 
     stderr = _decode_stderr(completed.stderr)
-    if completed.returncode != 0:
+    if completed.returncode not in _EVALUATED_EXIT_CODES:
         receipt = _make_execution_receipt(entry, mode, payload, "FAILED", completed.returncode, None)
         return ExecutionResult("FAILED", "PROCESS_EXIT_NONZERO", receipt, None, stderr)
 
