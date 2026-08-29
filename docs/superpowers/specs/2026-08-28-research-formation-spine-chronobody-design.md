@@ -7,24 +7,22 @@
 
 ## 1. Purpose
 
-ALEX now has enough executable organs that the next problem is composition, not invention.
+ALEX now has enough executable descendants that the next problem is composition, not invention.
 
-The current repository already contains or has separately proven executable descendants for Blind Crucible, `RELATION-DERIVATION-001`, LOADOUT handshake, projection invariance/break, LOADIN.STEAD, BINOCULAR-RECURSION, FAR-SIDE PASS m0, and other bounded research evaluators. Treating every useful experimental organ as something that must first merge into `main` creates the wrong pressure: developmental possibility gets flattened into constituted present merely to make it callable.
+The repository already has a constituted evidence/derivation floor on `main`, while several useful research organs exist as tested but unmerged implementations. Requiring every useful organ to merge merely to become callable collapses developmental possibility into constituted present.
 
 This design introduces two coupled structures:
 
-1. **ALEX Research Formation Spine v0** — a small composition path that turns a supplied research formation into attributable stage receipts without creating a truth machine or authority router.
-2. **`CHRONOBODY-001`** — a time-addressed organ registry and resolver that permits explicitly registered, exact-SHA experimental bodies to participate without silently becoming present, constitutional, or authoritative.
+1. **ALEX Research Formation Spine v0** — a bounded composition path that preserves stage receipts and formation ancestry without becoming a truth machine or authority router.
+2. **`CHRONOBODY-001`** — a time-addressed organ registry/resolver that lets explicitly registered exact-SHA bodies participate without silently becoming present, constitutional, or authoritative.
 
-The motivating insight is:
+The motivating law is:
 
 > **DO NOT REQUIRE EVERY USEFUL POSSIBILITY TO BECOME THE PRESENT BEFORE IT CAN PARTICIPATE.**
 >
 > **A POSSIBILITY MAY PARTICIPATE ONLY THROUGH AN EXACT, DECLARED, RECEIPTED BODY-TIME.**
 
 ## 2. Non-collapse laws
-
-This design extends the existing ALEX floor with the following local distinctions:
 
 ```text
 branch name != executable identity
@@ -42,7 +40,7 @@ registry membership != execution permission
 verification receipt != semantic truth
 ```
 
-Existing laws remain unchanged, including:
+Existing ALEX laws remain unchanged:
 
 ```text
 discovery path != evidence path
@@ -54,23 +52,21 @@ projection != source != authority
 
 ## 3. Time enters the body
 
-Git already preserves developmental ancestry, but ordinary application architecture usually treats that ancestry as build plumbing. `CHRONOBODY-001` makes one bounded part of it explicit in runtime provenance.
+Git already preserves developmental ancestry. `CHRONOBODY-001` makes one bounded portion of that ancestry available to runtime provenance.
 
 ### 3.1 Constituted present
 
 `main` is the repository's **constituted present**.
 
-This does not mean every commit on `main` is eternally canonical. It means ordinary `PRESENT_ONLY` execution is constrained to the exact clean `main` checkout that is currently running, and that checkout SHA is receipted before execution.
+Ordinary `PRESENT_ONLY` execution is constrained to the exact clean `main` checkout currently running. The resolved checkout SHA is receipted before execution.
 
 ### 3.2 Developmental possibility
 
 A branch is a **developmental possibility**, not an executable identity.
 
-A human-facing branch name may be stored for navigation, but an `INCUBATING`, `HELD`, `RETIRED`, or `RECONSTITUTED` body must name an exact commit SHA before it can be addressed.
+The branch name may be stored for navigation, but a non-present body must name an exact commit SHA before it can be addressed.
 
 ### 3.3 Exact body-time
-
-The executable identity is:
 
 ```text
 body_time_id := organ_id + "@" + exact_commit_sha
@@ -80,77 +76,73 @@ Examples:
 
 ```text
 far-side-pass@52c678767017c170506ce1895d3a610b6ef115b4
-binocular-recursion@<resolved-main-sha>
+binocular-recursion@c26620efc3c601eb0686825e1cfcbe1f1951f49e
 ```
 
-The branch label is descriptive ancestry only.
+Branch labels are descriptive ancestry only.
 
 ## 4. Five body states
 
-`CHRONOBODY-001` uses exactly five body states in v0.
-
 ### `PRESENT`
 
-The organ is part of the constituted current body. It may run in `PRESENT_ONLY` or `EXPERIMENTAL` mode. Runtime resolves and receipts the exact clean checkout SHA before invocation.
+Part of the constituted current body. May run under `PRESENT_ONLY` or `EXPERIMENTAL`.
 
 ### `INCUBATING`
 
-The organ is executable but deliberately not constituted as present. It may run only in `EXPERIMENTAL` mode and only at the exact registered SHA.
+Executable but deliberately not constituted as present. May run only under `EXPERIMENTAL` and only at the exact registered SHA.
 
 ### `HELD`
 
-The body is known and visible but not executable. Research packets, design branches, or implementations awaiting sufficient proof may live here.
+Known and visible, but not executable.
 
 ### `RETIRED`
 
-The body is no longer a current execution candidate. It may be invoked only in explicit `REPLAY` mode when the exact historical body is locally materialized and its original contract remains satisfiable.
+Historical body. May run only under explicit exact `REPLAY` if locally materialized and contract-compatible.
 
 ### `RECONSTITUTED`
 
-A fresh body is an attributable descendant of an older body whose implementation was rebuilt rather than blindly rebased or copied. In v0 it follows `INCUBATING` execution rules until separately promoted to `PRESENT`.
+Fresh attributable descendant of an older implementation that was rebuilt rather than blindly rebased/copied. In v0 it follows `INCUBATING` execution rules until separately promoted.
 
 ## 5. Execution modes
 
-The normal application must make the temporal mode visible.
-
 ### `PRESENT_ONLY`
 
-Default mode.
+Default.
 
-- only `PRESENT` bodies are eligible;
+- only `PRESENT` bodies;
 - no experimental fallback;
-- no implicit branch lookup;
+- no branch lookup;
 - no historical replay.
 
 ### `EXPERIMENTAL`
 
 Explicit opt-in.
 
-- `PRESENT`, `INCUBATING`, and `RECONSTITUTED` bodies may be eligible;
-- every non-present body must be exact-SHA pinned;
-- output receipts must visibly record the non-present state;
-- experimental execution grants no semantic or authority promotion.
+- `PRESENT`, `INCUBATING`, and `RECONSTITUTED` are eligible;
+- non-present bodies require exact SHA;
+- receipts must visibly preserve non-present status;
+- execution grants no promotion.
 
 ### `REPLAY`
 
 Explicit historical mode.
 
-- caller must request an exact `body_time_id`;
-- `RETIRED` bodies may be eligible;
-- no "latest" resolution;
-- replay remains a new execution occurrence over a historical implementation body.
+- exact `body_time_id` required;
+- `RETIRED` may execute;
+- no `latest` selection;
+- execution occurrence remains new even though implementation body is historical.
 
 ## 6. Registry contract
 
-The registry is committed, reviewable memory. It is not a process supervisor and does not materialize code.
-
-Proposed schema family:
+Schema family:
 
 ```text
 alex.chronobody-registry/v0
 ```
 
-Illustrative entry:
+The registry is committed reviewable memory. It does not materialize code and is not a process supervisor.
+
+### 6.1 FAR-SIDE body
 
 ```json
 {
@@ -177,88 +169,108 @@ Illustrative entry:
 }
 ```
 
-### 6.1 Registry invariants
-
-For every non-`PRESENT` entry:
-
-- `source.repo` is required;
-- `source.sha` is a full 40-character lowercase hex commit SHA;
-- `body_time_id` must end in that exact SHA;
-- branch is optional descriptive navigation and never used as identity;
-- `authority` must be `none` in v0;
-- runtime contract must be from an explicit allowlist;
-- entrypoint must be a repository-relative path without `..` traversal;
-- no shell command string is accepted;
-- a changed SHA is a new body entry, not an in-place identity mutation.
-
-For lineage:
-
-- `parents` contains zero or more exact prior `body_time_id` values;
-- parentage records developmental ancestry only;
-- ancestry does not grant compatibility, correctness, authority, or promotion.
-
-## 7. Local materialization boundary
-
-`CHRONOBODY-001` v0 does **not** clone, fetch, checkout, pull, merge, or otherwise mutate Git state during a research run.
-
-That is deliberate.
-
-A routable non-present body must already exist as an operator-supplied local checkout/materialization. The run envelope supplies a machine-local map:
+### 6.2 BINOCULAR body
 
 ```json
 {
-  "far-side-pass@52c6787...": "/local/path/to/materialized/body"
+  "organ_id": "binocular-recursion",
+  "body_time_id": "binocular-recursion@c26620efc3c601eb0686825e1cfcbe1f1951f49e",
+  "status": "INCUBATING",
+  "capabilities": ["binocular_formation_audit"],
+  "source": {
+    "repo": "the-static-collective/ALEX.2",
+    "branch": "impl/binocular-recursion-001",
+    "sha": "c26620efc3c601eb0686825e1cfcbe1f1951f49e"
+  },
+  "runtime": {
+    "contract": "python-json-stdio/v0",
+    "entrypoint": "tools/run_binocular_recursion.py"
+  },
+  "verification": {
+    "workflow": "crucible-contract",
+    "run_id": 33219240427,
+    "result": "GREEN"
+  },
+  "authority": "none",
+  "parents": []
 }
 ```
 
-The launcher then verifies before execution:
+### 6.3 Registry invariants
+
+For every non-`PRESENT` entry:
+
+- repository is required;
+- full 40-character lowercase hex SHA is required;
+- `body_time_id` must end in that exact SHA;
+- branch is optional navigation only;
+- `authority` is exactly `none` in v0;
+- runtime contract is allowlisted;
+- entrypoint is repository-relative and traversal-free;
+- no shell string exists;
+- changed SHA creates a new body entry rather than mutating old identity.
+
+Lineage may carry exact parent `body_time_id` values. Developmental ancestry grants no compatibility, truth, authority, or promotion.
+
+## 7. Local materialization boundary
+
+Runtime v0 does **not** clone, fetch, checkout, pull, merge, reset, or clean Git state.
+
+A non-present body must already exist as an operator/CI supplied local checkout. The run envelope supplies machine-local materialization paths:
+
+```json
+{
+  "far-side-pass@52c678767017c170506ce1895d3a610b6ef115b4": "/local/far-side",
+  "binocular-recursion@c26620efc3c601eb0686825e1cfcbe1f1951f49e": "/local/binocular"
+}
+```
+
+Before execution the launcher verifies:
 
 1. path exists;
-2. it is a Git checkout of the registered repository;
-3. `HEAD` equals the exact registered SHA;
+2. path is a Git checkout of the registered repository;
+3. `HEAD` equals registered SHA;
 4. checkout is clean;
-5. registered entrypoint exists under that root;
+5. entrypoint exists below root;
 6. runtime contract is allowed.
 
-Any mismatch is a refusal. There is no implicit repair or checkout.
-
-This keeps Git transport/deployment outside the research semantics.
+Mismatch is refusal. Runtime never repairs the checkout.
 
 ## 8. Invocation contract
 
-V0 admits one execution adapter:
+V0 admits exactly:
 
 ```text
 python-json-stdio/v0
 ```
 
-It means:
+Meaning:
 
-- invoke the current Python interpreter directly;
-- invoke one validated repository-relative script path;
+- direct current Python interpreter;
+- one validated repository-relative script;
 - no shell;
-- JSON input on stdin;
-- one JSON value on stdout;
+- JSON stdin;
+- one JSON stdout value;
 - stderr preserved separately;
-- non-zero process exit is a visible execution failure;
-- bounded timeout is explicit in the run request;
-- input and output bytes receive deterministic SHA-256 digests.
+- explicit timeout;
+- non-zero exit is visible execution failure;
+- input/output receive deterministic SHA-256 digests.
 
-The registry cannot add arbitrary flags or environment mutation in v0.
+Registry entries cannot inject flags or environment mutation in v0.
 
 ## 9. Resolver behavior
 
-The resolver consumes:
+Consumes:
 
 ```text
 capability
 body_mode
-optional explicit organ_id
-optional explicit body_time_id
+optional organ_id
+optional body_time_id
 registry
 ```
 
-and returns one of:
+Returns:
 
 ```text
 ROUTED
@@ -269,116 +281,131 @@ REFUSED
 
 Rules:
 
-1. `PRESENT_ONLY` filters out every non-`PRESENT` body.
-2. `EXPERIMENTAL` admits only the states defined above; it never silently prefers incubating over present.
+1. `PRESENT_ONLY` excludes non-present bodies.
+2. `EXPERIMENTAL` admits only eligible states; no preference for incubating over present.
 3. `REPLAY` requires exact `body_time_id`.
-4. If an explicit `body_time_id` is supplied, capability and mode must still agree.
-5. If exactly one eligible body remains, return `ROUTED`.
-6. If more than one eligible body remains and caller did not explicitly disambiguate, return `AMBIGUOUS`.
-7. No "newest SHA wins" or branch-name tie-break exists.
+4. Explicit body still must satisfy capability and mode.
+5. Exactly one eligible body => `ROUTED`.
+6. More than one without explicit disambiguation => `AMBIGUOUS`.
+7. No newest-SHA, timestamp, branch, or registry-order tie-break.
 8. `HELD` never routes.
-9. Registry absence is `UNAVAILABLE`, not permission to improvise.
-10. Routing never changes `authority: none`.
-
-This follows the existing LOADIN.STEAD discipline: deterministic routing may identify a door/body without granting admission or consequence.
+9. Registry absence => `UNAVAILABLE`.
+10. Route cannot change `authority: none`.
 
 ## 10. Execution receipt
 
-Every invocation produces a receipt even when the organ refuses or fails.
-
-Proposed family:
+Schema family:
 
 ```text
 alex.chronobody-execution/v0
 ```
 
-Minimum fields:
+Minimum receipt:
 
 ```json
 {
   "receipt_type": "alex.chronobody-execution/v0",
   "organ_id": "far-side-pass",
-  "body_time_id": "far-side-pass@52c6787...",
+  "body_time_id": "far-side-pass@52c678767017c170506ce1895d3a610b6ef115b4",
   "organ_status": "INCUBATING",
   "body_mode": "EXPERIMENTAL",
   "source_repo": "the-static-collective/ALEX.2",
-  "source_sha": "52c6787...",
+  "source_sha": "52c678767017c170506ce1895d3a610b6ef115b4",
   "runtime_contract": "python-json-stdio/v0",
   "entrypoint": "tools/far_side_lab.py",
-  "input_digest": "sha256:...",
-  "output_digest": "sha256:...",
+  "input_digest": "sha256:<digest>",
+  "output_digest": "sha256:<digest>",
   "execution_state": "COMPLETED",
   "exit_code": 0,
   "authority": "none"
 }
 ```
 
-`COMPLETED` means only that the registered organ process completed under the stated contract. It does not mean its research conclusion is true, supported, admitted, canonical, or promoted.
+`COMPLETED` means process-contract completion only. It says nothing about truth, support, canon, admission, publication, or promotion.
 
 ## 11. Research Formation Spine v0
 
-The first spine is intentionally narrow:
+The first executable spine is intentionally fully time-addressed:
 
 ```text
-SUPPLIED RESEARCH FORMATION
-          |
-          v
-   capability request
-          |
-          v
-      CHRONOBODY
- exact body-time resolution
-          |
-          v
-     FAR-SIDE PASS
- candidate survivor / no-new-dimension / refusal
-          |
-          v
- BINOCULAR-RECURSION
- formation-law audit
-          |
-          v
- optional ALEX derivation
-          |
-          v
- RECEIPTED RESEARCH PACKET
+CONSTITUTED MAIN
+  CHRONOBODY registry + resolver + composition law
+                  |
+                  v
+FAR-SIDE PASS @ 52c6787...  [INCUBATING]
+                  |
+         execution receipt
+                  |
+       DISCOVERY_TRIGGER_ONLY bridge
+                  |
+                  v
+BINOCULAR @ c26620e...      [INCUBATING]
+                  |
+         execution receipt
+                  |
+                  v
+RECEIPTED RESEARCH FORMATION RESULT
 ```
 
-The composition itself is not a new epistemic authority.
+This is the first proof of the larger law: two off-main organs may participate in one present ALEX run without either becoming `PRESENT`.
 
-### 11.1 FAR-SIDE as the first temporal organ
+### 11.1 Why FAR-SIDE remains incubating
 
-FAR-SIDE PASS m0 is the canonical first `INCUBATING` body because:
+- design/plan are already constituted on `main`;
+- implementation is deliberately under `experiments/`;
+- exact head `52c678...` is green;
+- its PR withholds public task-shape/Crucible/skill promotion.
 
-- its design and plan are already constituted on `main`;
-- its executable implementation lives under `experiments/`;
-- exact head `52c678767017c170506ce1895d3a610b6ef115b4` has a successful `crucible-contract` workflow;
-- it is only one commit behind the current observed `main` at design time;
-- its own PR explicitly withholds public task-shape, Crucible, and skill-trigger promotion.
+Its experimental location is therefore useful information, not technical debt to erase.
 
-Therefore it demonstrates the desired law more cleanly if it remains experimental while becoming callable through an exact-SHA route.
+### 11.2 Why BINOCULAR also remains incubating in the first proof
 
-### 11.2 BINOCULAR as constituted formation audit
+BINOCULAR is a serious candidate for later constitution, but first proof does not need to settle that question.
 
-BINOCULAR-RECURSION is a stronger candidate for `PRESENT` because it audits whether a supplied research formation preserves already-approved ALEX distinctions: discovery/support separation, premise admission, live consequence preservation, attributable updates, and frozen authority.
+Exact head `c26620e...` already has:
 
-Its integration remains a normal PR-completion decision. `CHRONOBODY-001` does not authorize that merge.
+- pure evaluator;
+- JSON file/stdin runner;
+- hostile tests;
+- successful `crucible-contract` run `33219240427`.
 
-### 11.3 Derivation remains derivation
+Routing it as `INCUBATING` keeps "usable" distinct from "merged" and makes future promotion a separate PR-completion decision.
 
-`RELATION-DERIVATION-001` remains the semantic relation gate. A FAR-SIDE survivor or lawful BINOCULAR formation is not automatically support.
+## 12. The only v0 semantic bridge
+
+FAR-SIDE output does not automatically become evidence or BINOCULAR support.
+
+After FAR-SIDE completes, the spine computes a digest of its Chronobody execution receipt and adds that receipt reference only to BINOCULAR's `discovery_trigger_refs`.
 
 ```text
-interesting survivor != evidence
-lawful formation != truth
-lawful formation != SUPPORTS
+FAR-SIDE execution receipt
+          |
+          v
+DISCOVERY_TRIGGER_ONLY
+          |
+          v
+BINOCULAR discovery_trigger_refs
 ```
 
-## 12. App-facing clarity
+It must not be inserted into:
 
-The application should expose temporal state without exposing Git mechanics as the primary UI.
+```text
+support_refs
+compression.claim_support_refs
+admitted_premise_refs
+```
 
-Conceptual body panel:
+This is a deliberate executable seam for:
+
+> **DISCOVERY METHOD != EVIDENCE METHOD**
+
+If the supplied BINOCULAR case launders that same trigger into support, the BINOCULAR organ should refuse under its own existing contract.
+
+The spine composes provenance, not meanings: it does not map FAR-SIDE survivor fields into BINOCULAR compression/expansion semantics.
+
+## 13. App-facing clarity
+
+Normal UI should expose temporal state without making Git the user's primary mental model.
 
 ```text
 ALEX BODY
@@ -387,207 +414,192 @@ PRESENT
   Crucible
   Derivation
   Projection
-  Binocular (after separate landing)
+  Chronobody
 
 INCUBATING
-  FAR-SIDE    GREEN   @52c6787
+  FAR-SIDE     GREEN  @52c6787
+  BINOCULAR    GREEN  @c26620e
 
 HELD
   MADDCL0WN research method
   Decoder-Probe research packet
 
 RETIRED
-  historical bodies available only by exact replay
+  exact historical bodies, replay-only
 ```
 
-Clicking an organ should show:
+Organ detail shows:
 
 ```text
 organ family
 body state
 exact SHA
-birth branch / ancestry
+branch / ancestry
 verification receipt
 capabilities
 runtime contract
 authority
 ```
 
-The app must not label a routed incubating organ simply as "enabled" without its state.
+No incubating organ may be presented simply as `enabled` without state.
 
-## 13. Confusion controls
-
-The system is specifically designed to prevent temporal/body confusion.
+## 14. Hostile controls
 
 ### `BRANCH-DRIFT-001`
 
-Registry says SHA A; supplied local checkout is SHA B.
-
-Expected: `REFUSED / BODY_SHA_MISMATCH`.
+Registry SHA A, local checkout SHA B -> `REFUSED / BODY_SHA_MISMATCH`.
 
 ### `DIRTY-BODY-001`
 
-Exact SHA matches but checkout has uncommitted modifications.
-
-Expected: `REFUSED / DIRTY_BODY`.
+SHA matches but checkout has uncommitted changes -> `REFUSED / DIRTY_BODY`.
 
 ### `LATEST-WINS-001`
 
-Two eligible incubating bodies provide the same capability.
-
-Expected: `AMBIGUOUS`; no recency tie-break.
+Two eligible bodies provide same capability -> `AMBIGUOUS`.
 
 ### `STATUS-LAUNDERING-001`
 
-`INCUBATING` result is presented as if it came from present ALEX.
-
-Expected: receipt/UI contract failure.
+Incubating result presented as present -> receipt/UI contract failure.
 
 ### `ROUTE-PROMOTION-001`
 
-Successful experimental execution is interpreted as promotion to `PRESENT`.
-
-Expected: refusal; registry status is unchanged.
+Successful experimental execution interpreted as promotion -> refusal; registry unchanged.
 
 ### `OUTPUT-IDENTITY-001`
 
-Two body-times produce byte-identical output.
-
-Expected: outputs may compare equal; execution receipts and body-time identities remain distinct.
+Two body-times produce identical output -> output equality allowed; execution identities remain distinct.
 
 ### `REPLAY-IMPERSONATION-001`
 
-Historical body is re-executed successfully.
-
-Expected: new replay occurrence referencing historical body; never original occurrence identity.
+Historical body replay -> new execution occurrence referencing historical body.
 
 ### `HELD-EXECUTION-001`
 
-Caller requests a `HELD` body.
-
-Expected: `REFUSED / BODY_NOT_EXECUTABLE`.
+Caller requests held body -> `REFUSED / BODY_NOT_EXECUTABLE`.
 
 ### `SHELL-INJECTION-001`
 
-Registry entry attempts shell metacharacters or path traversal.
+Registry attempts path traversal/shell semantics -> validator refusal before invocation.
 
-Expected: schema/validator refusal before invocation.
+### `DISCOVERY-LAUNDERING-001`
 
-## 14. Relationship to LOADOUT and LOADIN.STEAD
+FAR-SIDE receipt appears in BINOCULAR support path -> BINOCULAR refusal; the spine must preserve it rather than normalize it away.
 
-The intended path is:
+## 15. Relationship to LOADOUT and LOADIN.STEAD
 
 ```text
 LOADOUT
-  chooses the smallest capability set
-        |
-        v
+  chooses required capability set
+      |
+      v
 CHRONOBODY
-  resolves which exact registered body-time may provide a capability
-        |
-        v
+  resolves exact registered body-time
+      |
+      v
 ORGAN EXECUTION
-  returns organ-native result + execution receipt
-        |
-        v
-ALEX FORMATION / DERIVATION
-        |
-        v
+      |
+      v
+ALEX formation / derivation
+      |
+      v
 LOADIN.STEAD (optional later)
-  routes a newly formed outward occurrence toward a declared destination
+  routes a new outward occurrence
 ```
 
 Ownership remains separate:
 
-- LOADOUT does not choose semantic truth.
-- CHRONOBODY does not choose authority or promotion.
-- an organ does not acquire authority from being routable.
+- LOADOUT does not choose truth.
+- CHRONOBODY does not choose promotion or authority.
+- Routability grants no authority.
 - ALEX derivation does not admit external consequence.
 - LOADIN.STEAD route still does not admit.
 
-## 15. Relationship to GitHub
+## 16. Relationship to GitHub
 
-GitHub is evidence and storage for body ancestry, not a runtime authority oracle.
+GitHub stores/reports body ancestry and verification evidence. It is not queried during v0 execution.
 
-V0 runtime does not call GitHub during execution.
+The committed registry may preserve workflow/run IDs. Runtime trusts the committed registry plus exact locally verifiable checkout identity.
 
-A registry entry may preserve a GitHub workflow/run identifier as provenance, but the local execution boundary only trusts the committed registry plus the exact local checkout identity it can verify.
+CI may materialize pinned SHAs in separate `actions/checkout` directories to prove real branch-time execution. That is test fixture preparation, not runtime Git mutation.
 
-A later artifact-backed implementation may replace local worktrees with immutable CI packages without changing the body-time model.
+A later artifact-backed implementation may replace local checkouts with immutable CI packages without changing the body-time model.
 
-## 16. Promotion discipline
+## 17. Promotion discipline
 
-`CHRONOBODY-001` is initially an ALEX-local pattern.
+`CHRONOBODY-001` begins as an ALEX-local pattern.
 
-Do not extract a new neutral repository or eCODE-wide law merely because the metaphor is attractive.
+Do not extract a new repo or eCODE-wide law because the metaphor is attractive.
 
-Promotion beyond ALEX should require:
+Cross-project promotion should require:
 
-1. one real ALEX research run that uses a pinned incubating organ and preserves correct receipts;
-2. one hostile branch-drift/refusal specimen;
-3. one historical replay specimen;
-4. a second materially different project demonstrating the same need without importing ALEX semantics;
+1. a real ALEX run using at least one pinned incubating body;
+2. hostile branch-drift refusal;
+3. historical replay specimen;
+4. a second materially different project with the same need;
 5. evidence that a shared protocol removes duplication rather than creating a master ontology.
 
 Until then:
 
 > **ALEX IS THE PROVING GROUND.**
 
-## 17. First executable target
+## 18. First executable target
 
-The first implementation should prove only:
+Build only:
 
-1. a registry parser/validator;
-2. deterministic body resolution;
-3. local exact-SHA/clean-checkout verification;
-4. `python-json-stdio/v0` invocation;
+1. registry parser/validator;
+2. deterministic body resolver;
+3. local exact-SHA/repository/clean-checkout verification;
+4. `python-json-stdio/v0` launcher;
 5. execution receipts;
-6. one canonical `INCUBATING` FAR-SIDE body entry;
-7. one small Research Formation Spine runner that consumes a caller-supplied FAR-SIDE formation and then audits a caller-supplied/derived BINOCULAR formation using constituted code;
-8. hostile tests for temporal identity, ambiguity, dirty/mismatched bodies, held bodies, and route/promotion separation.
+6. exact FAR-SIDE + BINOCULAR registry entries;
+7. CI materialization of both exact SHAs;
+8. actual off-main execution proofs for both;
+9. Research Formation Spine runner with `DISCOVERY_TRIGGER_ONLY` bridge;
+10. hostile tests for identity, ambiguity, dirt, held/replay modes, route/promotion separation, and discovery laundering.
 
-It must not implement:
+Do not implement:
 
-- Git clone/fetch/checkout;
+- Git clone/fetch/checkout in runtime;
 - arbitrary shell execution;
 - remote workers;
-- background process supervision;
+- background supervision;
 - automatic branch discovery;
-- "latest" body selection;
+- newest-body selection;
 - automatic merge/promotion;
 - authority changes;
-- model/network calls;
-- Dogram as a runtime dependency;
-- MADDCL0WN execution before its own executable contract exists;
+- network/model calls;
+- Dogram dependency;
+- MADDCL0WN execution before an executable contract exists;
 - BOOKROOM reconstruction;
-- a cross-project Chronobody service.
+- cross-project Chronobody service.
 
-## 18. Build sequence
-
-The preferred build order is now:
+## 19. Build sequence
 
 ```text
-A0  finish PR-completion review for BINOCULAR
-    -> if separately admitted, constitute it on main
+A1  implement CHRONOBODY registry + resolver on constituted main
 
-A1  implement CHRONOBODY registry + resolver
+A2  register FAR-SIDE@52c6787 as INCUBATING
+    register BINOCULAR@c26620e as INCUBATING
 
-A2  keep FAR-SIDE implementation off-main
-    -> register exact green SHA as INCUBATING
-    -> prove branch-time execution
+A3  CI materializes both exact bodies separately
+    -> prove both execute through CHRONOBODY
 
-A3  implement Research Formation Spine composition runner
+A4  implement Research Formation Spine
+    -> FAR-SIDE receipt becomes discovery trigger only
+    -> BINOCULAR audits supplied formation
 
-C1  executable Decoder-Probe / MADDCL0WN descendants
-    -> remain incubating until separately promoted
+A5  exact-head hostile verification + PR Completion
 
-B1  reconstitute BOOKROOM on fresh main
-    -> use it as a source-bearing body feeding the spine
+C1  later Decoder-Probe / MADDCL0WN executable descendants
+    -> natural new incubating organs
+
+B1  later reconstitute BOOKROOM on fresh main
+    -> source-bearing body feeding the spine
 ```
 
-This intentionally revises the earlier assumption that FAR-SIDE should merge first. Its experimental location is now an asset: it is the clean first proof that useful possibility can participate without becoming the present.
+Promotion of FAR-SIDE or BINOCULAR to `PRESENT` is not part of this build sequence.
 
-## 19. Seal
+## 20. Seal
 
 ```text
 MAIN IS CONSTITUTED PRESENT.
@@ -598,7 +610,7 @@ ROUTING IS NOT PROMOTION.
 REPLAY IS NOT ORIGINAL OCCURRENCE.
 ```
 
-And the broader build law is:
+And the broader build law:
 
 > **DON'T IMPLEMENT THE BACKLOG. IMPLEMENT THE RELATIONS THAT LET THE BACKLOG COMPOSE.**
 
