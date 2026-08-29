@@ -1,11 +1,15 @@
 from __future__ import annotations
 
+import json
 import re
 import subprocess
+import sys
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path, PurePosixPath
 from typing import Any
+
+from .digests import canonical_json_bytes, sha256_json
 
 
 _SHA_RE = re.compile(r"^[0-9a-f]{40}$")
@@ -65,6 +69,15 @@ class MaterializationCheck:
     reason_code: str | None
     observed_sha: str | None
     source_repo: str | None
+
+
+@dataclass(frozen=True)
+class ExecutionResult:
+    execution_state: str
+    reason_code: str | None
+    receipt: dict[str, object]
+    output: dict[str, object] | None
+    stderr: str
 
 
 _ALLOWED_BY_MODE = {
@@ -315,3 +328,99 @@ def verify_materialization(entry: ChronobodyEntry, root: Path | str) -> Material
         return MaterializationCheck("REFUSED", "ENTRYPOINT_MISSING", observed_sha, observed_repo)
 
     return MaterializationCheck("VERIFIED", None, observed_sha, observed_repo)
+
+
+def _decode_stderr(value: bytes | str | None) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, str):
+        return value
+    return value.decode("utf-8", errors="replace")
+
+
+def _make_execution_receipt(
+    entry: ChronobodyEntry,
+    mode: BodyMode,
+    payload: dict[str, object],
+    execution_state: str,
+    exit_code: int | None,
+    output: dict[str, object] | None,
+) -> dict[str, object]:
+    return {
+        "receipt_type": "alex.chronobody-execution/v0",
+        "organ_id": entry.organ_id,
+        "body_time_id": entry.body_time_id,
+        "organ_status": entry.status.value,
+        "body_mode": mode.value,
+        "source_repo": entry.source_repo,
+        "source_sha": entry.source_sha,
+        "runtime_contract": entry.runtime_contract,
+        "entrypoint": entry.entrypoint,
+        "input_digest": sha256_json(payload),
+        "output_digest": sha256_json(output) if output is not None else None,
+        "execution_state": execution_state,
+        "exit_code": exit_code,
+        "authority": "none",
+    }
+
+
+def execute_body(
+    entry: ChronobodyEntry,
+    root: Path | str,
+    payload: dict[str, object],
+    mode: BodyMode,
+    timeout_seconds: float = 30,
+) -> ExecutionResult:
+    if not isinstance(mode, BodyMode):
+        receipt = _make_execution_receipt(entry, BodyMode.EXPERIMENTAL, payload, "REFUSED", None, None)
+        return ExecutionResult("REFUSED", "UNKNOWN_BODY_MODE", receipt, None, "")
+
+    if entry.status is BodyStatus.HELD:
+        receipt = _make_execution_receipt(entry, mode, payload, "REFUSED", None, None)
+        return ExecutionResult("REFUSED", "BODY_NOT_EXECUTABLE", receipt, None, "")
+    if entry.status not in _ALLOWED_BY_MODE[mode]:
+        receipt = _make_execution_receipt(entry, mode, payload, "REFUSED", None, None)
+        return ExecutionResult("REFUSED", "BODY_MODE_MISMATCH", receipt, None, "")
+
+    materialization = verify_materialization(entry, root)
+    if materialization.disposition != "VERIFIED":
+        receipt = _make_execution_receipt(entry, mode, payload, "REFUSED", None, None)
+        return ExecutionResult("REFUSED", materialization.reason_code, receipt, None, "")
+
+    root_path = Path(root)
+    entrypoint_path = root_path / PurePosixPath(entry.entrypoint)
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(entrypoint_path)],
+            input=canonical_json_bytes(payload),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=timeout_seconds,
+            check=False,
+        )
+    except subprocess.TimeoutExpired as exc:
+        stderr = _decode_stderr(exc.stderr)
+        receipt = _make_execution_receipt(entry, mode, payload, "FAILED", None, None)
+        return ExecutionResult("FAILED", "TIMEOUT", receipt, None, stderr)
+    except OSError as exc:
+        receipt = _make_execution_receipt(entry, mode, payload, "FAILED", None, None)
+        return ExecutionResult("FAILED", "PROCESS_START_FAILED", receipt, None, str(exc))
+
+    stderr = _decode_stderr(completed.stderr)
+    if completed.returncode != 0:
+        receipt = _make_execution_receipt(entry, mode, payload, "FAILED", completed.returncode, None)
+        return ExecutionResult("FAILED", "PROCESS_EXIT_NONZERO", receipt, None, stderr)
+
+    try:
+        decoded = json.loads(completed.stdout.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        receipt = _make_execution_receipt(entry, mode, payload, "FAILED", completed.returncode, None)
+        return ExecutionResult("FAILED", "INVALID_JSON_OUTPUT", receipt, None, stderr)
+
+    if not isinstance(decoded, dict):
+        receipt = _make_execution_receipt(entry, mode, payload, "FAILED", completed.returncode, None)
+        return ExecutionResult("FAILED", "INVALID_JSON_OUTPUT", receipt, None, stderr)
+
+    output = decoded
+    receipt = _make_execution_receipt(entry, mode, payload, "COMPLETED", completed.returncode, output)
+    return ExecutionResult("COMPLETED", None, receipt, output, stderr)
