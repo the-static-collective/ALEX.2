@@ -14,6 +14,7 @@ ALEX must make every A/B/C/D source-world crossing explicit, typed, attributable
 CROSS-WORLD RELEVANCE != CROSS-WORLD SUPPORT
 BRIDGE RECEIPT != HISTORICAL PROOF
 LATER RECEPTION != EARLIER VISIBILITY
+ENDPOINTS != EVIDENCE OF THE EDGE BETWEEN THEM
 ```
 
 ## Input
@@ -42,7 +43,7 @@ Allowed bridge types follow the existing ALEX Bridge Ledger:
 - `theological_interpretation`
 - `unresolved_bridge`
 
-Documented bridge types (`documented_mechanism`, `documented_association`, `scholarly_interpretation`) require at least one evidence reference. Interpretive or formal bridge types may carry an empty evidence list but never acquire evidentiary promotion from that fact.
+Documented bridge types (`documented_mechanism`, `documented_association`, `scholarly_interpretation`) require at least one evidence reference. Their evidence references must also be distinct from both `source_ref` and `target_ref`: the endpoints establish the occurrences, not the crossing between them. Interpretive or formal bridge types may carry an empty evidence list but never acquire evidentiary promotion from that fact.
 
 Same-world relations are outside this profile and refuse with `same_world_not_bridge`.
 
@@ -51,6 +52,12 @@ Same-world relations are outside this profile and refuse with `same_world_not_br
 Accepted records return `alex.world-bridge-receipt/v0` containing the exact source/target refs and worlds, bridge type, formulation, evidence refs, promotion limit, bridge digest, and `authority: none`.
 
 The receipt says only that the crossing has been made explicit under a declared type. It does not certify that the bridge is historically correct, causal, genealogical, canonical, or theologically authoritative.
+
+## Stable refusal additions from owner review
+
+- `bridge_evidence_must_be_distinct` — a documented bridge attempted to use one of its own endpoint occurrences as evidence for the crossing.
+
+This refusal was added after an owner-style review found that the first GREEN implementation allowed endpoint self-authentication. RED tests proved both source-endpoint and target-endpoint cases were accepted; the corrected evaluator refuses them.
 
 ## Hostile specimens
 
@@ -62,10 +69,13 @@ Tests must prove:
 4. An invalid world refuses.
 5. A documented bridge with no evidence refs refuses.
 6. A malformed evidence ref refuses.
-7. Reordered record keys do not alter bridge identity.
-8. Changing source or target world changes bridge identity.
-9. Supplied authority cannot widen output authority.
+7. A documented bridge cannot use either endpoint as its own edge evidence.
+8. Reordered record keys do not alter bridge identity.
+9. Changing source or target world changes bridge identity.
+10. Supplied authority cannot widen output authority.
 
 ## Seal
 
 > **THE BRIDGE MAY CONNECT WORLDS. IT MAY NOT MERGE THEM.**
+
+> **TWO NODES DO NOT PROVE THE EDGE BETWEEN THEM.**
