@@ -1,0 +1,68 @@
+{
+  "schema": "alex.binocular-recursion-case/v0",
+  "case_id": "lawful-residual",
+  "initial_field_digest": "sha256:field-0",
+  "authority_digest": "sha256:authority-0",
+  "pass_limit": 4,
+  "admitted_premise_refs": ["p1", "p2"],
+  "unresolved_premise_refs": ["u1"],
+  "discovery_trigger_refs": ["trigger:prompt-001"],
+  "support_refs": ["source:r1", "source:r2"],
+  "terminal": "RESIDUAL",
+  "passes": [
+    {
+      "pass_index": 0,
+      "pre_field_digest": "sha256:field-0",
+      "trajectory": ["A", "B", "A"],
+      "trajectory_order_material": true,
+      "compression": {
+        "profile_digest": "sha256:compress-v1",
+        "proposal_digest": "sha256:proposal-0",
+        "formation_basis_refs": ["p1", "p2", "trigger:prompt-001"],
+        "claim_support_refs": ["source:r1"],
+        "reexpanded_live_consequence_refs": ["c1"]
+      },
+      "expansion": {
+        "profile_digest": "sha256:expand-v1",
+        "branches": [
+          {
+            "branch_id": "b1",
+            "parent_refs": ["p1"],
+            "rule_ref": "rule:r1",
+            "condition_refs": [],
+            "consequence_ref": "c1",
+            "status": "INFERRED",
+            "used_premise_refs": ["p1"],
+            "introduced_premise_refs": []
+          }
+        ]
+      },
+      "tensions": [{"type": "STABLE_MATCH", "left_refs": ["sha256:proposal-0"], "right_refs": ["c1"], "receipt_refs": ["receipt:t0"]}],
+      "update": {"kind": "NONE", "receipt_refs": [], "admit_premise_refs": [], "withdraw_premise_refs": [], "withdraw_consequence_refs": [], "authority_digest": "sha256:authority-0"},
+      "post_field_digest": "sha256:field-0"
+    },
+    {
+      "pass_index": 1,
+      "pre_field_digest": "sha256:field-0",
+      "trajectory": ["A", "B", "A", "C"],
+      "trajectory_order_material": true,
+      "compression": {
+        "profile_digest": "sha256:compress-v1",
+        "proposal_digest": "sha256:proposal-1",
+        "formation_basis_refs": ["p1", "p2"],
+        "claim_support_refs": ["source:r1", "source:r2"],
+        "reexpanded_live_consequence_refs": ["c1", "c2"]
+      },
+      "expansion": {
+        "profile_digest": "sha256:expand-v1",
+        "branches": [
+          {"branch_id": "b1", "parent_refs": ["p1"], "rule_ref": "rule:r1", "condition_refs": [], "consequence_ref": "c1", "status": "INFERRED", "used_premise_refs": ["p1"], "introduced_premise_refs": []},
+          {"branch_id": "b2", "parent_refs": ["p2"], "rule_ref": "rule:r2", "condition_refs": [], "consequence_ref": "c2", "status": "UNRESOLVED", "used_premise_refs": ["p2"], "introduced_premise_refs": []}
+        ]
+      },
+      "tensions": [{"type": "UNEXPLAINED_RESIDUAL", "left_refs": ["sha256:proposal-1"], "right_refs": ["c2"], "receipt_refs": ["receipt:t1"]}],
+      "update": {"kind": "NONE", "receipt_refs": [], "admit_premise_refs": [], "withdraw_premise_refs": [], "withdraw_consequence_refs": [], "authority_digest": "sha256:authority-0"},
+      "post_field_digest": "sha256:field-0"
+    }
+  ]
+}

@@ -69,6 +69,8 @@ changed which readings remain reachable around an attributable nucleus. Read
 possibility-space; it does not promote older, unpointed, or newly reachable
 readings into truth without a historical filter and REGATE test.
 
+`BINOCULAR-RECURSION-001` is an optional dual-pressure research protocol for cases where compression toward a minimum surviving generator and expansion through the lawful consequences of NOW should remain simultaneously live. Read [binocular-recursion.md](references/binocular-recursion.md) before using it. The executable auditor validates a supplied formation trace; it does not generate claims, admit premises, or promote tension into evidence.
+
 Read [constitutional-hardening.md](references/constitutional-hardening.md) when
 an inquiry makes an absence claim, inherits an upstream premise, claims
 independent corroboration, compares dependency families, or uses remove-one
