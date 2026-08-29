@@ -84,7 +84,22 @@ class ChronobodyExecutionTests(unittest.TestCase):
             self.assertEqual(result.receipt["exit_code"], 0)
             self.assertEqual(result.receipt["authority"], "none")
 
-    def test_nonzero_exit_is_visible_failure(self):
+    def test_exit_one_with_valid_json_is_evaluated_completion(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            entry, _ = committed_body(
+                root,
+                "import json, sys\njson.dump({'schema':'test.refusal/v0','disposition':'REFUSE'}, sys.stdout, sort_keys=True, separators=(',',':'))\nsys.stdout.write('\\n')\nraise SystemExit(1)\n",
+            )
+            result = execute_body(entry, root, {"x": 1}, BodyMode.EXPERIMENTAL, timeout_seconds=2)
+            self.assertEqual(result.execution_state, "COMPLETED")
+            self.assertIsNone(result.reason_code)
+            self.assertEqual(result.output["disposition"], "REFUSE")
+            self.assertEqual(result.receipt["exit_code"], 1)
+            self.assertEqual(result.receipt["execution_state"], "COMPLETED")
+            self.assertEqual(result.receipt["output_digest"], sha256_json(result.output))
+
+    def test_non_evaluated_nonzero_exit_is_visible_failure(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             entry, _ = committed_body(
