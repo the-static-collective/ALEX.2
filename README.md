@@ -85,6 +85,17 @@ page-grounded source witnesses rather than stop at summaries or search snippets.
 | `docs/research-precedents.md` | Systems and standards that informed the floor |
 | `skills/alex/` | Portable ALEX research skill |
 
+## Time-addressed research spine
+
+ALEX can resolve explicitly registered exact-SHA incubating organs from
+operator/CI-supplied local materializations, verify body identity, invoke the
+allowlisted JSON-stdio contract, preserve body-time receipts, and compose
+FAR-SIDE -> BINOCULAR through a discovery-trigger-only bridge.
+
+This does not make arbitrary branches executable, does not perform Git
+checkout/network operations at runtime, and does not promote either incubating
+organ.
+
 ## Current status
 
 **Blueprint and skill floor. No production runtime is claimed.**
