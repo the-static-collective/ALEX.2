@@ -185,6 +185,21 @@ class SixSpecimenGateTests(unittest.TestCase):
         self.assertEqual(result["disposition"], "REFUSE")
         self.assertEqual(result["reason"], "packet_refused")
 
+    def test_ready_nomen_sacrum_without_material_witness_ref_refuses(self):
+        gate = self.make_gate()
+        gate["packet_results"][-1]["receipt"]["material_witness_ref"] = None
+        result = evaluate_name_six_specimen_gate(gate)
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason"], "invalid_packet_result")
+
+    def test_upstream_authority_bearing_packet_refuses(self):
+        gate = self.make_gate()
+        gate["packet_results"][0]["authority"] = "canon"
+        gate["packet_results"][0]["receipt"]["authority"] = "canon"
+        result = evaluate_name_six_specimen_gate(gate)
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason"], "invalid_packet_result")
+
 
 if __name__ == "__main__":
     unittest.main()
