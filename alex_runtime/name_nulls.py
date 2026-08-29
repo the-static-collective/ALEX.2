@@ -19,6 +19,12 @@ REQUIRED_CONTROL_TYPES = (
     "EDGE_ABLATION",
 )
 REQUIRED_CONTROL_TYPE_SET = frozenset(REQUIRED_CONTROL_TYPES)
+FORBIDDEN_ANSWER_FIELDS = frozenset({
+    "expected_answer",
+    "expected_outcome",
+    "favored_result",
+    "survival_expected",
+})
 BATTERY_REQUIRED = (
     "battery_id",
     "hypothesis_ref",
@@ -57,11 +63,17 @@ def _valid_invariants(value: Any) -> bool:
     )
 
 
+def _contains_forbidden_answer_fields(value: dict[str, Any]) -> bool:
+    return bool(FORBIDDEN_ANSWER_FIELDS.intersection(value))
+
+
 def evaluate_name_null_battery(record: object) -> dict[str, Any]:
     if not isinstance(record, dict):
         return _refuse("not_an_object")
     if record.get("schema") != BATTERY_SCHEMA:
         return _refuse("wrong_schema")
+    if _contains_forbidden_answer_fields(record):
+        return _refuse("favored_answer_not_allowed")
     if any(not _nonempty(record.get(field)) for field in BATTERY_REQUIRED):
         return _refuse("missing_required_field")
     if not SHA256_REF.fullmatch(record["hypothesis_ref"]) or not SHA256_REF.fullmatch(record["target_ref"]):
@@ -77,6 +89,8 @@ def evaluate_name_null_battery(record: object) -> dict[str, Any]:
     for control in controls:
         if not isinstance(control, dict):
             return _refuse("invalid_controls")
+        if _contains_forbidden_answer_fields(control):
+            return _refuse("favored_answer_not_allowed")
         if any(not _nonempty(control.get(field)) for field in CONTROL_REQUIRED):
             return _refuse("invalid_controls")
         control_type = control["control_type"]
