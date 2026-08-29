@@ -10,7 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: 52c678767017c170506ce1895d3a610b6ef115b4
+          path: .chronobody/far-side-pass-52c6787
+      - uses: actions/checkout@v4
+        with:
+          ref: c26620efc3c601eb0686825e1cfcbe1f1951f49e
+          path: .chronobody/binocular-c26620e
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: python -m unittest discover -s tests -v
+        env:
+          ALEX_FAR_SIDE_BODY_ROOT: ${{ github.workspace }}/.chronobody/far-side-pass-52c6787
+          ALEX_BINOCULAR_BODY_ROOT: ${{ github.workspace }}/.chronobody/binocular-c26620e
