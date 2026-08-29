@@ -106,9 +106,9 @@ class ResearchFormationTests(unittest.TestCase):
         self.assertEqual(result["binocular"]["execution"]["execution_state"], "COMPLETED")
         self.assertEqual(result["binocular"]["execution"]["receipt"]["exit_code"], 1)
         self.assertEqual(result["binocular"]["result"]["disposition"], "REFUSE")
-        self.assertIn(
+        self.assertEqual(
+            result["binocular"]["result"]["reason_code"],
             "DISCOVERY_TRIGGER_AS_SUPPORT",
-            result["binocular"]["result"]["reason_codes"],
         )
 
     def test_far_side_body_mismatch_stops_before_binocular(self):
