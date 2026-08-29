@@ -81,6 +81,25 @@ class NameAttestationTests(unittest.TestCase):
         self.assertEqual(result["disposition"], "REFUSE")
         self.assertEqual(result["reason"], "missing_required_field")
 
+    def test_wrong_attestation_schema_refuses(self):
+        record = copy.deepcopy(BASE_ATTESTATION)
+        record["schema"] = "alex.name-attestation/v1"
+        self.assertEqual(evaluate_name_attestation(record)["reason"], "wrong_schema")
+
+    def test_invalid_referent_confidence_refuses(self):
+        record = copy.deepcopy(BASE_ATTESTATION)
+        record["referent_confidence"] = "certain-because-I-said-so"
+        self.assertEqual(
+            evaluate_name_attestation(record)["reason"],
+            "invalid_referent_confidence",
+        )
+
+    def test_non_object_attestation_refuses(self):
+        result = evaluate_name_attestation("Ἰησοῦς")
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason"], "not_an_object")
+        self.assertEqual(result["authority"], "none")
+
 
 class TextTransformTests(unittest.TestCase):
     def test_accepts_declared_transform_and_keeps_two_identities(self):
@@ -121,6 +140,26 @@ class TextTransformTests(unittest.TestCase):
         result = evaluate_text_transform(record)
         self.assertEqual(result["disposition"], "REFUSE")
         self.assertEqual(result["reason"], "invalid_operation")
+
+    def test_transform_input_authority_is_not_propagated(self):
+        record = copy.deepcopy(BASE_TRANSFORM)
+        record["authority"] = "historical_truth"
+        result = evaluate_text_transform(record)
+        self.assertEqual(result["authority"], "none")
+        self.assertEqual(result["receipt"]["authority"], "none")
+
+    def test_wrong_transform_schema_refuses(self):
+        record = copy.deepcopy(BASE_TRANSFORM)
+        record["schema"] = "alex.text-transform/v9"
+        result = evaluate_text_transform(record)
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason"], "wrong_schema")
+
+    def test_non_object_transform_refuses(self):
+        result = evaluate_text_transform(["Ἰησοῦς", "ΙΗΣΟΥΣ"])
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason"], "not_an_object")
+        self.assertEqual(result["authority"], "none")
 
 
 if __name__ == "__main__":
