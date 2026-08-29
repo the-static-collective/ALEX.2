@@ -168,19 +168,34 @@ def evaluate_name_six_specimen_gate(record: object) -> dict[str, Any]:
     for result in packet_results:
         if not isinstance(result, dict) or result.get("schema") != PACKET_RESULT_SCHEMA:
             return _gate_refuse("invalid_packet_result")
+        if result.get("authority") != "none":
+            return _gate_refuse("invalid_packet_result")
         if result.get("disposition") == "REFUSE":
             return _gate_refuse("packet_refused")
 
         disposition = result.get("disposition")
         if disposition == "READY":
             receipt = result.get("receipt")
-            if not isinstance(receipt, dict) or receipt.get("schema") != PACKET_RECEIPT_SCHEMA:
+            if (
+                not isinstance(receipt, dict)
+                or receipt.get("schema") != PACKET_RECEIPT_SCHEMA
+                or receipt.get("authority") != "none"
+            ):
                 return _gate_refuse("invalid_packet_result")
             specimen_type = receipt.get("specimen_type")
             packet_digest = receipt.get("packet_digest")
+            if specimen_type == "NOMEN_SACRUM" and not _valid_ref(
+                receipt.get("material_witness_ref")
+            ):
+                return _gate_refuse("invalid_packet_result")
         elif disposition == "BLOCKED":
             specimen_type = result.get("specimen_type")
             packet_digest = result.get("packet_digest")
+            if (
+                specimen_type != "NOMEN_SACRUM"
+                or result.get("reason") != "material_witness_required"
+            ):
+                return _gate_refuse("invalid_packet_result")
             blocked.append(specimen_type)
         else:
             return _gate_refuse("invalid_packet_result")
