@@ -392,7 +392,7 @@ def execute_body(
     entrypoint_path = root_path / PurePosixPath(entry.entrypoint)
     try:
         completed = subprocess.run(
-            [sys.executable, str(entrypoint_path)],
+            [sys.executable, "-B", str(entrypoint_path)],
             input=canonical_json_bytes(payload),
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
