@@ -25,6 +25,7 @@ BASE_ATTESTATION = {
 BASE_TRANSFORM = {
     "schema": "alex.text-transform/v0",
     "transform_id": "case-normalize-001",
+    "parent_ref": sha256_json(BASE_ATTESTATION),
     "input_ref": sha256_json({"text": "Ἰησοῦς"}),
     "operation": "CASE_NORMALIZE",
     "input_text": "Ἰησοῦς",
@@ -122,12 +123,13 @@ class NameAttestationTests(unittest.TestCase):
 
 
 class TextTransformTests(unittest.TestCase):
-    def test_accepts_declared_transform_and_keeps_two_identities(self):
+    def test_accepts_declared_transform_and_keeps_occurrence_and_carrier_identities(self):
         result = evaluate_text_transform(copy.deepcopy(BASE_TRANSFORM))
         self.assertEqual(result["disposition"], "ACCEPT")
         receipt = result["receipt"]
         self.assertEqual(receipt["operation"], "CASE_NORMALIZE")
         self.assertEqual(receipt["output_text"], "ΙΗΣΟΥΣ")
+        self.assertEqual(receipt["parent_ref"], sha256_json(BASE_ATTESTATION))
         self.assertEqual(receipt["input_ref"], sha256_json({"text": "Ἰησοῦς"}))
         self.assertNotEqual(receipt["transform_digest"], receipt["output_digest"])
         self.assertEqual(receipt["authority"], "none")
@@ -140,6 +142,20 @@ class TextTransformTests(unittest.TestCase):
             first["receipt"]["transform_digest"],
             second["receipt"]["transform_digest"],
         )
+
+    def test_rejects_invalid_parent_ref(self):
+        record = copy.deepcopy(BASE_TRANSFORM)
+        record["parent_ref"] = "attestation:matt-1-21"
+        result = evaluate_text_transform(record)
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason"], "invalid_parent_ref")
+
+    def test_rejects_missing_parent_ref(self):
+        record = copy.deepcopy(BASE_TRANSFORM)
+        del record["parent_ref"]
+        result = evaluate_text_transform(record)
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason"], "missing_required_field")
 
     def test_rejects_invalid_input_ref(self):
         record = copy.deepcopy(BASE_TRANSFORM)
