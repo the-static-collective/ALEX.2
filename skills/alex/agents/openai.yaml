@@ -1,4 +1,7 @@
 interface:
   display_name: "ALEX"
-  short_description: "Research witnesses and formation traces with provenance"
-  default_prompt: "Use $alex to investigate this question through attributable source witnesses. Preserve evidence paths; read references/constitutional-hardening.md when a result depends on search absence, inherited premises, source independence, or replay robustness; and use PRESSURE or { PEEL. SLEEP .LEEP } when the hypothesis or its formation path needs adversarial traceability."
+  short_description: "Research source witnesses with attributable evidence paths"
+  default_prompt: "Use $alex to investigate this question through attributable source witnesses. Preserve source-to-claim transformations, keep discovery trace separate from evidence, pressure load-bearing assumptions, and load only the bounded reference protocols the selected research shape requires."
+
+policy:
+  allow_implicit_invocation: true
