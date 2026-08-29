@@ -1,0 +1,14 @@
+{
+  "schema": "alex.research-formation-run/v0",
+  "run_id": "formation-001",
+  "body_mode": "EXPERIMENTAL",
+  "materializations": {},
+  "far_side": {
+    "body_time_id": "far-side-pass@52c678767017c170506ce1895d3a610b6ef115b4",
+    "case": {}
+  },
+  "binocular": {
+    "body_time_id": "binocular-recursion@c26620efc3c601eb0686825e1cfcbe1f1951f49e",
+    "case": {}
+  }
+}
