@@ -87,13 +87,16 @@ Do not modify `alex_runtime/derivation.py`, `alex_runtime/projection_*`, `loadou
 Add tests equivalent to:
 
 ```python
+import copy
+import unittest
+
 from alex_runtime.chronobody import RegistryError, parse_registry
 
 FAR_SIDE_SHA = "52c678767017c170506ce1895d3a610b6ef115b4"
 
 
-def test_nonpresent_body_requires_exact_sha_and_matching_body_time_id():
-    registry = {
+def _registry():
+    return {
         "schema": "alex.chronobody-registry/v0",
         "organs": [{
             "organ_id": "far-side-pass",
@@ -119,17 +122,19 @@ def test_nonpresent_body_requires_exact_sha_and_matching_body_time_id():
         }],
     }
 
-    entries = parse_registry(registry)
-    assert entries[0].body_time_id == f"far-side-pass@{FAR_SIDE_SHA}"
 
+class ChronobodyRegistryTests(unittest.TestCase):
+    def test_nonpresent_body_requires_exact_sha_and_matching_body_time_id(self):
+        entries = parse_registry(_registry())
+        self.assertEqual(entries[0].body_time_id, f"far-side-pass@{FAR_SIDE_SHA}")
 
-def test_branch_name_without_sha_is_refused():
-    # same entry, remove source.sha
-    # assert parse_registry raises RegistryError with code BODY_SHA_REQUIRED
-    ...
+    def test_branch_name_without_sha_is_refused(self):
+        registry = copy.deepcopy(_registry())
+        del registry["organs"][0]["source"]["sha"]
+        with self.assertRaises(RegistryError) as raised:
+            parse_registry(registry)
+        self.assertEqual(raised.exception.code, "BODY_SHA_REQUIRED")
 ```
-
-Replace the ellipsis before commit with explicit fixture mutation/assertion; no placeholder remains in committed tests.
 
 Also test:
 
@@ -226,26 +231,26 @@ git commit -m "feat: freeze CHRONOBODY registry contract"
 Cover the matrix explicitly:
 
 ```python
-def test_present_only_excludes_incubating():
-    result = resolve_body(entries, "far_side_pressure", BodyMode.PRESENT_ONLY)
-    assert result.disposition == "UNAVAILABLE"
+def test_present_only_excludes_incubating(self):
+    result = resolve_body(self.entries, "far_side_pressure", BodyMode.PRESENT_ONLY)
+    self.assertEqual(result.disposition, "UNAVAILABLE")
 
 
-def test_experimental_routes_single_incubating_body():
-    result = resolve_body(entries, "far_side_pressure", BodyMode.EXPERIMENTAL)
-    assert result.disposition == "ROUTED"
-    assert result.entry.body_time_id.endswith(FAR_SIDE_SHA)
+def test_experimental_routes_single_incubating_body(self):
+    result = resolve_body(self.entries, "far_side_pressure", BodyMode.EXPERIMENTAL)
+    self.assertEqual(result.disposition, "ROUTED")
+    self.assertTrue(result.entry.body_time_id.endswith(FAR_SIDE_SHA))
 
 
-def test_two_eligible_bodies_are_ambiguous_not_latest_wins():
-    result = resolve_body(two_incubating_entries, "far_side_pressure", BodyMode.EXPERIMENTAL)
-    assert result.disposition == "AMBIGUOUS"
+def test_two_eligible_bodies_are_ambiguous_not_latest_wins(self):
+    result = resolve_body(self.two_incubating_entries, "far_side_pressure", BodyMode.EXPERIMENTAL)
+    self.assertEqual(result.disposition, "AMBIGUOUS")
 
 
-def test_replay_requires_exact_body_time_id():
-    result = resolve_body(entries, "far_side_pressure", BodyMode.REPLAY)
-    assert result.disposition == "REFUSED"
-    assert result.reason_code == "EXACT_BODY_TIME_REQUIRED"
+def test_replay_requires_exact_body_time_id(self):
+    result = resolve_body(self.entries, "far_side_pressure", BodyMode.REPLAY)
+    self.assertEqual(result.disposition, "REFUSED")
+    self.assertEqual(result.reason_code, "EXACT_BODY_TIME_REQUIRED")
 ```
 
 Also test `HELD` refusal, `RETIRED` replay-only, explicit body mismatch, and explicit organ disambiguation.
@@ -440,7 +445,7 @@ git commit -m "feat: execute receipted CHRONOBODY organs"
 - Create: `chronobody/registry.v0.json`
 - Create: `tools/run_chronobody.py`
 - Modify: `tests/test_chronobody_registry.py`
-- Create or modify: `tests/test_run_chronobody.py`
+- Create: `tests/test_run_chronobody.py`
 
 **Interfaces:**
 - CLI request schema:
@@ -532,7 +537,7 @@ The test must skip only when `ALEX_FAR_SIDE_BODY_ROOT` is absent. When present i
 
 1. load the committed registry;
 2. resolve `far_side_pressure` under `EXPERIMENTAL`;
-3. verify the supplied body root exactly matches `52c678...`;
+3. verify the supplied body root exactly matches `52c678767017c170506ce1895d3a610b6ef115b4`;
 4. load a valid FAR-SIDE case from the materialized body's own `tests/fixtures/far_side/survivor.json`;
 5. execute it through `execute_body()`;
 6. assert `execution_state == COMPLETED`;
@@ -646,7 +651,7 @@ The result must include a bridge receipt:
   "kind": "DISCOVERY_TRIGGER_ONLY",
   "from_stage": "far_side",
   "to_stage": "binocular",
-  "receipt_ref": "sha256:...",
+  "receipt_ref": "sha256:far-side-execution-receipt-digest",
   "authority": "none"
 }
 ```
@@ -841,7 +846,7 @@ Use the repository's PR Completion discipline. This task is review/landing only 
 
 ### Placeholder scan
 
-Implementation steps contain no intended `TODO`, `TBD`, or "implement later" instructions. The illustrative ellipsis in Task 1 is explicitly required to be replaced before the test commit; an executor must not commit it.
+The plan contains no intended `TODO`, `TBD`, ellipsis placeholder, or underspecified implementation step.
 
 ### Type consistency
 
