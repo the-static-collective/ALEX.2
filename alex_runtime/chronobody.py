@@ -50,6 +50,25 @@ class ChronobodyEntry:
     parents: tuple[str, ...]
 
 
+@dataclass(frozen=True)
+class Resolution:
+    disposition: str
+    reason_code: str | None
+    entry: ChronobodyEntry | None
+    candidate_body_time_ids: tuple[str, ...] = ()
+
+
+_ALLOWED_BY_MODE = {
+    BodyMode.PRESENT_ONLY: {BodyStatus.PRESENT},
+    BodyMode.EXPERIMENTAL: {
+        BodyStatus.PRESENT,
+        BodyStatus.INCUBATING,
+        BodyStatus.RECONSTITUTED,
+    },
+    BodyMode.REPLAY: {BodyStatus.RETIRED},
+}
+
+
 def _nonempty_string(value: Any) -> bool:
     return isinstance(value, str) and bool(value)
 
@@ -138,7 +157,11 @@ def _parse_entry(value: Any) -> ChronobodyEntry:
         verification_result = verification.get("result")
         if verification_workflow is not None and not _nonempty_string(verification_workflow):
             raise RegistryError("MALFORMED_VERIFICATION", "verification.workflow must be a non-empty string")
-        if verification_run_id is not None and (not isinstance(verification_run_id, int) or isinstance(verification_run_id, bool) or verification_run_id < 1):
+        if verification_run_id is not None and (
+            not isinstance(verification_run_id, int)
+            or isinstance(verification_run_id, bool)
+            or verification_run_id < 1
+        ):
             raise RegistryError("MALFORMED_VERIFICATION", "verification.run_id must be a positive integer")
         if verification_result is not None and not _nonempty_string(verification_result):
             raise RegistryError("MALFORMED_VERIFICATION", "verification.result must be a non-empty string")
@@ -175,3 +198,49 @@ def parse_registry(value: object) -> tuple[ChronobodyEntry, ...]:
         raise RegistryError("DUPLICATE_BODY_TIME_ID", "body_time_id values must be unique")
 
     return entries
+
+
+def resolve_body(
+    entries: tuple[ChronobodyEntry, ...] | list[ChronobodyEntry],
+    capability: str,
+    mode: BodyMode,
+    organ_id: str | None = None,
+    body_time_id: str | None = None,
+) -> Resolution:
+    if not isinstance(mode, BodyMode):
+        return Resolution("REFUSED", "UNKNOWN_BODY_MODE", None)
+    if not _nonempty_string(capability):
+        return Resolution("REFUSED", "CAPABILITY_REQUIRED", None)
+
+    entries_tuple = tuple(entries)
+
+    if body_time_id is not None:
+        exact = next((entry for entry in entries_tuple if entry.body_time_id == body_time_id), None)
+        if exact is None:
+            return Resolution("UNAVAILABLE", "BODY_TIME_NOT_REGISTERED", None)
+        if organ_id is not None and exact.organ_id != organ_id:
+            return Resolution("REFUSED", "ORGAN_MISMATCH", None, (exact.body_time_id,))
+        if capability not in exact.capabilities:
+            return Resolution("REFUSED", "CAPABILITY_MISMATCH", None, (exact.body_time_id,))
+        if exact.status is BodyStatus.HELD:
+            return Resolution("REFUSED", "BODY_NOT_EXECUTABLE", None, (exact.body_time_id,))
+        if exact.status not in _ALLOWED_BY_MODE[mode]:
+            return Resolution("REFUSED", "BODY_MODE_MISMATCH", None, (exact.body_time_id,))
+        return Resolution("ROUTED", None, exact, (exact.body_time_id,))
+
+    if mode is BodyMode.REPLAY:
+        return Resolution("REFUSED", "EXACT_BODY_TIME_REQUIRED", None)
+
+    candidates = [entry for entry in entries_tuple if capability in entry.capabilities]
+    if organ_id is not None:
+        candidates = [entry for entry in candidates if entry.organ_id == organ_id]
+
+    eligible = [entry for entry in candidates if entry.status in _ALLOWED_BY_MODE[mode]]
+    eligible_ids = tuple(sorted(entry.body_time_id for entry in eligible))
+
+    if not eligible:
+        return Resolution("UNAVAILABLE", "NO_ELIGIBLE_BODY", None)
+    if len(eligible) > 1:
+        return Resolution("AMBIGUOUS", "MULTIPLE_ELIGIBLE_BODIES", None, eligible_ids)
+
+    return Resolution("ROUTED", None, eligible[0], eligible_ids)
