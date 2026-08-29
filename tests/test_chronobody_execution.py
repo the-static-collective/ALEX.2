@@ -29,6 +29,7 @@ def committed_body(root: Path, script: str, *, organ_id="test-organ"):
     run_git(root, "remote", "add", "origin", "https://github.com/the-static-collective/ALEX.2.git")
     tools = root / "tools"
     tools.mkdir(parents=True, exist_ok=True)
+    (tools / "helper.py").write_text("VALUE = 7\n", encoding="utf-8")
     (tools / "organ.py").write_text(script, encoding="utf-8")
     run_git(root, "add", ".")
     run_git(root, "commit", "-m", "body")
@@ -83,6 +84,19 @@ class ChronobodyExecutionTests(unittest.TestCase):
             self.assertEqual(result.receipt["execution_state"], "COMPLETED")
             self.assertEqual(result.receipt["exit_code"], 0)
             self.assertEqual(result.receipt["authority"], "none")
+
+    def test_execution_does_not_dirty_body_with_python_bytecode(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            entry, _ = committed_body(
+                root,
+                "import helper, json, sys\njson.dump({'value': helper.VALUE}, sys.stdout, sort_keys=True, separators=(',',':'))\nsys.stdout.write('\\n')\n",
+            )
+            first = execute_body(entry, root, {"x": 1}, BodyMode.EXPERIMENTAL, timeout_seconds=2)
+            second = execute_body(entry, root, {"x": 1}, BodyMode.EXPERIMENTAL, timeout_seconds=2)
+            self.assertEqual(first.execution_state, "COMPLETED")
+            self.assertEqual(second.execution_state, "COMPLETED")
+            self.assertEqual(run_git(root, "status", "--porcelain"), "")
 
     def test_exit_one_with_valid_json_is_evaluated_completion(self):
         with tempfile.TemporaryDirectory() as directory:
