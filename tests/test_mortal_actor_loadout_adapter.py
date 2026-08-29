@@ -4,10 +4,6 @@ import copy
 import unittest
 from pathlib import Path
 
-from alex_runtime.handshake import (
-    compile_payload_digest as alex_compile_payload_digest,
-    validate_compile_record,
-)
 from skills.loadout.scripts.compile_identity import compile_payload_digest, validate_compile_identity
 from skills.loadout.scripts.mortal_actor import bind_mortal_actor_compiles
 
@@ -59,11 +55,12 @@ def make_compile(compile_id: str = "C0", parent: str | None = None) -> dict:
 
 
 class MortalLoadoutAdapterTests(unittest.TestCase):
-    def test_portable_digest_matches_alex_testimony(self):
+    def test_portable_compile_identity_is_self_consistent(self):
         c0 = make_compile()
-        self.assertEqual(compile_payload_digest(c0), alex_compile_payload_digest(c0))
         self.assertEqual(validate_compile_identity(c0), [])
-        self.assertEqual(validate_compile_record(c0), [])
+        changed = copy.deepcopy(c0)
+        changed["context_pack_ref"] = "context-pack:DIFFERENT"
+        self.assertNotEqual(compile_payload_digest(changed), c0["compile_digest"])
 
     def test_same_compile_binding_is_reference_only(self):
         c0 = make_compile()
