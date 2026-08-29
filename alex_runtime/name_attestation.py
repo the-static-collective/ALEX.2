@@ -62,6 +62,10 @@ def _nonempty_string(value: Any) -> bool:
     return isinstance(value, str) and bool(value.strip())
 
 
+def _text_digest(text: str) -> str:
+    return sha256_json({"text": text})
+
+
 def _valid_declared_loss(value: Any) -> bool:
     return (
         isinstance(value, list)
@@ -82,7 +86,8 @@ def evaluate_name_attestation(record: object) -> dict[str, Any]:
     if record["referent_confidence"] not in REFERENT_CONFIDENCE:
         return _refuse(ATTESTATION_RESULT_SCHEMA, "invalid_referent_confidence")
 
-    digest = sha256_json(record)
+    attestation_digest = sha256_json(record)
+    raw_form_digest = _text_digest(record["raw_form"])
     return {
         "schema": ATTESTATION_RESULT_SCHEMA,
         "disposition": "ACCEPT",
@@ -90,7 +95,8 @@ def evaluate_name_attestation(record: object) -> dict[str, Any]:
         "receipt": {
             "schema": ATTESTATION_RECEIPT_SCHEMA,
             "attestation_id": record["attestation_id"],
-            "attestation_digest": digest,
+            "attestation_digest": attestation_digest,
+            "raw_form_digest": raw_form_digest,
             "source_world": record["source_world"],
             "raw_form": record["raw_form"],
             "authority": "none",
@@ -110,11 +116,13 @@ def evaluate_text_transform(record: object) -> dict[str, Any]:
         return _refuse(TRANSFORM_RESULT_SCHEMA, "invalid_operation")
     if not SHA256_REF.fullmatch(record["input_ref"]):
         return _refuse(TRANSFORM_RESULT_SCHEMA, "invalid_input_ref")
+    if record["input_ref"] != _text_digest(record["input_text"]):
+        return _refuse(TRANSFORM_RESULT_SCHEMA, "input_ref_mismatch")
     if not _valid_declared_loss(record.get("declared_loss")):
         return _refuse(TRANSFORM_RESULT_SCHEMA, "invalid_declared_loss")
 
     transform_digest = sha256_json(record)
-    output_digest = sha256_json({"text": record["output_text"]})
+    output_digest = _text_digest(record["output_text"])
     return {
         "schema": TRANSFORM_RESULT_SCHEMA,
         "disposition": "ACCEPT",
