@@ -12,6 +12,10 @@ ALEX must refuse to treat a NAME hypothesis as pressure-tested unless it carries
 
 > **A favored hypothesis earns promotion by surviving loss, not by accumulating resemblance.**
 
+And:
+
+> **A hostile control may declare what changes and what would discriminate. It may not declare what answer should result.**
+
 `NAME-NULLS-001` does not execute every control. It validates and receipts the hostile battery that downstream systems must execute.
 
 ## Required control family
@@ -49,6 +53,17 @@ Each control requires:
 
 The `changed_dimension` may not also appear in `preserved_invariants`; a control that claims both to change and preserve the same dimension is malformed.
 
+### Favored-answer prohibition
+
+Neither the battery nor any control may predeclare survival, expected outcome, favored result, or expected answer. v0 refuses these explicit result-bearing keys wherever they occur at those two record levels:
+
+- `expected_answer`
+- `expected_outcome`
+- `favored_result`
+- `survival_expected`
+
+The battery may state a `next_discriminator`; that field describes what comparison would discriminate after execution, not which result is desired.
+
 ## Output
 
 Accepted batteries return an `alex.name-null-battery-receipt/v0` with exact battery digest, hypothesis/target refs, target world, ordered control summaries, and `authority: none`.
@@ -69,6 +84,13 @@ At minimum:
 - `duplicate_control_type`
 - `control_dimension_conflict`
 - `invalid_executor_owner`
+- `favored_answer_not_allowed`
+
+## Owner-review correction
+
+The first GREEN structural validator tolerated opaque extra keys. Owner review showed that this allowed a supposedly hostile battery to include `expected_answer`, `expected_outcome`, or `survival_expected` and still receive `ACCEPT`.
+
+RED review tests proved all three forms were accepted. The corrected evaluator refuses explicit result-bearing fields before structural acceptance.
 
 ## Hostile tests
 
@@ -81,7 +103,12 @@ At minimum:
 7. Key reorder does not change battery identity.
 8. Changing one discriminator changes battery identity.
 9. Input authority cannot widen output authority.
+10. Battery-level expected answer refuses.
+11. Control-level expected outcome refuses.
+12. Survival-predeclared control refuses.
 
 ## Seal
 
 > **THE NULL MUST BE ABLE TO KILL THE CLAIM. OTHERWISE IT IS DECORATION.**
+
+> **A TEST THAT ALREADY KNOWS ITS ANSWER IS NOT A HOSTILE TEST.**
