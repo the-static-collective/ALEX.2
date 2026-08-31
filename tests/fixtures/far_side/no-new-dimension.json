@@ -1,0 +1,50 @@
+{
+  "case_id": "far-side:residual-topology-survivor",
+  "h0": "A recursive backscan may expose a simpler relation between route and topology.",
+  "baseline": {
+    "claims": [
+      {"id": "b:route", "statement": "The path taken is not the topology available."}
+    ],
+    "invariants": ["inv:route-host-distinction"]
+  },
+  "traversals": [
+    {
+      "id": "t:scale",
+      "axis": "SCALE",
+      "transform": "whole-to-local-degree",
+      "invariants": ["inv:route-host-distinction"],
+      "losses": [],
+      "receipt_ref": "receipt:t:scale"
+    },
+    {
+      "id": "t:direction",
+      "axis": "DIRECTION",
+      "transform": "route-to-residual",
+      "invariants": ["inv:route-host-distinction"],
+      "losses": [],
+      "receipt_ref": "receipt:t:direction"
+    },
+    {
+      "id": "t:representation",
+      "axis": "REPRESENTATION",
+      "transform": "prose-to-graph-difference",
+      "invariants": ["inv:route-host-distinction"],
+      "losses": [],
+      "receipt_ref": "receipt:t:representation"
+    }
+  ],
+  "candidate": {
+    "statement": "A regular host minus a regular spanning route has a regular residual degree field.",
+    "required_targets": ["inv:route-host-distinction"],
+    "regenerated_targets": ["inv:route-host-distinction"],
+    "novelty": []
+  },
+  "pressure": [
+    {"kind": "NEAREST_BORING", "status": "PASS", "receipt_ref": "receipt:p:boring"},
+    {"kind": "METAPHOR_REMOVAL", "status": "PASS", "receipt_ref": "receipt:p:metaphor"},
+    {"kind": "REPRESENTATION_SWAP", "status": "PASS", "receipt_ref": "receipt:p:representation"},
+    {"kind": "RELABEL", "status": "PASS", "receipt_ref": "receipt:p:relabel"},
+    {"kind": "HOLDOUT", "status": "PASS", "receipt_ref": "receipt:p:holdout"},
+    {"kind": "REGENERATION_FAILURE", "status": "PASS", "receipt_ref": "receipt:p:regeneration"}
+  ]
+}
