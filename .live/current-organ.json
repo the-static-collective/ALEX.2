@@ -1,0 +1,13 @@
+{
+  "schema": "static-collective/current-organ/v0",
+  "organ": "alex",
+  "owner": "the-static-collective/ALEX.2",
+  "entrypoint": "skills/alex/SKILL.md",
+  "state": null,
+  "orientation": {
+    "kind": "gitbook-front-room",
+    "required": false
+  },
+  "resolution": "default-branch-head-then-pin",
+  "fallback": "embedded-bootstrap"
+}
