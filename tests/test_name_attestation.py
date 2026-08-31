@@ -1,0 +1,210 @@
+import copy
+import unittest
+
+from alex_runtime.digests import sha256_json
+from alex_runtime.name_attestation import (
+    evaluate_name_attestation,
+    evaluate_text_transform,
+)
+
+
+BASE_ATTESTATION = {
+    "schema": "alex.name-attestation/v0",
+    "attestation_id": "matt-1-21-iesous",
+    "source_world": "B",
+    "artifact_id": "na28-matthew",
+    "locus": "Matthew 1:21",
+    "language": "grc",
+    "script": "Greek",
+    "raw_form": "Ἰησοῦς",
+    "reading_status": "editorial_transcription",
+    "referent": "Jesus of Nazareth",
+    "referent_confidence": "high",
+}
+
+BASE_TRANSFORM = {
+    "schema": "alex.text-transform/v0",
+    "transform_id": "case-normalize-001",
+    "parent_ref": sha256_json(BASE_ATTESTATION),
+    "input_ref": sha256_json({"text": "Ἰησοῦς"}),
+    "operation": "CASE_NORMALIZE",
+    "input_text": "Ἰησοῦς",
+    "output_text": "ΙΗΣΟΥΣ",
+    "producer": "declared-test-producer",
+    "method_version": "v1",
+    "declared_loss": ["case", "accent", "breathing"],
+}
+
+
+class NameAttestationTests(unittest.TestCase):
+    def test_accepts_bounded_attestation_and_freezes_authority(self):
+        record = copy.deepcopy(BASE_ATTESTATION)
+        record["authority"] = "canon"
+        result = evaluate_name_attestation(record)
+        self.assertEqual(result["disposition"], "ACCEPT")
+        self.assertEqual(result["schema"], "alex.name-attestation-result/v0")
+        self.assertEqual(result["receipt"]["raw_form"], "Ἰησοῦς")
+        self.assertEqual(result["receipt"]["source_world"], "B")
+        self.assertEqual(result["receipt"]["authority"], "none")
+        self.assertTrue(result["receipt"]["attestation_digest"].startswith("sha256:"))
+
+    def test_attestation_receipt_exposes_exact_raw_form_carrier_digest(self):
+        result = evaluate_name_attestation(copy.deepcopy(BASE_ATTESTATION))
+        self.assertEqual(
+            result["receipt"]["raw_form_digest"],
+            sha256_json({"text": "Ἰησοῦς"}),
+        )
+        self.assertNotEqual(
+            result["receipt"]["raw_form_digest"],
+            result["receipt"]["attestation_digest"],
+        )
+
+    def test_unicode_change_changes_attestation_identity(self):
+        first = evaluate_name_attestation(copy.deepcopy(BASE_ATTESTATION))
+        second_record = copy.deepcopy(BASE_ATTESTATION)
+        second_record["raw_form"] = "ΙΗΣΟΥΣ"
+        second = evaluate_name_attestation(second_record)
+        self.assertNotEqual(
+            first["receipt"]["attestation_digest"],
+            second["receipt"]["attestation_digest"],
+        )
+        self.assertNotEqual(
+            first["receipt"]["raw_form_digest"],
+            second["receipt"]["raw_form_digest"],
+        )
+
+    def test_source_world_is_part_of_attestation_identity_but_not_text_carrier(self):
+        first = evaluate_name_attestation(copy.deepcopy(BASE_ATTESTATION))
+        second_record = copy.deepcopy(BASE_ATTESTATION)
+        second_record["source_world"] = "D"
+        second = evaluate_name_attestation(second_record)
+        self.assertNotEqual(
+            first["receipt"]["attestation_digest"],
+            second["receipt"]["attestation_digest"],
+        )
+        self.assertEqual(
+            first["receipt"]["raw_form_digest"],
+            second["receipt"]["raw_form_digest"],
+        )
+
+    def test_rejects_invalid_source_world(self):
+        record = copy.deepcopy(BASE_ATTESTATION)
+        record["source_world"] = "Z"
+        result = evaluate_name_attestation(record)
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason"], "invalid_source_world")
+        self.assertEqual(result["authority"], "none")
+
+    def test_rejects_blank_required_field(self):
+        record = copy.deepcopy(BASE_ATTESTATION)
+        record["raw_form"] = ""
+        result = evaluate_name_attestation(record)
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason"], "missing_required_field")
+
+    def test_wrong_attestation_schema_refuses(self):
+        record = copy.deepcopy(BASE_ATTESTATION)
+        record["schema"] = "alex.name-attestation/v1"
+        self.assertEqual(evaluate_name_attestation(record)["reason"], "wrong_schema")
+
+    def test_invalid_referent_confidence_refuses(self):
+        record = copy.deepcopy(BASE_ATTESTATION)
+        record["referent_confidence"] = "certain-because-I-said-so"
+        self.assertEqual(
+            evaluate_name_attestation(record)["reason"],
+            "invalid_referent_confidence",
+        )
+
+    def test_non_object_attestation_refuses(self):
+        result = evaluate_name_attestation("Ἰησοῦς")
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason"], "not_an_object")
+        self.assertEqual(result["authority"], "none")
+
+
+class TextTransformTests(unittest.TestCase):
+    def test_accepts_declared_transform_and_keeps_occurrence_and_carrier_identities(self):
+        result = evaluate_text_transform(copy.deepcopy(BASE_TRANSFORM))
+        self.assertEqual(result["disposition"], "ACCEPT")
+        receipt = result["receipt"]
+        self.assertEqual(receipt["operation"], "CASE_NORMALIZE")
+        self.assertEqual(receipt["output_text"], "ΙΗΣΟΥΣ")
+        self.assertEqual(receipt["parent_ref"], sha256_json(BASE_ATTESTATION))
+        self.assertEqual(receipt["input_ref"], sha256_json({"text": "Ἰησοῦς"}))
+        self.assertNotEqual(receipt["transform_digest"], receipt["output_digest"])
+        self.assertEqual(receipt["authority"], "none")
+
+    def test_transform_digest_is_key_order_invariant(self):
+        first = evaluate_text_transform(copy.deepcopy(BASE_TRANSFORM))
+        reversed_record = dict(reversed(list(BASE_TRANSFORM.items())))
+        second = evaluate_text_transform(reversed_record)
+        self.assertEqual(
+            first["receipt"]["transform_digest"],
+            second["receipt"]["transform_digest"],
+        )
+
+    def test_rejects_invalid_parent_ref(self):
+        record = copy.deepcopy(BASE_TRANSFORM)
+        record["parent_ref"] = "attestation:matt-1-21"
+        result = evaluate_text_transform(record)
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason"], "invalid_parent_ref")
+
+    def test_rejects_missing_parent_ref(self):
+        record = copy.deepcopy(BASE_TRANSFORM)
+        del record["parent_ref"]
+        result = evaluate_text_transform(record)
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason"], "missing_required_field")
+
+    def test_rejects_invalid_input_ref(self):
+        record = copy.deepcopy(BASE_TRANSFORM)
+        record["input_ref"] = "attestation:matt-1-21"
+        result = evaluate_text_transform(record)
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason"], "invalid_input_ref")
+
+    def test_rejects_valid_but_unrelated_input_ref(self):
+        record = copy.deepcopy(BASE_TRANSFORM)
+        record["input_ref"] = sha256_json({"text": "unrelated carrier"})
+        result = evaluate_text_transform(record)
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason"], "input_ref_mismatch")
+
+    def test_rejects_duplicate_declared_loss(self):
+        record = copy.deepcopy(BASE_TRANSFORM)
+        record["declared_loss"] = ["case", "case"]
+        result = evaluate_text_transform(record)
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason"], "invalid_declared_loss")
+
+    def test_rejects_unknown_operation(self):
+        record = copy.deepcopy(BASE_TRANSFORM)
+        record["operation"] = "MYSTICALLY_EQUIVALENT_TO"
+        result = evaluate_text_transform(record)
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason"], "invalid_operation")
+
+    def test_transform_input_authority_is_not_propagated(self):
+        record = copy.deepcopy(BASE_TRANSFORM)
+        record["authority"] = "historical_truth"
+        result = evaluate_text_transform(record)
+        self.assertEqual(result["authority"], "none")
+        self.assertEqual(result["receipt"]["authority"], "none")
+
+    def test_wrong_transform_schema_refuses(self):
+        record = copy.deepcopy(BASE_TRANSFORM)
+        record["schema"] = "alex.text-transform/v9"
+        result = evaluate_text_transform(record)
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason"], "wrong_schema")
+
+    def test_non_object_transform_refuses(self):
+        result = evaluate_text_transform(["Ἰησοῦς", "ΙΗΣΟΥΣ"])
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason"], "not_an_object")
+        self.assertEqual(result["authority"], "none")
+
+
+if __name__ == "__main__":
+    unittest.main()
