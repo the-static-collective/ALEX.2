@@ -6,9 +6,9 @@ from typing import Any
 def evaluate_cross_aperture_case(case: dict) -> dict[str, Any]:
     """Evaluate one finite, already-declared cross-aperture specimen.
 
-    This first GREEN slice intentionally implements only the canonical
-    non-empty/singleton terminal path. Broader terminal and malformed-input
-    behavior is earned by later hostile tests.
+    V0 computes ordered compatible-set intersections only. It does not infer
+    observer maps, rank witnesses, diagnose model breaks, or mint authority.
+    Full malformed-input refusal semantics are added by the next TDD slice.
     """
 
     world_states = list(case["world_states"])
@@ -41,16 +41,31 @@ def evaluate_cross_aperture_case(case: dict) -> dict[str, Any]:
             }
         )
 
-    representative = compatible[0]
+    if len(compatible) == 0:
+        disposition = "MODEL_BREAK"
+        reason_code = "INCONSISTENT_OBSERVATIONS"
+        representative = None
+        selection_basis = None
+    elif len(compatible) == 1:
+        disposition = "IDENTIFIED_WITHIN_DECLARED_MODEL"
+        reason_code = None
+        representative = compatible[0]
+        selection_basis = "singleton_in_declared_model"
+    else:
+        disposition = "FOG"
+        reason_code = "NON_SINGLETON_COMPATIBLE_SET"
+        representative = None
+        selection_basis = None
+
     return {
         "case_id": case["case_id"],
         "world_domain_id": case["world_domain_id"],
-        "disposition": "IDENTIFIED_WITHIN_DECLARED_MODEL",
-        "reason_code": None,
+        "disposition": disposition,
+        "reason_code": reason_code,
         "initial_compatible_states": world_states,
         "lineage": lineage,
         "final_compatible_states": list(compatible),
         "unique_representative": representative,
-        "selection_basis": "singleton_in_declared_model",
+        "selection_basis": selection_basis,
         "authority": "none",
     }
