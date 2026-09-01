@@ -81,6 +81,17 @@ class CrossApertureIntersectionTests(unittest.TestCase):
                 self.assertIsNone(result["selection_basis"])
                 self.assertEqual(result["authority"], "none")
 
+    def test_non_string_relation_declaration_is_stable_refusal(self) -> None:
+        case = load_case("invalid_relation")
+        case["cuts"][0]["relation_declaration"] = []
+
+        result = evaluate_cross_aperture_case(case)
+
+        self.assertEqual(result["disposition"], "INSUFFICIENT_TO_TEST")
+        self.assertEqual(result["reason_code"], "INVALID_RELATION_DECLARATION")
+        self.assertEqual(result["lineage"], [])
+        self.assertEqual(result["authority"], "none")
+
     def test_non_dict_case_is_malformed(self) -> None:
         result = evaluate_cross_aperture_case(None)
 
