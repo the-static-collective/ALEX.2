@@ -26,6 +26,38 @@ class CrossApertureIntersectionTests(unittest.TestCase):
         self.assertEqual(result["selection_basis"], "singleton_in_declared_model")
         self.assertEqual(result["authority"], "none")
 
+    def test_non_singleton_fog_never_selects_representative(self) -> None:
+        result = evaluate_cross_aperture_case(load_case("non_singleton_fog"))
+
+        self.assertEqual(result["disposition"], "FOG")
+        self.assertEqual(result["reason_code"], "NON_SINGLETON_COMPATIBLE_SET")
+        self.assertEqual(result["final_compatible_states"], ["a", "b"])
+        self.assertIsNone(result["unique_representative"])
+        self.assertIsNone(result["selection_basis"])
+        self.assertEqual(result["authority"], "none")
+
+    def test_redundant_and_correlated_cuts_do_not_gain_information_by_title(self) -> None:
+        redundant = evaluate_cross_aperture_case(load_case("redundant_aperture"))
+        correlated = evaluate_cross_aperture_case(load_case("correlated_agreement"))
+
+        self.assertEqual(redundant["lineage"][-1]["effect"], "REDUNDANT")
+        self.assertEqual(correlated["lineage"][-1]["effect"], "REDUNDANT")
+        self.assertEqual(correlated["lineage"][-1]["relation_declaration"], "correlated")
+        self.assertEqual(redundant["final_compatible_states"], correlated["final_compatible_states"])
+        self.assertIsNone(redundant["unique_representative"])
+        self.assertIsNone(correlated["unique_representative"])
+
+    def test_empty_intersection_is_model_break_not_reality_verdict(self) -> None:
+        result = evaluate_cross_aperture_case(load_case("model_break"))
+
+        self.assertEqual(result["disposition"], "MODEL_BREAK")
+        self.assertEqual(result["reason_code"], "INCONSISTENT_OBSERVATIONS")
+        self.assertEqual(result["lineage"][-1]["effect"], "BREAK")
+        self.assertEqual(result["final_compatible_states"], [])
+        self.assertIsNone(result["unique_representative"])
+        self.assertIsNone(result["selection_basis"])
+        self.assertEqual(result["authority"], "none")
+
 
 if __name__ == "__main__":
     unittest.main()
