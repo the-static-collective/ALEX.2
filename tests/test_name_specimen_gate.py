@@ -159,6 +159,34 @@ class SixSpecimenGateTests(unittest.TestCase):
         self.assertEqual(result["blocked_specimen_types"], [])
         self.assertEqual(result["authority"], "none")
 
+    def test_six_lawful_upstream_packets_compose_to_dive_ready(self):
+        packet_results = []
+        for specimen_type in SPECIMEN_TYPES:
+            packet = copy.deepcopy(BASE_PACKET)
+            packet["packet_id"] = f"packet-{specimen_type.lower()}"
+            packet["specimen_type"] = specimen_type
+            if specimen_type == "NOMEN_SACRUM":
+                packet["material_witness_ref"] = REF_F
+            packet_result_from_evaluator = evaluate_name_specimen_packet(packet)
+            self.assertEqual(packet_result_from_evaluator["disposition"], "READY")
+            packet_results.append(packet_result_from_evaluator)
+
+        gate = {
+            "schema": "alex.name-six-specimen-gate/v0",
+            "gate_id": "name-six-specimen-lawful-ancestry-001",
+            "packet_results": packet_results,
+            "producer": "alex-pilot@1",
+        }
+        result = evaluate_name_six_specimen_gate(gate)
+        self.assertEqual(result["disposition"], "DIVE_READY")
+        self.assertEqual(result["blocked_specimen_types"], [])
+        self.assertEqual(
+            result["receipt"]["packet_digests"],
+            [item["receipt"]["packet_digest"] for item in packet_results],
+        )
+        self.assertEqual(len(set(result["receipt"]["packet_digests"])), len(SPECIMEN_TYPES))
+        self.assertEqual(result["authority"], "none")
+
     def test_missing_specimen_type_refuses(self):
         gate = self.make_gate()
         gate["packet_results"].pop()
