@@ -204,6 +204,8 @@ def evaluate_name_six_specimen_gate(record: object) -> dict[str, Any]:
             return _gate_refuse("invalid_packet_result")
         if specimen_type in by_type:
             return _gate_refuse("duplicate_specimen_type")
+        if packet_digest in packet_digests:
+            return _gate_refuse("duplicate_packet_digest")
         by_type[specimen_type] = result
         packet_digests.append(packet_digest)
 
