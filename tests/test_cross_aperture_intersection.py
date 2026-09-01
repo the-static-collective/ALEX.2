@@ -58,6 +58,44 @@ class CrossApertureIntersectionTests(unittest.TestCase):
         self.assertIsNone(result["selection_basis"])
         self.assertEqual(result["authority"], "none")
 
+    def test_malformed_cases_return_stable_reason_codes(self) -> None:
+        expectations = {
+            "invalid_world_domain": "INVALID_WORLD_DOMAIN",
+            "invalid_cuts": "INVALID_CUTS",
+            "duplicate_cut_id": "DUPLICATE_CUT_ID",
+            "duplicate_map_id": "DUPLICATE_MAP_ID",
+            "incomplete_observation_map": "INCOMPLETE_OBSERVATION_MAP",
+            "invalid_map_output": "INVALID_MAP_OUTPUT",
+            "invalid_observed_output": "INVALID_OBSERVED_OUTPUT",
+            "invalid_relation": "INVALID_RELATION_DECLARATION",
+        }
+        for name, reason in expectations.items():
+            with self.subTest(name=name):
+                result = evaluate_cross_aperture_case(load_case(name))
+                self.assertEqual(result["disposition"], "INSUFFICIENT_TO_TEST")
+                self.assertEqual(result["reason_code"], reason)
+                self.assertEqual(result["initial_compatible_states"], [])
+                self.assertEqual(result["lineage"], [])
+                self.assertEqual(result["final_compatible_states"], [])
+                self.assertIsNone(result["unique_representative"])
+                self.assertIsNone(result["selection_basis"])
+                self.assertEqual(result["authority"], "none")
+
+    def test_non_dict_case_is_malformed(self) -> None:
+        result = evaluate_cross_aperture_case(None)
+
+        self.assertEqual(result["disposition"], "INSUFFICIENT_TO_TEST")
+        self.assertEqual(result["reason_code"], "MALFORMED_CASE")
+        self.assertEqual(result["lineage"], [])
+        self.assertEqual(result["authority"], "none")
+
+    def test_missing_relation_declaration_normalizes_to_unknown(self) -> None:
+        result = evaluate_cross_aperture_case(load_case("missing_relation"))
+
+        self.assertNotEqual(result["disposition"], "INSUFFICIENT_TO_TEST")
+        self.assertEqual(result["lineage"][0]["relation_declaration"], "unknown")
+        self.assertEqual(result["final_compatible_states"], ["a"])
+
 
 if __name__ == "__main__":
     unittest.main()
