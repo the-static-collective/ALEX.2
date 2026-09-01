@@ -96,6 +96,15 @@ class CrossApertureIntersectionTests(unittest.TestCase):
         self.assertEqual(result["lineage"][0]["relation_declaration"], "unknown")
         self.assertEqual(result["final_compatible_states"], ["a"])
 
+    def test_experimental_module_stays_owner_local(self) -> None:
+        source = (Path(__file__).parents[1] / "alex_runtime" / "cross_aperture_intersection.py").read_text(
+            encoding="utf-8"
+        ).lower()
+
+        for forbidden in ("3rdi", "loadout", "dogram", "projection_invariance", "projection_break"):
+            self.assertNotIn(f"import {forbidden}", source)
+            self.assertNotIn(f"from {forbidden}", source)
+
 
 if __name__ == "__main__":
     unittest.main()
