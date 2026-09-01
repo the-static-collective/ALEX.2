@@ -6,22 +6,20 @@
 
 ## 0. Purpose
 
-ALEX needs one bounded executable crucible for a research distinction already earned by `FIBER-BEFORE-NEEDLE-001`, `FOG-TOMOGRAPHY-001`, 3rdi observer-local projection work, and ALEX projection invariance/break machinery:
+ALEX needs one bounded executable crucible for a distinction already earned by `FIBER-BEFORE-NEEDLE-001`, `FOG-TOMOGRAPHY-001`, 3rdi observer-local projection work, and ALEX projection invariance/break machinery:
 
 > Several lawful observer cuts may reduce a compatible world family without any observer voting on reality and without forcing a representative before the surviving set earns uniqueness.
 
-The executable is named **`CROSS-APERTURE-INTERSECTION-001`**.
+The executable is **`CROSS-APERTURE-INTERSECTION-001`**.
 
 It is a finite research experiment, not a general sensor-fusion engine and not a truth/authority primitive.
-
-Core law:
 
 ```text
 A SECOND APERTURE DOES NOT VOTE ON REALITY.
 IT CUTS THE COMPATIBLE WORLD SET AGAIN.
 ```
 
-Hard non-collapses:
+Required non-collapses:
 
 ```text
 DIFFERENT APERTURE != DIFFERENT WORLD
@@ -38,50 +36,23 @@ OBSERVABILITY != AUTHORITY
 
 ## 1. Architectural ancestry
 
-This design extends existing ALEX laws rather than replacing them.
-
-### 1.1 `FIBER-BEFORE-NEEDLE-001`
-
-For a declared map
-
-```text
-f : X -> Y
-```
-
-the fiber over `y` is
+For a declared map `f : X -> Y`, the fiber over `y` is:
 
 ```text
 f^-1(y) = {x in X | f(x)=y}.
 ```
 
-The fiber preserves which distinct sources a coarse image stopped distinguishing.
-
-### 1.2 `FOG-TOMOGRAPHY-001`
-
-For a frozen world domain `W` and declared observation maps
-
-```text
-P_A : W -> Y_A
-P_B : W -> Y_B
-```
-
-with observations `y_A`, `y_B`, define
+For a frozen world domain `W`, declared observation maps `P_A`, `P_B`, and observations `y_A`, `y_B`:
 
 ```text
 F_A = P_A^-1(y_A)
 F_B = P_B^-1(y_B)
-F_joint = F_A ∩ F_B.
+F_joint = F_A ∩ F_B
 ```
 
 The joint compatible set is a constraint intersection, not a vote.
 
-### 1.3 Existing executable ALEX projection work
-
-`projection_invariance.py` already checks whether materially distinct worlds remain observer-equivalent without hidden differences leaking through later boundaries.
-
-`projection_break.py` already checks whether a common attributable intervention later exposes a difference while preserving earlier invariance and frozen authority.
-
-`CROSS-APERTURE-INTERSECTION-001` adds a different operation:
+Existing `projection_invariance.py` asks whether materially distinct worlds remain equivalent under one observer cut without hidden leakage. Existing `projection_break.py` asks whether one common attributable intervention later exposes a difference. This executable asks a different question:
 
 ```text
 COMPARE TWO WORLDS UNDER ONE CUT
@@ -89,39 +60,33 @@ COMPARE TWO WORLDS UNDER ONE CUT
 INTERSECT MANY COMPATIBLE-STATE FIBERS ACROSS CUTS
 ```
 
-It does not replace either existing evaluator and does not call them internally in v0.
-
-### 1.4 3rdi boundary
-
-3rdi owns how an observer/focus cut becomes a lawful projection.
-
-ALEX v0 consumes only **already declared finite observation maps and observed outputs**. It does not infer visibility, manufacture observer cuts, reconstruct hidden paths, or import 3rdi runtime code.
+3rdi owns how an observer/focus cut becomes a lawful projection. ALEX v0 consumes only already-declared finite observation maps and observed outputs. It does not infer visibility, manufacture observer cuts, reconstruct hidden paths, or import 3rdi runtime code.
 
 ---
 
 ## 2. Scope
 
-### 2.1 In scope
+### In scope
 
 The first executable must:
 
 1. accept a finite declared world domain;
-2. accept one or more explicitly declared observation maps over that domain;
-3. accept the observed output for each supplied map;
-4. compute the fiber induced by each observation;
-5. intersect those fibers in supplied order;
+2. accept one or more explicit observation maps over that domain;
+3. accept the observed output for each map;
+4. compute each observation fiber;
+5. intersect fibers in supplied order;
 6. preserve the compatible set after every cut;
-7. report whether each cut reduced, preserved, or broke the current compatible family;
+7. classify each cut as `REFINE`, `REDUNDANT`, or `BREAK`;
 8. distinguish non-singleton fog, model-local singleton identification, and empty-intersection model break;
-9. retain optional correlation/independence declarations as receipt metadata only;
-10. refuse any representative selection not supplied by an additional declared rule;
-11. emit `authority: none` in every successful or model-break receipt.
+9. retain optional correlation/independence declarations as metadata only;
+10. refuse representative selection from a non-singleton compatible set unless a future, separately designed rule explicitly owns that policy;
+11. emit `authority: none` in every result.
 
-### 2.2 Out of scope
+### Out of scope
 
 V0 must not:
 
-- call external sensors, models, networks, databases, LOADOUT, 3rdi, or Dogram;
+- call sensors, models, networks, databases, LOADOUT, 3rdi, or Dogram;
 - infer observation maps from data;
 - assign confidence weights, probabilities, truth scores, or witness ranks;
 - treat agreement as independence;
@@ -135,13 +100,13 @@ V0 must not:
 
 ## 3. V0 input contract
 
-The executable entry point should be a pure function:
+Pure entry point:
 
 ```python
 evaluate_cross_aperture_case(case: dict) -> dict
 ```
 
-The case shape is:
+Canonical shape:
 
 ```text
 {
@@ -163,22 +128,22 @@ The case shape is:
 }
 ```
 
-### 3.1 World-domain requirements
+### World-domain requirements
 
-- `case_id` and `world_domain_id` are non-empty strings.
-- `world_states` is a non-empty list of unique non-empty strings.
-- V0 preserves supplied `world_states` order as canonical display order.
+- `case_id` and `world_domain_id`: non-empty strings.
+- `world_states`: non-empty list of unique non-empty strings.
+- Supplied `world_states` order is the canonical display order for every emitted state list.
 
-### 3.2 Cut requirements
+### Cut requirements
 
-- `cuts` is a non-empty list.
-- every `cut_id` and `map_id` is a non-empty string;
-- `cut_id` values are unique within the case;
-- `map_id` values are unique within the case;
-- each `map` is a dictionary whose key set is **exactly** the frozen `world_states` set;
+- `cuts`: non-empty list.
+- every `cut_id` and `map_id`: non-empty string;
+- `cut_id` values unique within the case;
+- `map_id` values unique within the case;
+- each `map` key set exactly equals the frozen `world_states` set;
 - every map output is a non-empty string;
 - `observed` is a non-empty string;
-- `relation_declaration` is optional; if present it is one of:
+- `relation_declaration`, when omitted, normalizes to `"unknown"`; when supplied it must be exactly one of:
 
 ```text
 independent
@@ -186,13 +151,11 @@ correlated
 unknown
 ```
 
-This field does not alter set intersection in v0. It exists so an apparently repeated or agreeing cut cannot silently acquire an independence claim.
+`relation_declaration` never changes the set intersection in v0.
 
-### 3.3 No inferred missing states
+A partial observation map is malformed input. ALEX must not interpret an omitted world state as impossible, hidden, or default-valued.
 
-A partial observation map is malformed input.
-
-ALEX must not silently interpret an omitted state as impossible, hidden, or mapped to a default value.
+An observed output that is well-formed but absent from a map's image is valid: it produces an empty fiber and therefore may produce `MODEL_BREAK`.
 
 ---
 
@@ -204,18 +167,14 @@ Initialize:
 F_0 = W
 ```
 
-For each supplied cut `i` in order, compute:
+For each supplied cut `i` in order:
 
 ```text
 fiber_i = { w in W | P_i(w) = observed_i }
 F_i = F_(i-1) ∩ fiber_i
 ```
 
-Every step receives a lineage receipt.
-
-### 4.1 Step classification
-
-For each cut:
+Classify the cut:
 
 ```text
 if F_i = ∅:
@@ -226,49 +185,30 @@ else:
     effect = "REFINE"
 ```
 
-`REDUNDANT` is descriptive only. It does not mean the observer, sensor, or witness is useless in every context.
+`REDUNDANT` is local to the current compatible family; it does not globally rank the observer or map.
 
-### 4.2 Terminal dispositions
-
-After all supplied cuts:
+Terminal disposition:
 
 ```text
 |F_n| > 1
-    -> disposition = "FOG"
-       reason_code = "NON_SINGLETON_COMPATIBLE_SET"
+    -> "FOG" / "NON_SINGLETON_COMPATIBLE_SET"
 
 |F_n| = 1
-    -> disposition = "IDENTIFIED_WITHIN_DECLARED_MODEL"
-       reason_code = null
+    -> "IDENTIFIED_WITHIN_DECLARED_MODEL" / null
 
 |F_n| = 0
-    -> disposition = "MODEL_BREAK"
-       reason_code = "INCONSISTENT_OBSERVATIONS"
+    -> "MODEL_BREAK" / "INCONSISTENT_OBSERVATIONS"
 ```
 
-An empty intersection does **not** choose among possible causes such as sensor error, domain incompleteness, time mismatch, map misdeclaration, or world change. Those remain unresolved possibilities outside v0.
+Empty intersection does not choose among sensor error, domain incompleteness, observer-time mismatch, map misdeclaration, or world change. V0 leaves cause unresolved.
 
-### 4.3 Historical non-rewrite
-
-Each lineage step is immutable evidence about what the supplied cut did to the then-current compatible family.
-
-A later singleton does not rewrite an earlier step from four compatible states to one.
-
-The receipt must therefore preserve the full ordered sequence:
-
-```text
-W
--> F_1
--> F_2
--> ...
--> F_n
-```
+Every lineage step preserves the compatible family at that historical step. Later refinement never rewrites an earlier receipt.
 
 ---
 
 ## 5. V0 result contract
 
-A valid case returns:
+A valid result contains:
 
 ```text
 {
@@ -296,30 +236,27 @@ A valid case returns:
 }
 ```
 
-### 5.1 Non-singleton terminal result
-
-When more than one state survives:
+### Non-singleton terminal result
 
 ```text
 "unique_representative": null
 "selection_basis": null
 ```
 
-No deterministic sorting rule, first-item rule, confidence heuristic, or arbitrary tie-break may populate a representative.
+No first-item rule, sorting rule, confidence heuristic, or tie-break may populate a representative.
 
-### 5.2 Singleton terminal result
+### Singleton terminal result
 
-When exactly one state survives, `unique_representative` may expose that state only with:
+A singleton is not a tie-break. If exactly one compatible state remains, the result may expose it as:
 
 ```text
-selection_basis = "singleton_in_declared_model"
+"unique_representative": <the only surviving state>
+"selection_basis": "singleton_in_declared_model"
 ```
 
-This is a statement about the supplied finite model, not universal truth.
+This states uniqueness only inside the supplied finite model.
 
-### 5.3 Model break
-
-When no state survives:
+### Model break
 
 ```text
 "unique_representative": null
@@ -327,18 +264,24 @@ When no state survives:
 "authority": "none"
 ```
 
-The lineage still records the exact cut at which the compatible family first became empty.
+The lineage records the exact cut where the compatible family first became empty.
 
-### 5.4 Malformed cases
+### Malformed case extraction
 
-Malformed input returns:
+For malformed input:
+
+- `case_id` is the supplied non-empty string if one exists; otherwise `"unknown-case"`.
+- `world_domain_id` is the supplied non-empty string if one exists; otherwise `null`.
+- no partially validated lineage is emitted.
+
+Result:
 
 ```text
 {
-  "case_id": <best available id>,
-  "world_domain_id": <best available id or null>,
+  "case_id": "unknown-case",
+  "world_domain_id": null,
   "disposition": "INSUFFICIENT_TO_TEST",
-  "reason_code": <stable refusal code>,
+  "reason_code": <one stable code below>,
   "initial_compatible_states": [],
   "lineage": [],
   "final_compatible_states": [],
@@ -348,7 +291,7 @@ Malformed input returns:
 }
 ```
 
-Stable v0 reason codes:
+Stable v0 refusal codes:
 
 ```text
 MALFORMED_CASE
@@ -366,15 +309,9 @@ INVALID_RELATION_DECLARATION
 
 ## 6. Hostile specimen matrix
 
-### 6.1 `CROSS-APERTURE-INTERSECTION-001`
+### `CROSS-APERTURE-INTERSECTION-001`
 
-Freeze:
-
-```text
-W = {a,b,c,d,e,f,g,h}
-```
-
-with cuts:
+Freeze `W = {a,b,c,d,e,f,g,h}` with:
 
 ```text
 A(0) -> {a,b,c,d}
@@ -382,24 +319,17 @@ B(0) -> {a,b,e,f}
 C(0) -> {a,c,e,g}
 ```
 
-Expected lineage sizes:
+Expected:
 
 ```text
 8 -> 4 -> 2 -> 1
-```
-
-Expected terminal state:
-
-```text
 IDENTIFIED_WITHIN_DECLARED_MODEL
 unique_representative = "a"
 ```
 
-### 6.2 `NON-SINGLETON-FOG-001`
+### `NON-SINGLETON-FOG-001`
 
-Apply only A and B.
-
-Expected:
+Apply only A and B:
 
 ```text
 8 -> 4 -> 2
@@ -408,49 +338,36 @@ final = {a,b}
 unique_representative = null
 ```
 
-### 6.3 `REDUNDANT-APERTURE-001`
+### `REDUNDANT-APERTURE-001`
 
-Supply B with the same partition and observed fiber as A under a distinct declared map id.
-
-Expected:
+A second distinct map id induces the same observed fiber as the first:
 
 ```text
 8 -> 4 -> 4
 second effect = REDUNDANT
 ```
 
-The second cut exists but adds no discriminator to this frozen compatible set.
+### `CORRELATED-AGREEMENT-001`
 
-### 6.4 `CORRELATED-AGREEMENT-001`
+Agreeing cuts declare `relation_declaration = "correlated"`.
 
-Two agreeing cuts carry:
+Expected: mechanical intersection only; correlation metadata preserved; no independence bonus, confidence score, or support increase.
 
-```text
-relation_declaration = "correlated"
-```
+### `EMPTY-INTERSECTION-001`
 
-Expected:
-
-- intersection behaves mechanically;
-- correlation metadata is preserved;
-- no independence bonus, confidence score, or support increase exists anywhere in the result.
-
-### 6.5 `EMPTY-INTERSECTION-001`
-
-Supply a later cut whose observed fiber is disjoint from the surviving compatible set.
+A later observed fiber is disjoint from the surviving family.
 
 Expected:
 
 ```text
 MODEL_BREAK
 INCONSISTENT_OBSERVATIONS
+unique_representative = null
 ```
 
-No world is invented.
+### `PARTIAL-MAP-REFUSAL-001`
 
-### 6.6 `PARTIAL-MAP-REFUSAL-001`
-
-Omit one world key from a declared observation map.
+Omit one world key from a map.
 
 Expected:
 
@@ -459,7 +376,7 @@ INSUFFICIENT_TO_TEST
 INCOMPLETE_OBSERVATION_MAP
 ```
 
-### 6.7 `REPRESENTATIVE-LAUNDERING-001`
+### `REPRESENTATIVE-LAUNDERING-001`
 
 End with `{a,b}`.
 
@@ -470,13 +387,11 @@ unique_representative = null
 selection_basis = null
 ```
 
-The implementation must not choose `a` merely because it appears first.
-
 ---
 
 ## 7. Implementation boundary
 
-The expected implementation slice is deliberately small:
+Expected implementation slice:
 
 ```text
 alex_runtime/cross_aperture.py
@@ -484,38 +399,36 @@ tests/test_cross_aperture.py
 tests/fixtures/cross_aperture_001.json
 ```
 
-Optional documentation may add one research receipt, but v0 should not modify existing runtime modules unless a concrete import/export requirement is discovered during implementation.
+Optional research receipt only if implementation produces a materially useful formation record.
 
-The module should use Python standard library only.
+V0 uses the Python standard library only. The evaluator performs no network, filesystem, model, or host access.
 
-No network or filesystem access is required by the evaluator itself.
-
-No package-level export is required for the first experimental proof unless repository convention demonstrably requires it for tests.
+No package-level export is required unless current repository convention demonstrably requires it for tests.
 
 ---
 
 ## 8. Success criteria
 
-The implementation is successful only if all of the following are true:
+Implementation succeeds only if:
 
-1. the canonical `8 -> 4 -> 2 -> 1` specimen passes;
-2. non-singleton fog preserves the whole compatible set and selects nobody;
-3. a redundant cut is reported without fabricated information gain;
+1. canonical `8 -> 4 -> 2 -> 1` passes;
+2. non-singleton fog preserves all surviving states and selects nobody;
+3. redundant cuts are reported without fabricated information gain;
 4. correlation metadata changes no mathematical intersection result;
-5. an empty intersection produces model break rather than a guessed state;
+5. empty intersection produces model break rather than a guessed state;
 6. malformed/partial maps are refused with stable reason codes;
-7. supplied world order is preserved deterministically in every state list;
+7. supplied world order is preserved in every emitted state list;
 8. later refinement never rewrites earlier lineage entries;
 9. every result emits `authority: none`;
-10. the full existing ALEX test suite still passes.
+10. the full existing ALEX test suite passes.
 
 ---
 
 ## 9. Promotion membrane
 
-Passing this executable proves only that ALEX can correctly receipt finite intersections of explicitly declared compatible-state fibers.
+Passing this executable proves only that ALEX can receipt finite intersections of explicitly declared compatible-state fibers.
 
-It does **not** prove:
+It does not prove:
 
 ```text
 fiber is a universal ALEX primitive
