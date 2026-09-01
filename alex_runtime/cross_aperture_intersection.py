@@ -91,7 +91,7 @@ def _validation_reason(case: Any) -> str | None:
 
     for cut in cuts:
         relation = cut.get("relation_declaration", "unknown")
-        if relation not in _ALLOWED_RELATIONS:
+        if not isinstance(relation, str) or relation not in _ALLOWED_RELATIONS:
             return "INVALID_RELATION_DECLARATION"
 
     return None
