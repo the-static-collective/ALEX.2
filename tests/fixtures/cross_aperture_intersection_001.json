@@ -1,0 +1,30 @@
+{
+  "canonical": {
+    "case_id": "cross-aperture-001",
+    "world_domain_id": "world-eight-v0",
+    "world_states": ["a", "b", "c", "d", "e", "f", "g", "h"],
+    "cuts": [
+      {
+        "cut_id": "A",
+        "map_id": "P_A",
+        "map": {"a": "0", "b": "0", "c": "0", "d": "0", "e": "1", "f": "1", "g": "1", "h": "1"},
+        "observed": "0",
+        "relation_declaration": "unknown"
+      },
+      {
+        "cut_id": "B",
+        "map_id": "P_B",
+        "map": {"a": "0", "b": "0", "c": "1", "d": "1", "e": "0", "f": "0", "g": "1", "h": "1"},
+        "observed": "0",
+        "relation_declaration": "independent"
+      },
+      {
+        "cut_id": "C",
+        "map_id": "P_C",
+        "map": {"a": "0", "b": "1", "c": "0", "d": "1", "e": "0", "f": "1", "g": "0", "h": "1"},
+        "observed": "0",
+        "relation_declaration": "unknown"
+      }
+    ]
+  }
+}
