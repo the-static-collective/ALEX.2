@@ -173,6 +173,15 @@ class SixSpecimenGateTests(unittest.TestCase):
         self.assertEqual(result["disposition"], "REFUSE")
         self.assertEqual(result["reason"], "duplicate_specimen_type")
 
+    def test_reused_packet_digest_across_specimen_types_refuses(self):
+        gate = self.make_gate()
+        repeated_digest = gate["packet_results"][0]["receipt"]["packet_digest"]
+        for packet in gate["packet_results"]:
+            packet["receipt"]["packet_digest"] = repeated_digest
+        result = evaluate_name_six_specimen_gate(gate)
+        self.assertEqual(result["disposition"], "REFUSE")
+        self.assertEqual(result["reason"], "duplicate_packet_digest")
+
     def test_packet_refusal_refuses_family_gate(self):
         gate = self.make_gate()
         gate["packet_results"][0] = {
