@@ -4,27 +4,9 @@
     "world_domain_id": "world-eight-v0",
     "world_states": ["a", "b", "c", "d", "e", "f", "g", "h"],
     "cuts": [
-      {
-        "cut_id": "A",
-        "map_id": "P_A",
-        "map": {"a": "0", "b": "0", "c": "0", "d": "0", "e": "1", "f": "1", "g": "1", "h": "1"},
-        "observed": "0",
-        "relation_declaration": "unknown"
-      },
-      {
-        "cut_id": "B",
-        "map_id": "P_B",
-        "map": {"a": "0", "b": "0", "c": "1", "d": "1", "e": "0", "f": "0", "g": "1", "h": "1"},
-        "observed": "0",
-        "relation_declaration": "independent"
-      },
-      {
-        "cut_id": "C",
-        "map_id": "P_C",
-        "map": {"a": "0", "b": "1", "c": "0", "d": "1", "e": "0", "f": "1", "g": "0", "h": "1"},
-        "observed": "0",
-        "relation_declaration": "unknown"
-      }
+      {"cut_id": "A", "map_id": "P_A", "map": {"a": "0", "b": "0", "c": "0", "d": "0", "e": "1", "f": "1", "g": "1", "h": "1"}, "observed": "0", "relation_declaration": "unknown"},
+      {"cut_id": "B", "map_id": "P_B", "map": {"a": "0", "b": "0", "c": "1", "d": "1", "e": "0", "f": "0", "g": "1", "h": "1"}, "observed": "0", "relation_declaration": "independent"},
+      {"cut_id": "C", "map_id": "P_C", "map": {"a": "0", "b": "1", "c": "0", "d": "1", "e": "0", "f": "1", "g": "0", "h": "1"}, "observed": "0", "relation_declaration": "unknown"}
     ]
   },
   "non_singleton_fog": {
@@ -32,20 +14,8 @@
     "world_domain_id": "world-eight-v0",
     "world_states": ["a", "b", "c", "d", "e", "f", "g", "h"],
     "cuts": [
-      {
-        "cut_id": "A",
-        "map_id": "P_A",
-        "map": {"a": "0", "b": "0", "c": "0", "d": "0", "e": "1", "f": "1", "g": "1", "h": "1"},
-        "observed": "0",
-        "relation_declaration": "unknown"
-      },
-      {
-        "cut_id": "B",
-        "map_id": "P_B",
-        "map": {"a": "0", "b": "0", "c": "1", "d": "1", "e": "0", "f": "0", "g": "1", "h": "1"},
-        "observed": "0",
-        "relation_declaration": "independent"
-      }
+      {"cut_id": "A", "map_id": "P_A", "map": {"a": "0", "b": "0", "c": "0", "d": "0", "e": "1", "f": "1", "g": "1", "h": "1"}, "observed": "0", "relation_declaration": "unknown"},
+      {"cut_id": "B", "map_id": "P_B", "map": {"a": "0", "b": "0", "c": "1", "d": "1", "e": "0", "f": "0", "g": "1", "h": "1"}, "observed": "0", "relation_declaration": "independent"}
     ]
   },
   "redundant_aperture": {
@@ -53,20 +23,8 @@
     "world_domain_id": "world-eight-v0",
     "world_states": ["a", "b", "c", "d", "e", "f", "g", "h"],
     "cuts": [
-      {
-        "cut_id": "A",
-        "map_id": "P_A",
-        "map": {"a": "0", "b": "0", "c": "0", "d": "0", "e": "1", "f": "1", "g": "1", "h": "1"},
-        "observed": "0",
-        "relation_declaration": "unknown"
-      },
-      {
-        "cut_id": "A2",
-        "map_id": "P_A2",
-        "map": {"a": "0", "b": "0", "c": "0", "d": "0", "e": "1", "f": "1", "g": "1", "h": "1"},
-        "observed": "0",
-        "relation_declaration": "unknown"
-      }
+      {"cut_id": "A", "map_id": "P_A", "map": {"a": "0", "b": "0", "c": "0", "d": "0", "e": "1", "f": "1", "g": "1", "h": "1"}, "observed": "0", "relation_declaration": "unknown"},
+      {"cut_id": "A2", "map_id": "P_A2", "map": {"a": "0", "b": "0", "c": "0", "d": "0", "e": "1", "f": "1", "g": "1", "h": "1"}, "observed": "0", "relation_declaration": "unknown"}
     ]
   },
   "correlated_agreement": {
@@ -74,20 +32,8 @@
     "world_domain_id": "world-eight-v0",
     "world_states": ["a", "b", "c", "d", "e", "f", "g", "h"],
     "cuts": [
-      {
-        "cut_id": "A",
-        "map_id": "P_A",
-        "map": {"a": "0", "b": "0", "c": "0", "d": "0", "e": "1", "f": "1", "g": "1", "h": "1"},
-        "observed": "0",
-        "relation_declaration": "unknown"
-      },
-      {
-        "cut_id": "A2",
-        "map_id": "P_A2",
-        "map": {"a": "0", "b": "0", "c": "0", "d": "0", "e": "1", "f": "1", "g": "1", "h": "1"},
-        "observed": "0",
-        "relation_declaration": "correlated"
-      }
+      {"cut_id": "A", "map_id": "P_A", "map": {"a": "0", "b": "0", "c": "0", "d": "0", "e": "1", "f": "1", "g": "1", "h": "1"}, "observed": "0", "relation_declaration": "unknown"},
+      {"cut_id": "A2", "map_id": "P_A2", "map": {"a": "0", "b": "0", "c": "0", "d": "0", "e": "1", "f": "1", "g": "1", "h": "1"}, "observed": "0", "relation_declaration": "correlated"}
     ]
   },
   "model_break": {
@@ -95,20 +41,78 @@
     "world_domain_id": "world-eight-v0",
     "world_states": ["a", "b", "c", "d", "e", "f", "g", "h"],
     "cuts": [
-      {
-        "cut_id": "A",
-        "map_id": "P_A",
-        "map": {"a": "0", "b": "0", "c": "0", "d": "0", "e": "1", "f": "1", "g": "1", "h": "1"},
-        "observed": "0",
-        "relation_declaration": "unknown"
-      },
-      {
-        "cut_id": "D",
-        "map_id": "P_D",
-        "map": {"a": "0", "b": "0", "c": "0", "d": "0", "e": "1", "f": "1", "g": "1", "h": "1"},
-        "observed": "1",
-        "relation_declaration": "unknown"
-      }
+      {"cut_id": "A", "map_id": "P_A", "map": {"a": "0", "b": "0", "c": "0", "d": "0", "e": "1", "f": "1", "g": "1", "h": "1"}, "observed": "0", "relation_declaration": "unknown"},
+      {"cut_id": "D", "map_id": "P_D", "map": {"a": "0", "b": "0", "c": "0", "d": "0", "e": "1", "f": "1", "g": "1", "h": "1"}, "observed": "1", "relation_declaration": "unknown"}
+    ]
+  },
+  "invalid_world_domain": {
+    "case_id": "invalid-world-domain-001",
+    "world_domain_id": "world-empty-v0",
+    "world_states": [],
+    "cuts": []
+  },
+  "invalid_cuts": {
+    "case_id": "invalid-cuts-001",
+    "world_domain_id": "world-two-v0",
+    "world_states": ["a", "b"],
+    "cuts": []
+  },
+  "duplicate_cut_id": {
+    "case_id": "duplicate-cut-id-001",
+    "world_domain_id": "world-two-v0",
+    "world_states": ["a", "b"],
+    "cuts": [
+      {"cut_id": "A", "map_id": "P_A", "map": {"a": "0", "b": "1"}, "observed": "0", "relation_declaration": "unknown"},
+      {"cut_id": "A", "map_id": "P_B", "map": {"a": "0", "b": "1"}, "observed": "0", "relation_declaration": "unknown"}
+    ]
+  },
+  "duplicate_map_id": {
+    "case_id": "duplicate-map-id-001",
+    "world_domain_id": "world-two-v0",
+    "world_states": ["a", "b"],
+    "cuts": [
+      {"cut_id": "A", "map_id": "P_A", "map": {"a": "0", "b": "1"}, "observed": "0", "relation_declaration": "unknown"},
+      {"cut_id": "B", "map_id": "P_A", "map": {"a": "0", "b": "1"}, "observed": "0", "relation_declaration": "unknown"}
+    ]
+  },
+  "incomplete_observation_map": {
+    "case_id": "incomplete-map-001",
+    "world_domain_id": "world-two-v0",
+    "world_states": ["a", "b"],
+    "cuts": [
+      {"cut_id": "A", "map_id": "P_A", "map": {"a": "0"}, "observed": "0", "relation_declaration": "unknown"}
+    ]
+  },
+  "invalid_map_output": {
+    "case_id": "invalid-map-output-001",
+    "world_domain_id": "world-two-v0",
+    "world_states": ["a", "b"],
+    "cuts": [
+      {"cut_id": "A", "map_id": "P_A", "map": {"a": "0", "b": ""}, "observed": "0", "relation_declaration": "unknown"}
+    ]
+  },
+  "invalid_observed_output": {
+    "case_id": "invalid-observed-output-001",
+    "world_domain_id": "world-two-v0",
+    "world_states": ["a", "b"],
+    "cuts": [
+      {"cut_id": "A", "map_id": "P_A", "map": {"a": "0", "b": "1"}, "observed": "", "relation_declaration": "unknown"}
+    ]
+  },
+  "invalid_relation": {
+    "case_id": "invalid-relation-001",
+    "world_domain_id": "world-two-v0",
+    "world_states": ["a", "b"],
+    "cuts": [
+      {"cut_id": "A", "map_id": "P_A", "map": {"a": "0", "b": "1"}, "observed": "0", "relation_declaration": "trusted"}
+    ]
+  },
+  "missing_relation": {
+    "case_id": "missing-relation-001",
+    "world_domain_id": "world-two-v0",
+    "world_states": ["a", "b"],
+    "cuts": [
+      {"cut_id": "A", "map_id": "P_A", "map": {"a": "0", "b": "1"}, "observed": "0"}
     ]
   }
 }
