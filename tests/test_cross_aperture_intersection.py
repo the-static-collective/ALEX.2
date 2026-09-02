@@ -1,0 +1,206 @@
+from __future__ import annotations
+
+import json
+import unittest
+from pathlib import Path
+
+from alex_runtime.cross_aperture_intersection import evaluate_cross_aperture_case
+
+FIXTURE = Path(__file__).parent / "fixtures" / "cross_aperture_intersection_001.json"
+
+
+def load_case(name: str) -> dict:
+    return json.loads(FIXTURE.read_text(encoding="utf-8"))[name]
+
+
+class CrossApertureIntersectionTests(unittest.TestCase):
+    def test_canonical_three_cut_lineage_identifies_only_within_declared_model(self) -> None:
+        result = evaluate_cross_aperture_case(load_case("canonical"))
+
+        self.assertEqual(result["disposition"], "IDENTIFIED_WITHIN_DECLARED_MODEL")
+        self.assertIsNone(result["reason_code"])
+        self.assertEqual([len(step["compatible_after"]) for step in result["lineage"]], [4, 2, 1])
+        self.assertEqual([step["effect"] for step in result["lineage"]], ["REFINE", "REFINE", "REFINE"])
+        self.assertEqual(result["final_compatible_states"], ["a"])
+        self.assertEqual(result["unique_representative"], "a")
+        self.assertEqual(result["selection_basis"], "singleton_in_declared_model")
+        self.assertEqual(result["authority"], "none")
+
+    def test_non_singleton_fog_never_selects_representative(self) -> None:
+        result = evaluate_cross_aperture_case(load_case("non_singleton_fog"))
+
+        self.assertEqual(result["disposition"], "FOG")
+        self.assertEqual(result["reason_code"], "NON_SINGLETON_COMPATIBLE_SET")
+        self.assertEqual(result["final_compatible_states"], ["a", "b"])
+        self.assertIsNone(result["unique_representative"])
+        self.assertIsNone(result["selection_basis"])
+        self.assertEqual(result["authority"], "none")
+
+    def test_redundant_and_correlated_cuts_do_not_gain_information_by_title(self) -> None:
+        redundant = evaluate_cross_aperture_case(load_case("redundant_aperture"))
+        correlated = evaluate_cross_aperture_case(load_case("correlated_agreement"))
+
+        self.assertEqual(redundant["lineage"][-1]["effect"], "REDUNDANT")
+        self.assertEqual(correlated["lineage"][-1]["effect"], "REDUNDANT")
+        self.assertEqual(correlated["lineage"][-1]["relation_declaration"], "correlated")
+        self.assertEqual(redundant["final_compatible_states"], correlated["final_compatible_states"])
+        self.assertIsNone(redundant["unique_representative"])
+        self.assertIsNone(correlated["unique_representative"])
+
+    def test_same_aperture_effect_is_relative_to_supplied_prefix(self) -> None:
+        world_states = ["1", "2", "3", "4"]
+        cuts = {
+            "A": {
+                "cut_id": "cut-a",
+                "map_id": "map-a",
+                "map": {"1": "keep", "2": "keep", "3": "drop", "4": "drop"},
+                "observed": "keep",
+            },
+            "B": {
+                "cut_id": "cut-b",
+                "map_id": "map-b",
+                "map": {"1": "keep", "2": "keep", "3": "keep", "4": "drop"},
+                "observed": "keep",
+            },
+            "C": {
+                "cut_id": "cut-c",
+                "map_id": "map-c",
+                "map": {"1": "keep", "2": "keep", "3": "drop", "4": "keep"},
+                "observed": "keep",
+            },
+        }
+
+        def run(order: tuple[str, ...]) -> dict:
+            return evaluate_cross_aperture_case(
+                {
+                    "case_id": "order-relative-redundancy-001-" + "".join(order).lower(),
+                    "world_domain_id": "order-relative-world",
+                    "world_states": world_states,
+                    "cuts": [cuts[name] for name in order],
+                }
+            )
+
+        abc = run(("A", "B", "C"))
+        bca = run(("B", "C", "A"))
+
+        self.assertEqual(abc["final_compatible_states"], ["1", "2"])
+        self.assertEqual(bca["final_compatible_states"], ["1", "2"])
+        effect_by_cut_abc = {step["cut_id"]: step["effect"] for step in abc["lineage"]}
+        effect_by_cut_bca = {step["cut_id"]: step["effect"] for step in bca["lineage"]}
+        self.assertEqual(effect_by_cut_abc["cut-a"], "REFINE")
+        self.assertEqual(effect_by_cut_bca["cut-a"], "REDUNDANT")
+        self.assertEqual(abc["authority"], "none")
+        self.assertEqual(bca["authority"], "none")
+
+    def test_empty_intersection_is_model_break_not_reality_verdict(self) -> None:
+        result = evaluate_cross_aperture_case(load_case("model_break"))
+
+        self.assertEqual(result["disposition"], "MODEL_BREAK")
+        self.assertEqual(result["reason_code"], "INCONSISTENT_OBSERVATIONS")
+        self.assertEqual(result["lineage"][-1]["effect"], "BREAK")
+        self.assertEqual(result["final_compatible_states"], [])
+        self.assertIsNone(result["unique_representative"])
+        self.assertIsNone(result["selection_basis"])
+        self.assertEqual(result["authority"], "none")
+
+    def test_only_first_nonempty_to_empty_transition_is_break(self) -> None:
+        case = {
+            "case_id": "post-break-001",
+            "world_domain_id": "tiny-world",
+            "world_states": ["a", "b"],
+            "cuts": [
+                {
+                    "cut_id": "cut-a",
+                    "map_id": "map-a",
+                    "map": {"a": "x", "b": "y"},
+                    "observed": "x",
+                },
+                {
+                    "cut_id": "cut-b",
+                    "map_id": "map-b",
+                    "map": {"a": "q", "b": "z"},
+                    "observed": "z",
+                },
+                {
+                    "cut_id": "cut-c",
+                    "map_id": "map-c",
+                    "map": {"a": "m", "b": "n"},
+                    "observed": "m",
+                },
+            ],
+        }
+
+        result = evaluate_cross_aperture_case(case)
+
+        self.assertEqual(result["disposition"], "MODEL_BREAK")
+        self.assertEqual(
+            [step["effect"] for step in result["lineage"]],
+            ["REFINE", "BREAK", "REDUNDANT"],
+        )
+        self.assertEqual(result["lineage"][1]["compatible_before"], ["a"])
+        self.assertEqual(result["lineage"][1]["compatible_after"], [])
+        self.assertEqual(result["lineage"][2]["compatible_before"], [])
+        self.assertEqual(result["lineage"][2]["compatible_after"], [])
+        self.assertEqual(result["authority"], "none")
+
+    def test_malformed_cases_return_stable_reason_codes(self) -> None:
+        expectations = {
+            "invalid_world_domain": "INVALID_WORLD_DOMAIN",
+            "invalid_cuts": "INVALID_CUTS",
+            "duplicate_cut_id": "DUPLICATE_CUT_ID",
+            "duplicate_map_id": "DUPLICATE_MAP_ID",
+            "incomplete_observation_map": "INCOMPLETE_OBSERVATION_MAP",
+            "invalid_map_output": "INVALID_MAP_OUTPUT",
+            "invalid_observed_output": "INVALID_OBSERVED_OUTPUT",
+            "invalid_relation": "INVALID_RELATION_DECLARATION",
+        }
+        for name, reason in expectations.items():
+            with self.subTest(name=name):
+                result = evaluate_cross_aperture_case(load_case(name))
+                self.assertEqual(result["disposition"], "INSUFFICIENT_TO_TEST")
+                self.assertEqual(result["reason_code"], reason)
+                self.assertEqual(result["initial_compatible_states"], [])
+                self.assertEqual(result["lineage"], [])
+                self.assertEqual(result["final_compatible_states"], [])
+                self.assertIsNone(result["unique_representative"])
+                self.assertIsNone(result["selection_basis"])
+                self.assertEqual(result["authority"], "none")
+
+    def test_non_string_relation_declaration_is_stable_refusal(self) -> None:
+        case = load_case("invalid_relation")
+        case["cuts"][0]["relation_declaration"] = []
+
+        result = evaluate_cross_aperture_case(case)
+
+        self.assertEqual(result["disposition"], "INSUFFICIENT_TO_TEST")
+        self.assertEqual(result["reason_code"], "INVALID_RELATION_DECLARATION")
+        self.assertEqual(result["lineage"], [])
+        self.assertEqual(result["authority"], "none")
+
+    def test_non_dict_case_is_malformed(self) -> None:
+        result = evaluate_cross_aperture_case(None)
+
+        self.assertEqual(result["disposition"], "INSUFFICIENT_TO_TEST")
+        self.assertEqual(result["reason_code"], "MALFORMED_CASE")
+        self.assertEqual(result["lineage"], [])
+        self.assertEqual(result["authority"], "none")
+
+    def test_missing_relation_declaration_normalizes_to_unknown(self) -> None:
+        result = evaluate_cross_aperture_case(load_case("missing_relation"))
+
+        self.assertNotEqual(result["disposition"], "INSUFFICIENT_TO_TEST")
+        self.assertEqual(result["lineage"][0]["relation_declaration"], "unknown")
+        self.assertEqual(result["final_compatible_states"], ["a"])
+
+    def test_experimental_module_stays_owner_local(self) -> None:
+        source = (Path(__file__).parents[1] / "alex_runtime" / "cross_aperture_intersection.py").read_text(
+            encoding="utf-8"
+        ).lower()
+
+        for forbidden in ("3rdi", "loadout", "dogram", "projection_invariance", "projection_break"):
+            self.assertNotIn(f"import {forbidden}", source)
+            self.assertNotIn(f"from {forbidden}", source)
+
+
+if __name__ == "__main__":
+    unittest.main()
