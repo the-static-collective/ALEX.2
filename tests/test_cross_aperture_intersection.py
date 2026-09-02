@@ -58,6 +58,46 @@ class CrossApertureIntersectionTests(unittest.TestCase):
         self.assertIsNone(result["selection_basis"])
         self.assertEqual(result["authority"], "none")
 
+    def test_only_first_nonempty_to_empty_transition_is_break(self) -> None:
+        case = {
+            "case_id": "post-break-001",
+            "world_domain_id": "tiny-world",
+            "world_states": ["a", "b"],
+            "cuts": [
+                {
+                    "cut_id": "cut-a",
+                    "map_id": "map-a",
+                    "map": {"a": "x", "b": "y"},
+                    "observed": "x",
+                },
+                {
+                    "cut_id": "cut-b",
+                    "map_id": "map-b",
+                    "map": {"a": "q", "b": "z"},
+                    "observed": "z",
+                },
+                {
+                    "cut_id": "cut-c",
+                    "map_id": "map-c",
+                    "map": {"a": "m", "b": "n"},
+                    "observed": "m",
+                },
+            ],
+        }
+
+        result = evaluate_cross_aperture_case(case)
+
+        self.assertEqual(result["disposition"], "MODEL_BREAK")
+        self.assertEqual(
+            [step["effect"] for step in result["lineage"]],
+            ["REFINE", "BREAK", "REDUNDANT"],
+        )
+        self.assertEqual(result["lineage"][1]["compatible_before"], ["a"])
+        self.assertEqual(result["lineage"][1]["compatible_after"], [])
+        self.assertEqual(result["lineage"][2]["compatible_before"], [])
+        self.assertEqual(result["lineage"][2]["compatible_after"], [])
+        self.assertEqual(result["authority"], "none")
+
     def test_malformed_cases_return_stable_reason_codes(self) -> None:
         expectations = {
             "invalid_world_domain": "INVALID_WORLD_DOMAIN",
