@@ -47,6 +47,51 @@ class CrossApertureIntersectionTests(unittest.TestCase):
         self.assertIsNone(redundant["unique_representative"])
         self.assertIsNone(correlated["unique_representative"])
 
+    def test_same_aperture_effect_is_relative_to_supplied_prefix(self) -> None:
+        world_states = ["1", "2", "3", "4"]
+        cuts = {
+            "A": {
+                "cut_id": "cut-a",
+                "map_id": "map-a",
+                "map": {"1": "keep", "2": "keep", "3": "drop", "4": "drop"},
+                "observed": "keep",
+            },
+            "B": {
+                "cut_id": "cut-b",
+                "map_id": "map-b",
+                "map": {"1": "keep", "2": "keep", "3": "keep", "4": "drop"},
+                "observed": "keep",
+            },
+            "C": {
+                "cut_id": "cut-c",
+                "map_id": "map-c",
+                "map": {"1": "keep", "2": "keep", "3": "drop", "4": "keep"},
+                "observed": "keep",
+            },
+        }
+
+        def run(order: tuple[str, ...]) -> dict:
+            return evaluate_cross_aperture_case(
+                {
+                    "case_id": "order-relative-redundancy-001-" + "".join(order).lower(),
+                    "world_domain_id": "order-relative-world",
+                    "world_states": world_states,
+                    "cuts": [cuts[name] for name in order],
+                }
+            )
+
+        abc = run(("A", "B", "C"))
+        bca = run(("B", "C", "A"))
+
+        self.assertEqual(abc["final_compatible_states"], ["1", "2"])
+        self.assertEqual(bca["final_compatible_states"], ["1", "2"])
+        effect_by_cut_abc = {step["cut_id"]: step["effect"] for step in abc["lineage"]}
+        effect_by_cut_bca = {step["cut_id"]: step["effect"] for step in bca["lineage"]}
+        self.assertEqual(effect_by_cut_abc["cut-a"], "REFINE")
+        self.assertEqual(effect_by_cut_bca["cut-a"], "REDUNDANT")
+        self.assertEqual(abc["authority"], "none")
+        self.assertEqual(bca["authority"], "none")
+
     def test_empty_intersection_is_model_break_not_reality_verdict(self) -> None:
         result = evaluate_cross_aperture_case(load_case("model_break"))
 
