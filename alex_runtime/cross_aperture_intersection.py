@@ -119,10 +119,10 @@ def evaluate_cross_aperture_case(case: dict) -> dict[str, Any]:
         fiber_set = set(fiber_states)
         compatible = [state for state in compatible_before if state in fiber_set]
 
-        if not compatible:
-            effect = "BREAK"
-        elif compatible == compatible_before:
+        if compatible == compatible_before:
             effect = "REDUNDANT"
+        elif not compatible:
+            effect = "BREAK"
         else:
             effect = "REFINE"
 
