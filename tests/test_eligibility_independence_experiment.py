@@ -91,6 +91,23 @@ class EligibilityIndependenceExperimentTests(unittest.TestCase):
         self.assertEqual(grammar_result["row_id"], "eligible-hidden")
         self.assertEqual(grammar_result["authority"], "none")
 
+    def test_relabeling_grammar_id_does_not_change_fixed_semantics(self):
+        experiment = load_experiment()
+        result = experiment.audit_grammar_id_relabeling(
+            BASE["rows"][1],
+            first_grammar_id="jubilee-little-yes-probe",
+            second_grammar_id="totally-different-grammar",
+        )
+
+        self.assertEqual(result["disposition"], "GRAMMAR_ID_UNBOUND")
+        self.assertTrue(result["semantic_observation_equal"])
+        self.assertEqual(
+            result["grammar_ids"],
+            ["jubilee-little-yes-probe", "totally-different-grammar"],
+        )
+        self.assertEqual(result["row_id"], "eligible-hidden")
+        self.assertEqual(result["authority"], "none")
+
 
 if __name__ == "__main__":
     unittest.main()
