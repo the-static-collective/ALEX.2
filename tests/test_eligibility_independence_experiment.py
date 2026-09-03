@@ -74,6 +74,23 @@ class EligibilityIndependenceExperimentTests(unittest.TestCase):
         self.assertEqual(result["handoff_id"], BASE["handoff_id"])
         self.assertEqual(result["authority"], "none")
 
+    def test_representable_row_can_be_rejected_by_separate_tiny_grammar(self):
+        experiment = load_experiment()
+        matrix_result = experiment.audit_eligibility_matrix(BASE)
+        grammar_result = experiment.audit_tiny_grammar_row(
+            BASE["rows"][1], grammar_id=BASE["grammar_id"]
+        )
+
+        self.assertEqual(matrix_result["disposition"], "MATRIX_WITNESSED")
+        self.assertEqual(grammar_result["disposition"], "GRAMMAR_REJECTED")
+        self.assertEqual(
+            grammar_result["reason"],
+            "eligible_requires_observer_and_capability",
+        )
+        self.assertFalse(grammar_result["reachable_under_tiny_grammar"])
+        self.assertEqual(grammar_result["row_id"], "eligible-hidden")
+        self.assertEqual(grammar_result["authority"], "none")
+
 
 if __name__ == "__main__":
     unittest.main()
