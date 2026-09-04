@@ -95,3 +95,39 @@ def run_partition_swap_probe() -> dict[str, object]:
         "lifts": lifts,
         "authority": "none",
     }
+
+
+def run_relabel_control_probe() -> dict[str, object]:
+    """Witness a serialization delta that disappears under one declared relabeling."""
+    left_macro_edges = [
+        {"from": "X", "verb": "appoints", "to": "Y", "system": "S"}
+    ]
+    right_macro_edges = [
+        {"from": "P", "verb": "appoints", "to": "Q", "system": "S"}
+    ]
+    declared_relabeling = {"X": "P", "Y": "Q"}
+    left_relabelled_macro_edges = [
+        {
+            "from": declared_relabeling[edge["from"]],
+            "verb": edge["verb"],
+            "to": declared_relabeling[edge["to"]],
+            "system": edge["system"],
+        }
+        for edge in left_macro_edges
+    ]
+
+    observation = (
+        "SERIALIZATION_DELTA_ONLY"
+        if left_macro_edges != right_macro_edges
+        and left_relabelled_macro_edges == right_macro_edges
+        else "RELABEL_CONTROL_FAILED"
+    )
+    return {
+        "experiment": "RELABEL-CONTROL-001",
+        "observation": observation,
+        "left_macro_edges": left_macro_edges,
+        "right_macro_edges": right_macro_edges,
+        "declared_relabeling": declared_relabeling,
+        "left_relabelled_macro_edges": left_relabelled_macro_edges,
+        "authority": "none",
+    }
