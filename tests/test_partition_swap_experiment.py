@@ -25,6 +25,18 @@ class PartitionSwapExperimentTests(unittest.TestCase):
         self.assertEqual(transaction_pair["macro_edges"], [])
         self.assertNotEqual(role_side["macro_edges"], transaction_pair["macro_edges"])
 
+    def test_pure_relabeling_is_not_classified_as_structural_delta(self):
+        from experiments.partition_swap import run_relabel_control_probe
+
+        result = run_relabel_control_probe()
+
+        self.assertEqual(result["experiment"], "RELABEL-CONTROL-001")
+        self.assertEqual(result["authority"], "none")
+        self.assertEqual(result["observation"], "SERIALIZATION_DELTA_ONLY")
+        self.assertNotEqual(result["left_macro_edges"], result["right_macro_edges"])
+        self.assertEqual(result["left_relabelled_macro_edges"], result["right_macro_edges"])
+        self.assertEqual(result["declared_relabeling"], {"X": "P", "Y": "Q"})
+
 
 if __name__ == "__main__":
     unittest.main()
