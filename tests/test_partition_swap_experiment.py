@@ -37,6 +37,23 @@ class PartitionSwapExperimentTests(unittest.TestCase):
         self.assertEqual(result["left_relabelled_macro_edges"], result["right_macro_edges"])
         self.assertEqual(result["declared_relabeling"], {"X": "P", "Y": "Q"})
 
+    def test_isolated_macro_nodes_are_not_erased_by_empty_edge_lists(self):
+        from experiments.partition_swap import run_isolated_node_control_probe
+
+        result = run_isolated_node_control_probe()
+
+        self.assertEqual(result["experiment"], "ISOLATED-NODE-CONTROL-001")
+        self.assertEqual(result["authority"], "none")
+        self.assertEqual(result["observation"], "PARTITION_DEPENDENT_MACRO_GRAPH")
+
+        two_node, one_node = result["lifts"]
+        self.assertEqual(two_node["micro_receipt_refs"], one_node["micro_receipt_refs"])
+        self.assertEqual(two_node["macro_edges"], [])
+        self.assertEqual(one_node["macro_edges"], [])
+        self.assertEqual(two_node["macro_nodes"], ["P", "Q"])
+        self.assertEqual(one_node["macro_nodes"], ["Z"])
+        self.assertNotEqual(two_node["macro_nodes"], one_node["macro_nodes"])
+
 
 if __name__ == "__main__":
     unittest.main()
