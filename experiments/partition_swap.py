@@ -64,29 +64,49 @@ def _macro_edges(partition: dict[str, tuple[str, ...]]) -> list[dict[str, str]]:
     return macro_edges
 
 
+def _lift_receipt(
+    *,
+    lift_id: str,
+    partition: dict[str, tuple[str, ...]],
+    partition_rule: str,
+    preservation_target: str,
+) -> dict[str, object]:
+    return {
+        "lift_id": lift_id,
+        "partition": {
+            macro_name: list(names)
+            for macro_name, names in partition.items()
+        },
+        "partition_rule": partition_rule,
+        "preservation_target": preservation_target,
+        "micro_receipt_refs": [edge["receipt_ref"] for edge in _MICRO_EDGES],
+        "macro_nodes": list(partition),
+        "macro_edges": _macro_edges(partition),
+    }
+
+
+def _macro_graph_differs(left: dict[str, object], right: dict[str, object]) -> bool:
+    return (
+        left["macro_nodes"] != right["macro_nodes"]
+        or left["macro_edges"] != right["macro_edges"]
+    )
+
+
 def run_partition_swap_probe() -> dict[str, object]:
     """Measure one fixed counterexample; do not infer an intrinsic macro-node."""
-    receipt_refs = [edge["receipt_ref"] for edge in _MICRO_EDGES]
-    lifts = []
-
-    for lift in _LIFTS:
-        lifts.append(
-            {
-                "lift_id": lift["lift_id"],
-                "partition": {
-                    macro_name: list(names)
-                    for macro_name, names in lift["partition"].items()
-                },
-                "partition_rule": lift["partition_rule"],
-                "preservation_target": lift["preservation_target"],
-                "micro_receipt_refs": list(receipt_refs),
-                "macro_edges": _macro_edges(lift["partition"]),
-            }
+    lifts = [
+        _lift_receipt(
+            lift_id=lift["lift_id"],
+            partition=lift["partition"],
+            partition_rule=lift["partition_rule"],
+            preservation_target=lift["preservation_target"],
         )
+        for lift in _LIFTS
+    ]
 
     observation = (
         "PARTITION_DEPENDENT_MACRO_GRAPH"
-        if lifts[0]["macro_edges"] != lifts[1]["macro_edges"]
+        if _macro_graph_differs(lifts[0], lifts[1])
         else "NO_PARTITION_DELTA_OBSERVED"
     )
     return {
@@ -129,5 +149,37 @@ def run_relabel_control_probe() -> dict[str, object]:
         "right_macro_edges": right_macro_edges,
         "declared_relabeling": declared_relabeling,
         "left_relabelled_macro_edges": left_relabelled_macro_edges,
+        "authority": "none",
+    }
+
+
+def run_isolated_node_control_probe() -> dict[str, object]:
+    """Keep empty edge projections while preserving a macro-node-count delta."""
+    two_node_partition = {"P": ("A", "B"), "Q": ("C", "D")}
+    one_node_partition = {"Z": ("A", "B", "C", "D")}
+    lifts = [
+        _lift_receipt(
+            lift_id="two-isolated-nodes",
+            partition=two_node_partition,
+            partition_rule="group-by-transaction-pair",
+            preservation_target="declared-macro-node-existence",
+        ),
+        _lift_receipt(
+            lift_id="one-isolated-node",
+            partition=one_node_partition,
+            partition_rule="group-all-names",
+            preservation_target="declared-macro-node-existence",
+        ),
+    ]
+
+    observation = (
+        "PARTITION_DEPENDENT_MACRO_GRAPH"
+        if _macro_graph_differs(lifts[0], lifts[1])
+        else "NO_PARTITION_DELTA_OBSERVED"
+    )
+    return {
+        "experiment": "ISOLATED-NODE-CONTROL-001",
+        "observation": observation,
+        "lifts": lifts,
         "authority": "none",
     }
