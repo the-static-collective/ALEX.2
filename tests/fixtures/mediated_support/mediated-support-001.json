@@ -1,0 +1,27 @@
+{
+  "case_id": "mediated-support-direct-zero",
+  "claim_id": "C1",
+  "claim_class": "OBJECT_LOCAL",
+  "left": {
+    "projection_digest": "sha256:projection-shared",
+    "bounded_context_digest": "sha256:context-shared",
+    "interest_receipt_refs": [],
+    "selection": {
+      "policy_digest": "sha256:broad-policy-v1",
+      "receipt_refs": ["selection:broad-left"],
+      "consumed_interest_receipt_refs": []
+    },
+    "derivation_fixture": "relation-derivation-001-evidence-positive.json"
+  },
+  "right": {
+    "projection_digest": "sha256:projection-shared",
+    "bounded_context_digest": "sha256:context-shared",
+    "interest_receipt_refs": ["interest:q"],
+    "selection": {
+      "policy_digest": "sha256:broad-policy-v1",
+      "receipt_refs": ["selection:broad-right"],
+      "consumed_interest_receipt_refs": []
+    },
+    "derivation_fixture": "relation-derivation-001-evidence-positive.json"
+  }
+}
