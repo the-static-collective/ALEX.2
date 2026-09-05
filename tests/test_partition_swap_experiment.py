@@ -54,6 +54,22 @@ class PartitionSwapExperimentTests(unittest.TestCase):
         self.assertEqual(one_node["macro_nodes"], ["Z"])
         self.assertNotEqual(two_node["macro_nodes"], one_node["macro_nodes"])
 
+    def test_serialization_order_does_not_masquerade_as_structural_delta(self):
+        from experiments.partition_swap import run_order_swap_control_probe
+
+        result = run_order_swap_control_probe()
+
+        self.assertEqual(result["experiment"], "ORDER-SWAP-CONTROL-001")
+        self.assertEqual(result["authority"], "none")
+        self.assertEqual(result["observation"], "SERIALIZATION_ORDER_DELTA_ONLY")
+        self.assertNotEqual(result["left"]["macro_nodes"], result["right"]["macro_nodes"])
+        self.assertNotEqual(result["left"]["macro_edges"], result["right"]["macro_edges"])
+        self.assertEqual(set(result["left"]["macro_nodes"]), set(result["right"]["macro_nodes"]))
+        self.assertEqual(
+            {tuple(sorted(edge.items())) for edge in result["left"]["macro_edges"]},
+            {tuple(sorted(edge.items())) for edge in result["right"]["macro_edges"]},
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
