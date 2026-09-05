@@ -183,3 +183,40 @@ def run_isolated_node_control_probe() -> dict[str, object]:
         "lifts": lifts,
         "authority": "none",
     }
+
+
+def run_order_swap_control_probe() -> dict[str, object]:
+    """Witness order-only serialization drift without changing labeled graph content."""
+    first_edge = {"from": "X", "verb": "appoints", "to": "Y", "system": "S"}
+    second_edge = {"from": "Y", "verb": "appoints", "to": "X", "system": "S"}
+    left = {
+        "macro_nodes": ["X", "Y"],
+        "macro_edges": [first_edge, second_edge],
+    }
+    right = {
+        "macro_nodes": ["Y", "X"],
+        "macro_edges": [second_edge, first_edge],
+    }
+
+    left_edges = {tuple(sorted(edge.items())) for edge in left["macro_edges"]}
+    right_edges = {tuple(sorted(edge.items())) for edge in right["macro_edges"]}
+    same_labeled_content = (
+        set(left["macro_nodes"]) == set(right["macro_nodes"])
+        and left_edges == right_edges
+    )
+    raw_serialization_differs = (
+        left["macro_nodes"] != right["macro_nodes"]
+        and left["macro_edges"] != right["macro_edges"]
+    )
+    observation = (
+        "SERIALIZATION_ORDER_DELTA_ONLY"
+        if raw_serialization_differs and same_labeled_content
+        else "ORDER_CONTROL_FAILED"
+    )
+    return {
+        "experiment": "ORDER-SWAP-CONTROL-001",
+        "observation": observation,
+        "left": left,
+        "right": right,
+        "authority": "none",
+    }
