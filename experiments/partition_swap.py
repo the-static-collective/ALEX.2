@@ -85,10 +85,18 @@ def _lift_receipt(
     }
 
 
+def _edge_membership(graph: dict[str, object]) -> set[tuple[tuple[str, str], ...]]:
+    return {
+        tuple(sorted(edge.items()))
+        for edge in graph["macro_edges"]
+    }
+
+
 def _macro_graph_differs(left: dict[str, object], right: dict[str, object]) -> bool:
+    """Compare already-labeled graph membership, not serialization order."""
     return (
-        left["macro_nodes"] != right["macro_nodes"]
-        or left["macro_edges"] != right["macro_edges"]
+        set(left["macro_nodes"]) != set(right["macro_nodes"])
+        or _edge_membership(left) != _edge_membership(right)
     )
 
 
@@ -198,12 +206,7 @@ def run_order_swap_control_probe() -> dict[str, object]:
         "macro_edges": [second_edge, first_edge],
     }
 
-    left_edges = {tuple(sorted(edge.items())) for edge in left["macro_edges"]}
-    right_edges = {tuple(sorted(edge.items())) for edge in right["macro_edges"]}
-    same_labeled_content = (
-        set(left["macro_nodes"]) == set(right["macro_nodes"])
-        and left_edges == right_edges
-    )
+    same_labeled_content = not _macro_graph_differs(left, right)
     raw_serialization_differs = (
         left["macro_nodes"] != right["macro_nodes"]
         and left["macro_edges"] != right["macro_edges"]
