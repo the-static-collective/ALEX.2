@@ -100,6 +100,14 @@ def _macro_graph_differs(left: dict[str, object], right: dict[str, object]) -> b
     )
 
 
+def _partition_membership(partition: dict[str, list[str]]) -> set[tuple[str, frozenset[str]]]:
+    """Compare declared block membership without treating list order as meaning."""
+    return {
+        (macro_name, frozenset(names))
+        for macro_name, names in partition.items()
+    }
+
+
 def run_partition_swap_probe() -> dict[str, object]:
     """Measure one fixed counterexample; do not infer an intrinsic macro-node."""
     lifts = [
@@ -115,7 +123,7 @@ def run_partition_swap_probe() -> dict[str, object]:
     observation = (
         "PARTITION_DEPENDENT_MACRO_GRAPH"
         if _macro_graph_differs(lifts[0], lifts[1])
-        else "NO_PARTITION_DELTA_OBSERVED"
+        else "NO_MACRO_GRAPH_DELTA_OBSERVED"
     )
     return {
         "experiment": "PARTITION-SWAP-001",
@@ -183,7 +191,7 @@ def run_isolated_node_control_probe() -> dict[str, object]:
     observation = (
         "PARTITION_DEPENDENT_MACRO_GRAPH"
         if _macro_graph_differs(lifts[0], lifts[1])
-        else "NO_PARTITION_DELTA_OBSERVED"
+        else "NO_MACRO_GRAPH_DELTA_OBSERVED"
     )
     return {
         "experiment": "ISOLATED-NODE-CONTROL-001",
@@ -221,5 +229,44 @@ def run_order_swap_control_probe() -> dict[str, object]:
         "observation": observation,
         "left": left,
         "right": right,
+        "authority": "none",
+    }
+
+
+def run_partition_change_same_graph_probe() -> dict[str, object]:
+    """Preserve a partition delta that the induced labeled macro-graph cannot see."""
+    left_partition = {"X": ("A", "C"), "Y": ("B", "D")}
+    right_partition = {"X": ("A",), "Y": ("B", "C", "D")}
+    lifts = [
+        _lift_receipt(
+            lift_id="left-membership",
+            partition=left_partition,
+            partition_rule="declared-left-membership",
+            preservation_target="partition-membership",
+        ),
+        _lift_receipt(
+            lift_id="right-membership",
+            partition=right_partition,
+            partition_rule="declared-right-membership",
+            preservation_target="partition-membership",
+        ),
+    ]
+
+    partition_changed = (
+        _partition_membership(lifts[0]["partition"])
+        != _partition_membership(lifts[1]["partition"])
+    )
+    macro_graph_changed = _macro_graph_differs(lifts[0], lifts[1])
+    observation = (
+        "PARTITION_CHANGE_WITHOUT_MACRO_GRAPH_CHANGE"
+        if partition_changed and not macro_graph_changed
+        else "PARTITION_GRAPH_CONTROL_FAILED"
+    )
+    return {
+        "experiment": "PARTITION-CHANGE-SAME-GRAPH-001",
+        "observation": observation,
+        "partition_changed": partition_changed,
+        "macro_graph_changed": macro_graph_changed,
+        "lifts": lifts,
         "authority": "none",
     }
