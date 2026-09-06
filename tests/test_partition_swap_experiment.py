@@ -70,6 +70,26 @@ class PartitionSwapExperimentTests(unittest.TestCase):
             {tuple(sorted(edge.items())) for edge in result["right"]["macro_edges"]},
         )
 
+    def test_order_swap_control_is_consumed_by_macro_graph_comparator(self):
+        from experiments.partition_swap import _macro_graph_differs, run_order_swap_control_probe
+
+        result = run_order_swap_control_probe()
+
+        self.assertFalse(_macro_graph_differs(result["left"], result["right"]))
+
+    def test_macro_graph_comparator_still_detects_genuine_node_or_edge_delta(self):
+        from experiments.partition_swap import _macro_graph_differs
+
+        left = {
+            "macro_nodes": ["X", "Y"],
+            "macro_edges": [{"from": "X", "verb": "appoints", "to": "Y", "system": "S"}],
+        }
+        missing_edge = {"macro_nodes": ["X", "Y"], "macro_edges": []}
+        missing_node = {"macro_nodes": ["X"], "macro_edges": []}
+
+        self.assertTrue(_macro_graph_differs(left, missing_edge))
+        self.assertTrue(_macro_graph_differs(missing_edge, missing_node))
+
 
 if __name__ == "__main__":
     unittest.main()
