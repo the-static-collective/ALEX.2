@@ -90,6 +90,25 @@ class PartitionSwapExperimentTests(unittest.TestCase):
         self.assertTrue(_macro_graph_differs(left, missing_edge))
         self.assertTrue(_macro_graph_differs(missing_edge, missing_node))
 
+    def test_partition_change_can_survive_without_macro_graph_change(self):
+        from experiments.partition_swap import run_partition_change_same_graph_probe
+
+        result = run_partition_change_same_graph_probe()
+
+        self.assertEqual(result["experiment"], "PARTITION-CHANGE-SAME-GRAPH-001")
+        self.assertEqual(result["authority"], "none")
+        self.assertTrue(result["partition_changed"])
+        self.assertFalse(result["macro_graph_changed"])
+        self.assertEqual(result["observation"], "PARTITION_CHANGE_WITHOUT_MACRO_GRAPH_CHANGE")
+
+        left, right = result["lifts"]
+        self.assertNotEqual(left["partition"], right["partition"])
+        self.assertEqual(set(left["macro_nodes"]), set(right["macro_nodes"]))
+        self.assertEqual(
+            {tuple(sorted(edge.items())) for edge in left["macro_edges"]},
+            {tuple(sorted(edge.items())) for edge in right["macro_edges"]},
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
