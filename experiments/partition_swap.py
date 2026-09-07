@@ -18,6 +18,12 @@ _MICRO_EDGES = (
     },
 )
 
+_MICRO_NODES = frozenset(
+    endpoint
+    for edge in _MICRO_EDGES
+    for endpoint in (edge["from"], edge["to"])
+)
+
 _LIFTS = (
     {
         "lift_id": "role-side",
@@ -32,6 +38,37 @@ _LIFTS = (
         "preservation_target": "transaction-boundary",
     },
 )
+
+
+def _partition_refusal(
+    partition: dict[str, tuple[str, ...]],
+) -> dict[str, object] | None:
+    counts: dict[str, int] = {}
+    for names in partition.values():
+        for name in names:
+            counts[name] = counts.get(name, 0) + 1
+
+    duplicates = sorted(name for name, count in counts.items() if count > 1)
+    present = set(counts)
+    missing = sorted(_MICRO_NODES - present)
+    unexpected = sorted(present - _MICRO_NODES)
+
+    if duplicates:
+        reason = "partition-overlap"
+    elif missing:
+        reason = "partition-uncovered"
+    elif unexpected:
+        reason = "partition-unexpected"
+    else:
+        return None
+
+    return {
+        "status": "REFUSE",
+        "reason": reason,
+        "duplicates": duplicates,
+        "missing": missing,
+        "unexpected": unexpected,
+    }
 
 
 def _macro_edges(partition: dict[str, tuple[str, ...]]) -> list[dict[str, str]]:
@@ -71,15 +108,23 @@ def _lift_receipt(
     partition_rule: str,
     preservation_target: str,
 ) -> dict[str, object]:
-    return {
+    serialized_partition = {
+        macro_name: list(names)
+        for macro_name, names in partition.items()
+    }
+    base_receipt = {
         "lift_id": lift_id,
-        "partition": {
-            macro_name: list(names)
-            for macro_name, names in partition.items()
-        },
+        "partition": serialized_partition,
         "partition_rule": partition_rule,
         "preservation_target": preservation_target,
         "micro_receipt_refs": [edge["receipt_ref"] for edge in _MICRO_EDGES],
+    }
+    refusal = _partition_refusal(partition)
+    if refusal is not None:
+        return {**base_receipt, **refusal}
+
+    return {
+        **base_receipt,
         "macro_nodes": list(partition),
         "macro_edges": _macro_edges(partition),
     }
@@ -295,5 +340,37 @@ def run_block_relabel_control_probe() -> dict[str, object]:
         "block_labels_changed": block_labels_changed,
         "left_partition": left_partition,
         "right_partition": right_partition,
+        "authority": "none",
+    }
+
+
+def run_invalid_partition_refusal_probe() -> dict[str, object]:
+    """Refuse malformed partition-shaped inputs before macro projection."""
+    overlap_partition = {"X": ("A", "B"), "Y": ("A", "C", "D")}
+    uncovered_partition = {"X": ("A", "B"), "Y": ("C",)}
+    cases = [
+        _lift_receipt(
+            lift_id="overlap-hostile",
+            partition=overlap_partition,
+            partition_rule="hostile-overlap",
+            preservation_target="partition-validity",
+        ),
+        _lift_receipt(
+            lift_id="uncovered-hostile",
+            partition=uncovered_partition,
+            partition_rule="hostile-uncovered",
+            preservation_target="partition-validity",
+        ),
+    ]
+    refused = all(case.get("status") == "REFUSE" for case in cases)
+    observation = (
+        "INVALID_PARTITIONS_REFUSED"
+        if refused
+        else "INVALID_PARTITION_REFUSAL_FAILED"
+    )
+    return {
+        "experiment": "INVALID-PARTITION-REFUSAL-001",
+        "observation": observation,
+        "cases": cases,
         "authority": "none",
     }
