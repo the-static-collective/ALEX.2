@@ -100,12 +100,14 @@ def _macro_graph_differs(left: dict[str, object], right: dict[str, object]) -> b
     )
 
 
-def _partition_membership(partition: dict[str, list[str]]) -> set[tuple[str, frozenset[str]]]:
-    """Compare declared block membership without treating list order as meaning."""
-    return {
-        (macro_name, frozenset(names))
-        for macro_name, names in partition.items()
-    }
+def _block_membership(partition: dict[str, list[str]]) -> set[frozenset[str]]:
+    """Compare constituent blocks independently of their external labels."""
+    return {frozenset(names) for names in partition.values()}
+
+
+def _block_labels(partition: dict[str, list[str]]) -> set[str]:
+    """Compare only the declared external labels on partition blocks."""
+    return set(partition)
 
 
 def run_partition_swap_probe() -> dict[str, object]:
@@ -234,7 +236,7 @@ def run_order_swap_control_probe() -> dict[str, object]:
 
 
 def run_partition_change_same_graph_probe() -> dict[str, object]:
-    """Preserve a partition delta that the induced labeled macro-graph cannot see."""
+    """Preserve a block-membership delta that the induced labeled macro-graph cannot see."""
     left_partition = {"X": ("A", "C"), "Y": ("B", "D")}
     right_partition = {"X": ("A",), "Y": ("B", "C", "D")}
     lifts = [
@@ -253,8 +255,8 @@ def run_partition_change_same_graph_probe() -> dict[str, object]:
     ]
 
     partition_changed = (
-        _partition_membership(lifts[0]["partition"])
-        != _partition_membership(lifts[1]["partition"])
+        _block_membership(lifts[0]["partition"])
+        != _block_membership(lifts[1]["partition"])
     )
     macro_graph_changed = _macro_graph_differs(lifts[0], lifts[1])
     observation = (
@@ -268,5 +270,30 @@ def run_partition_change_same_graph_probe() -> dict[str, object]:
         "partition_changed": partition_changed,
         "macro_graph_changed": macro_graph_changed,
         "lifts": lifts,
+        "authority": "none",
+    }
+
+
+def run_block_relabel_control_probe() -> dict[str, object]:
+    """Separate block-label delta from constituent block-membership delta."""
+    left_partition = {"X": ["A", "C"], "Y": ["B", "D"]}
+    right_partition = {"P": ["A", "C"], "Q": ["B", "D"]}
+
+    block_membership_changed = (
+        _block_membership(left_partition) != _block_membership(right_partition)
+    )
+    block_labels_changed = _block_labels(left_partition) != _block_labels(right_partition)
+    observation = (
+        "BLOCK_LABEL_DELTA_ONLY"
+        if block_labels_changed and not block_membership_changed
+        else "BLOCK_RELABEL_CONTROL_FAILED"
+    )
+    return {
+        "experiment": "BLOCK-RELABEL-CONTROL-001",
+        "observation": observation,
+        "block_membership_changed": block_membership_changed,
+        "block_labels_changed": block_labels_changed,
+        "left_partition": left_partition,
+        "right_partition": right_partition,
         "authority": "none",
     }
