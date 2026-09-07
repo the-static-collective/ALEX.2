@@ -109,6 +109,18 @@ class PartitionSwapExperimentTests(unittest.TestCase):
             {tuple(sorted(edge.items())) for edge in right["macro_edges"]},
         )
 
+    def test_block_relabel_does_not_masquerade_as_membership_change(self):
+        from experiments.partition_swap import run_block_relabel_control_probe
+
+        result = run_block_relabel_control_probe()
+
+        self.assertEqual(result["experiment"], "BLOCK-RELABEL-CONTROL-001")
+        self.assertEqual(result["authority"], "none")
+        self.assertFalse(result["block_membership_changed"])
+        self.assertTrue(result["block_labels_changed"])
+        self.assertEqual(result["observation"], "BLOCK_LABEL_DELTA_ONLY")
+        self.assertNotEqual(result["left_partition"], result["right_partition"])
+
 
 if __name__ == "__main__":
     unittest.main()
