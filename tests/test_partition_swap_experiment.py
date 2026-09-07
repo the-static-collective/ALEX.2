@@ -121,6 +121,28 @@ class PartitionSwapExperimentTests(unittest.TestCase):
         self.assertEqual(result["observation"], "BLOCK_LABEL_DELTA_ONLY")
         self.assertNotEqual(result["left_partition"], result["right_partition"])
 
+    def test_invalid_partitions_refuse_before_macro_projection(self):
+        from experiments.partition_swap import run_invalid_partition_refusal_probe
+
+        result = run_invalid_partition_refusal_probe()
+
+        self.assertEqual(result["experiment"], "INVALID-PARTITION-REFUSAL-001")
+        self.assertEqual(result["authority"], "none")
+        self.assertEqual(result["observation"], "INVALID_PARTITIONS_REFUSED")
+
+        overlap, uncovered = result["cases"]
+        self.assertEqual(overlap["status"], "REFUSE")
+        self.assertEqual(overlap["reason"], "partition-overlap")
+        self.assertEqual(overlap["duplicates"], ["A"])
+        self.assertEqual(overlap["missing"], [])
+        self.assertNotIn("macro_edges", overlap)
+
+        self.assertEqual(uncovered["status"], "REFUSE")
+        self.assertEqual(uncovered["reason"], "partition-uncovered")
+        self.assertEqual(uncovered["duplicates"], [])
+        self.assertEqual(uncovered["missing"], ["D"])
+        self.assertNotIn("macro_edges", uncovered)
+
 
 if __name__ == "__main__":
     unittest.main()
