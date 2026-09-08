@@ -143,6 +143,19 @@ class PartitionSwapExperimentTests(unittest.TestCase):
         self.assertEqual(uncovered["missing"], ["D"])
         self.assertNotIn("macro_edges", uncovered)
 
+    def test_combined_overlap_and_uncovered_partition_preserves_both_failures(self):
+        from experiments.partition_swap import run_invalid_partition_refusal_probe
+
+        result = run_invalid_partition_refusal_probe()
+
+        self.assertEqual(len(result["cases"]), 3)
+        both = result["cases"][2]
+        self.assertEqual(both["status"], "REFUSE")
+        self.assertEqual(both["reason"], "partition-overlap-and-uncovered")
+        self.assertEqual(both["duplicates"], ["A"])
+        self.assertEqual(both["missing"], ["D"])
+        self.assertNotIn("macro_edges", both)
+
 
 if __name__ == "__main__":
     unittest.main()
