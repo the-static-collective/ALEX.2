@@ -156,6 +156,22 @@ class PartitionSwapExperimentTests(unittest.TestCase):
         self.assertEqual(both["missing"], ["D"])
         self.assertNotIn("macro_edges", both)
 
+    def test_empty_partition_block_refuses_before_macro_projection(self):
+        from experiments.partition_swap import _lift_receipt
+
+        result = _lift_receipt(
+            lift_id="empty-block-hostile",
+            partition={"X": ("A", "B", "C", "D"), "Y": ()},
+            partition_rule="hostile-empty-block",
+            preservation_target="partition-validity",
+        )
+
+        self.assertEqual(result["status"], "REFUSE")
+        self.assertEqual(result["reason"], "partition-empty-block")
+        self.assertEqual(result["empty_blocks"], ["Y"])
+        self.assertNotIn("macro_nodes", result)
+        self.assertNotIn("macro_edges", result)
+
 
 if __name__ == "__main__":
     unittest.main()
