@@ -53,7 +53,9 @@ def _partition_refusal(
     missing = sorted(_MICRO_NODES - present)
     unexpected = sorted(present - _MICRO_NODES)
 
-    if duplicates:
+    if duplicates and missing:
+        reason = "partition-overlap-and-uncovered"
+    elif duplicates:
         reason = "partition-overlap"
     elif missing:
         reason = "partition-uncovered"
@@ -348,6 +350,7 @@ def run_invalid_partition_refusal_probe() -> dict[str, object]:
     """Refuse malformed partition-shaped inputs before macro projection."""
     overlap_partition = {"X": ("A", "B"), "Y": ("A", "C", "D")}
     uncovered_partition = {"X": ("A", "B"), "Y": ("C",)}
+    combined_partition = {"X": ("A", "B"), "Y": ("A", "C")}
     cases = [
         _lift_receipt(
             lift_id="overlap-hostile",
@@ -359,6 +362,12 @@ def run_invalid_partition_refusal_probe() -> dict[str, object]:
             lift_id="uncovered-hostile",
             partition=uncovered_partition,
             partition_rule="hostile-uncovered",
+            preservation_target="partition-validity",
+        ),
+        _lift_receipt(
+            lift_id="overlap-and-uncovered-hostile",
+            partition=combined_partition,
+            partition_rule="hostile-overlap-and-uncovered",
             preservation_target="partition-validity",
         ),
     ]
