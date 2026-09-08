@@ -52,6 +52,7 @@ def _partition_refusal(
     present = set(counts)
     missing = sorted(_MICRO_NODES - present)
     unexpected = sorted(present - _MICRO_NODES)
+    empty_blocks = sorted(macro_name for macro_name, names in partition.items() if not names)
 
     if duplicates and missing:
         reason = "partition-overlap-and-uncovered"
@@ -61,6 +62,15 @@ def _partition_refusal(
         reason = "partition-uncovered"
     elif unexpected:
         reason = "partition-unexpected"
+    elif empty_blocks:
+        return {
+            "status": "REFUSE",
+            "reason": "partition-empty-block",
+            "duplicates": duplicates,
+            "missing": missing,
+            "unexpected": unexpected,
+            "empty_blocks": empty_blocks,
+        }
     else:
         return None
 
