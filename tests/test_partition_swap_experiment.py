@@ -130,7 +130,7 @@ class PartitionSwapExperimentTests(unittest.TestCase):
         self.assertEqual(result["authority"], "none")
         self.assertEqual(result["observation"], "INVALID_PARTITIONS_REFUSED")
 
-        overlap, uncovered = result["cases"]
+        overlap, uncovered = result["cases"][:2]
         self.assertEqual(overlap["status"], "REFUSE")
         self.assertEqual(overlap["reason"], "partition-overlap")
         self.assertEqual(overlap["duplicates"], ["A"])
