@@ -1,6 +1,7 @@
 import unittest
 from fractions import Fraction
 
+import experiments.criterion_not_policy as criterion_not_policy
 from experiments.criterion_not_policy import (
     evaluate_frozen_policy_table,
     evaluate_posthoc_criterion_swap,
@@ -84,6 +85,34 @@ class CriterionNotPolicyExperimentTests(unittest.TestCase):
         self.assertEqual(
             receipt["observation"],
             "LATER_CRITERION_DOES_NOT_REWRITE_EARLIER_DECISION_CONSTITUTION",
+        )
+
+    def test_later_prior_cannot_retroactively_govern_earlier_expected_cost_decision(self):
+        self.assertTrue(
+            hasattr(criterion_not_policy, "evaluate_posthoc_prior_swap"),
+            "post-hoc prior chronology probe must exist",
+        )
+        receipt = criterion_not_policy.evaluate_posthoc_prior_swap()
+
+        self.assertEqual(receipt["authority"], "none")
+        self.assertEqual(receipt["decision_cut"], "t0")
+        self.assertEqual(receipt["earlier_constitution"], {
+            "formed_at": "t0",
+            "criterion": "expected_cost",
+            "prior": [Fraction(1, 4)] * 4,
+            "ranking": "FIXED",
+        })
+        self.assertEqual(receipt["later_analysis"], {
+            "formed_at": "t1",
+            "criterion": "expected_cost",
+            "prior": [Fraction(3, 4), Fraction(1, 12), Fraction(1, 12), Fraction(1, 12)],
+            "ranking": "ADAPTIVE",
+        })
+        self.assertFalse(receipt["later_prior_governs_earlier_decision"])
+        self.assertEqual(receipt["status"], "REFUSE_RETROACTIVE_PRIOR")
+        self.assertEqual(
+            receipt["observation"],
+            "LATER_PRIOR_DOES_NOT_REWRITE_EARLIER_DECISION_CONSTITUTION",
         )
 
 
