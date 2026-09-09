@@ -93,3 +93,31 @@ def evaluate_frozen_policy_table() -> dict:
         },
         "observation": "STATEWISE_COST_TABLE_DOES_NOT_SELECT_POLICY_WITHOUT_CRITERION",
     }
+
+
+def evaluate_posthoc_criterion_swap() -> dict:
+    """Freeze a later analysis without letting it govern an earlier cut."""
+
+    table = evaluate_frozen_policy_table()
+    earlier = table["worst_case"]
+    later = table["expected_cost_heavy"]
+
+    return {
+        "experiment": "POST-HOC-CRITERION-SWAP-001",
+        "authority": "none",
+        "decision_cut": "t0",
+        "earlier_constitution": {
+            "formed_at": "t0",
+            "criterion": earlier["criterion"],
+            "ranking": earlier["ranking"],
+        },
+        "later_analysis": {
+            "formed_at": "t1",
+            "criterion": later["criterion"],
+            "prior": later["prior"],
+            "ranking": later["ranking"],
+        },
+        "later_analysis_governs_earlier_decision": False,
+        "status": "REFUSE_RETROACTIVE_CRITERION",
+        "observation": "LATER_CRITERION_DOES_NOT_REWRITE_EARLIER_DECISION_CONSTITUTION",
+    }
