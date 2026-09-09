@@ -16,23 +16,27 @@ class CriterionNotPolicyExperimentTests(unittest.TestCase):
         })
 
         self.assertEqual(receipt["worst_case"], {
+            "criterion": "worst_case_cost",
             "ADAPTIVE": 3,
             "FIXED": 2,
             "ranking": "FIXED",
         })
         self.assertEqual(receipt["expected_cost_heavy"], {
+            "criterion": "expected_cost",
             "prior": [Fraction(3, 4), Fraction(1, 12), Fraction(1, 12), Fraction(1, 12)],
             "ADAPTIVE": Fraction(3, 2),
             "FIXED": Fraction(2, 1),
             "ranking": "ADAPTIVE",
         })
         self.assertEqual(receipt["expected_cost_uniform"], {
+            "criterion": "expected_cost",
             "prior": [Fraction(1, 4)] * 4,
             "ADAPTIVE": Fraction(5, 2),
             "FIXED": Fraction(2, 1),
             "ranking": "FIXED",
         })
         self.assertEqual(receipt["minimax_regret"], {
+            "criterion": "minimax_regret",
             "oracle": [1, 2, 2, 2],
             "ADAPTIVE_regret": [0, 1, 1, 1],
             "FIXED_regret": [1, 0, 0, 0],
