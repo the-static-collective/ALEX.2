@@ -121,3 +121,32 @@ def evaluate_posthoc_criterion_swap() -> dict:
         "status": "REFUSE_RETROACTIVE_CRITERION",
         "observation": "LATER_CRITERION_DOES_NOT_REWRITE_EARLIER_DECISION_CONSTITUTION",
     }
+
+
+def evaluate_posthoc_prior_swap() -> dict:
+    """Freeze a later prior without letting it govern an earlier cut."""
+
+    table = evaluate_frozen_policy_table()
+    earlier = table["expected_cost_uniform"]
+    later = table["expected_cost_heavy"]
+
+    return {
+        "experiment": "POST-HOC-PRIOR-001",
+        "authority": "none",
+        "decision_cut": "t0",
+        "earlier_constitution": {
+            "formed_at": "t0",
+            "criterion": earlier["criterion"],
+            "prior": earlier["prior"],
+            "ranking": earlier["ranking"],
+        },
+        "later_analysis": {
+            "formed_at": "t1",
+            "criterion": later["criterion"],
+            "prior": later["prior"],
+            "ranking": later["ranking"],
+        },
+        "later_prior_governs_earlier_decision": False,
+        "status": "REFUSE_RETROACTIVE_PRIOR",
+        "observation": "LATER_PRIOR_DOES_NOT_REWRITE_EARLIER_DECISION_CONSTITUTION",
+    }
