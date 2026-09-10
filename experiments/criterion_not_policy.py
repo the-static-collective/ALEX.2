@@ -150,3 +150,17 @@ def evaluate_posthoc_prior_swap() -> dict:
         "status": "REFUSE_RETROACTIVE_PRIOR",
         "observation": "LATER_PRIOR_DOES_NOT_REWRITE_EARLIER_DECISION_CONSTITUTION",
     }
+
+
+def evaluate_undeclared_prior() -> dict:
+    """Refuse expected-cost replay when the consumed prior is undeclared."""
+
+    return {
+        "experiment": "UNDECLARED-PRIOR-001",
+        "authority": "none",
+        "criterion": "expected_cost",
+        "prior": None,
+        "ranking": None,
+        "status": "INSUFFICIENT_TO_REPLAY_EXPECTATION",
+        "observation": "EXPECTED_COST_REQUIRES_ATTRIBUTABLE_PRIOR",
+    }
