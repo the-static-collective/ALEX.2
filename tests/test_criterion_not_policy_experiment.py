@@ -133,6 +133,28 @@ class CriterionNotPolicyExperimentTests(unittest.TestCase):
             "EXPECTED_COST_REQUIRES_ATTRIBUTABLE_PRIOR",
         )
 
+    def test_prior_set_does_not_choose_robustness_criterion(self):
+        self.assertTrue(
+            hasattr(criterion_not_policy, "evaluate_prior_set_robustness"),
+            "prior-set robust-criterion hostile probe must exist",
+        )
+        receipt = criterion_not_policy.evaluate_prior_set_robustness()
+
+        self.assertEqual(receipt["experiment"], "PRIOR-SET-NOT-ROBUSTNESS-CRITERION-001")
+        self.assertEqual(receipt["authority"], "none")
+        self.assertEqual(receipt["prior_set"], [
+            [Fraction(1, 4)] * 4,
+            [Fraction(3, 4), Fraction(1, 12), Fraction(1, 12), Fraction(1, 12)],
+        ])
+        self.assertEqual(receipt["max_expected_cost"]["criterion"], "max_expected_cost_over_prior_set")
+        self.assertEqual(receipt["max_expected_cost"]["ranking"], "FIXED")
+        self.assertEqual(receipt["max_expected_regret"]["criterion"], "max_expected_regret_over_prior_set")
+        self.assertEqual(receipt["max_expected_regret"]["ranking"], "TIE")
+        self.assertEqual(
+            receipt["observation"],
+            "UNCERTAINTY_SET_DOES_NOT_SELECT_ROBUSTNESS_CRITERION",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
