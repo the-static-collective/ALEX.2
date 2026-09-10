@@ -164,3 +164,48 @@ def evaluate_undeclared_prior() -> dict:
         "status": "INSUFFICIENT_TO_REPLAY_EXPECTATION",
         "observation": "EXPECTED_COST_REQUIRES_ATTRIBUTABLE_PRIOR",
     }
+
+
+def evaluate_prior_set_robustness() -> dict:
+    """Hold one prior set fixed while changing only the robust criterion."""
+
+    adaptive = _COSTS["ADAPTIVE"]
+    fixed = _COSTS["FIXED"]
+    prior_set = (_UNIFORM_PRIOR, _HEAVY_PRIOR)
+
+    adaptive_expected_costs = tuple(_expected(adaptive, prior) for prior in prior_set)
+    fixed_expected_costs = tuple(_expected(fixed, prior) for prior in prior_set)
+
+    oracle = tuple(min(a, f) for a, f in zip(adaptive, fixed))
+    adaptive_regret = tuple(a - o for a, o in zip(adaptive, oracle))
+    fixed_regret = tuple(f - o for f, o in zip(fixed, oracle))
+    adaptive_expected_regrets = tuple(_expected(adaptive_regret, prior) for prior in prior_set)
+    fixed_expected_regrets = tuple(_expected(fixed_regret, prior) for prior in prior_set)
+
+    adaptive_max_expected_cost = max(adaptive_expected_costs)
+    fixed_max_expected_cost = max(fixed_expected_costs)
+    adaptive_max_expected_regret = max(adaptive_expected_regrets)
+    fixed_max_expected_regret = max(fixed_expected_regrets)
+
+    return {
+        "experiment": "PRIOR-SET-NOT-ROBUSTNESS-CRITERION-001",
+        "authority": "none",
+        "prior_set": [list(prior) for prior in prior_set],
+        "max_expected_cost": {
+            "criterion": "max_expected_cost_over_prior_set",
+            "ADAPTIVE": adaptive_max_expected_cost,
+            "FIXED": fixed_max_expected_cost,
+            "ranking": _winner(
+                "ADAPTIVE", adaptive_max_expected_cost, "FIXED", fixed_max_expected_cost
+            ),
+        },
+        "max_expected_regret": {
+            "criterion": "max_expected_regret_over_prior_set",
+            "ADAPTIVE": adaptive_max_expected_regret,
+            "FIXED": fixed_max_expected_regret,
+            "ranking": _winner(
+                "ADAPTIVE", adaptive_max_expected_regret, "FIXED", fixed_max_expected_regret
+            ),
+        },
+        "observation": "UNCERTAINTY_SET_DOES_NOT_SELECT_ROBUSTNESS_CRITERION",
+    }
