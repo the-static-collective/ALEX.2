@@ -115,6 +115,24 @@ class CriterionNotPolicyExperimentTests(unittest.TestCase):
             "LATER_PRIOR_DOES_NOT_REWRITE_EARLIER_DECISION_CONSTITUTION",
         )
 
+    def test_expected_cost_without_prior_refuses_instead_of_assuming_uniform(self):
+        self.assertTrue(
+            hasattr(criterion_not_policy, "evaluate_undeclared_prior"),
+            "undeclared-prior hostile probe must exist",
+        )
+        receipt = criterion_not_policy.evaluate_undeclared_prior()
+
+        self.assertEqual(receipt["experiment"], "UNDECLARED-PRIOR-001")
+        self.assertEqual(receipt["authority"], "none")
+        self.assertEqual(receipt["criterion"], "expected_cost")
+        self.assertIsNone(receipt["prior"])
+        self.assertIsNone(receipt["ranking"])
+        self.assertEqual(receipt["status"], "INSUFFICIENT_TO_REPLAY_EXPECTATION")
+        self.assertEqual(
+            receipt["observation"],
+            "EXPECTED_COST_REQUIRES_ATTRIBUTABLE_PRIOR",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
