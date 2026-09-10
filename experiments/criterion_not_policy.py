@@ -209,3 +209,55 @@ def evaluate_prior_set_robustness() -> dict:
         },
         "observation": "UNCERTAINTY_SET_DOES_NOT_SELECT_ROBUSTNESS_CRITERION",
     }
+
+
+def evaluate_criterion_agreement_control() -> dict:
+    """Pressure one coincident verdict with a second frozen cost fixture."""
+
+    baseline = evaluate_frozen_policy_table()
+    baseline_worst = baseline["worst_case"]["ranking"]
+    baseline_uniform = baseline["expected_cost_uniform"]["ranking"]
+
+    pressure_costs = {
+        "ADAPTIVE": (1, 1, 1, 10),
+        "FIXED": (4, 4, 4, 4),
+    }
+    adaptive = pressure_costs["ADAPTIVE"]
+    fixed = pressure_costs["FIXED"]
+
+    adaptive_worst = max(adaptive)
+    fixed_worst = max(fixed)
+    adaptive_uniform = _expected(adaptive, _UNIFORM_PRIOR)
+    fixed_uniform = _expected(fixed, _UNIFORM_PRIOR)
+
+    worst_case = {
+        "criterion": "worst_case_cost",
+        "ADAPTIVE": adaptive_worst,
+        "FIXED": fixed_worst,
+        "ranking": _winner("ADAPTIVE", adaptive_worst, "FIXED", fixed_worst),
+    }
+    expected_uniform = {
+        "criterion": "expected_cost",
+        "prior": list(_UNIFORM_PRIOR),
+        "ADAPTIVE": adaptive_uniform,
+        "FIXED": fixed_uniform,
+        "ranking": _winner("ADAPTIVE", adaptive_uniform, "FIXED", fixed_uniform),
+    }
+
+    return {
+        "experiment": "CRITERION-AGREEMENT-CONTROL-001",
+        "authority": "none",
+        "baseline_fixture": {
+            "worst_case_ranking": baseline_worst,
+            "expected_cost_uniform_ranking": baseline_uniform,
+            "verdicts_agree": baseline_worst == baseline_uniform,
+        },
+        "pressure_fixture": {
+            "costs": {name: list(costs) for name, costs in pressure_costs.items()},
+            "worst_case": worst_case,
+            "expected_cost_uniform": expected_uniform,
+            "verdicts_agree": worst_case["ranking"] == expected_uniform["ranking"],
+        },
+        "equivalence_claim_survives_pressure": False,
+        "observation": "VERDICT_AGREEMENT_ON_ONE_FIXTURE_DOES_NOT_ESTABLISH_CRITERION_EQUIVALENCE",
+    }
