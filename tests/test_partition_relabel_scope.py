@@ -3,7 +3,7 @@ import unittest
 
 class PartitionRelabelScopeTests(unittest.TestCase):
     def test_nonbijective_relabel_refuses_instead_of_laundering_a_quotient(self):
-        from experiments.partition_swap import run_nonbijective_relabel_control_probe
+        from experiments.relabel_scope import run_nonbijective_relabel_control_probe
 
         result = run_nonbijective_relabel_control_probe()
 
