@@ -59,3 +59,32 @@ def run_capture_collision_control_probe() -> dict[str, object]:
         "relabelled_labels": sorted(image_labels),
         "authority": "none",
     }
+
+
+def run_partial_relabel_scope_control_probe() -> dict[str, object]:
+    """Refuse an incomplete relabel map when no completion/scope rule is declared."""
+    declared_source_labels = {"X", "Y"}
+    declared_relabeling = {"X": "P"}
+    unmapped_source_labels = sorted(declared_source_labels - set(declared_relabeling))
+
+    if unmapped_source_labels:
+        return {
+            "experiment": "PARTIAL-RELABEL-SCOPE-001",
+            "observation": "PARTIAL_RELABEL_REQUIRES_SCOPE_RULE",
+            "status": "REFUSE",
+            "reason": "relabeling-scope-undeclared",
+            "declared_source_labels": sorted(declared_source_labels),
+            "declared_relabeling": declared_relabeling,
+            "unmapped_source_labels": unmapped_source_labels,
+            "authority": "none",
+        }
+
+    return {
+        "experiment": "PARTIAL-RELABEL-SCOPE-001",
+        "observation": "TOTAL_RELABELING_DOMAIN_DECLARED",
+        "status": "PASS",
+        "declared_source_labels": sorted(declared_source_labels),
+        "declared_relabeling": declared_relabeling,
+        "unmapped_source_labels": [],
+        "authority": "none",
+    }
