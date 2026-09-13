@@ -32,6 +32,22 @@ class PartitionRelabelScopeTests(unittest.TestCase):
         self.assertEqual(result["colliding_labels"], ["P"])
         self.assertNotIn("relabelled_labels", result)
 
+    def test_partial_relabel_without_scope_refuses_implicit_completion(self):
+        from experiments.relabel_scope import run_partial_relabel_scope_control_probe
+
+        result = run_partial_relabel_scope_control_probe()
+
+        self.assertEqual(result["experiment"], "PARTIAL-RELABEL-SCOPE-001")
+        self.assertEqual(result["authority"], "none")
+        self.assertEqual(result["status"], "REFUSE")
+        self.assertEqual(result["reason"], "relabeling-scope-undeclared")
+        self.assertEqual(result["observation"], "PARTIAL_RELABEL_REQUIRES_SCOPE_RULE")
+        self.assertEqual(result["declared_source_labels"], ["X", "Y"])
+        self.assertEqual(result["declared_relabeling"], {"X": "P"})
+        self.assertEqual(result["unmapped_source_labels"], ["Y"])
+        self.assertNotIn("completed_relabeling", result)
+        self.assertNotIn("relabelled_labels", result)
+
 
 if __name__ == "__main__":
     unittest.main()
