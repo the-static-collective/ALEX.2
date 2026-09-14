@@ -48,6 +48,25 @@ class PartitionRelabelScopeTests(unittest.TestCase):
         self.assertNotIn("completed_relabeling", result)
         self.assertNotIn("relabelled_labels", result)
 
+    def test_posthoc_relabel_refuses_rewriting_an_earlier_observation(self):
+        from experiments.relabel_scope import run_posthoc_relabel_chronology_control_probe
+
+        result = run_posthoc_relabel_chronology_control_probe()
+
+        self.assertEqual(result["experiment"], "POSTHOC-RELABEL-CHRONOLOGY-001")
+        self.assertEqual(result["authority"], "none")
+        self.assertEqual(result["status"], "REFUSE")
+        self.assertEqual(result["reason"], "relabeling-postdates-observation")
+        self.assertEqual(
+            result["observation"], "RELABELING_CANNOT_REWRITE_PRIOR_OBSERVATION"
+        )
+        self.assertEqual(result["observed_labels"], ["X", "Y"])
+        self.assertEqual(result["declared_relabeling"], {"X": "P", "Y": "Q"})
+        self.assertEqual(result["observation_at"], "2026-09-13T12:00:00Z")
+        self.assertEqual(result["relabel_declared_at"], "2026-09-13T12:05:00Z")
+        self.assertNotIn("relabelled_labels", result)
+        self.assertNotIn("rewritten_observation", result)
+
 
 if __name__ == "__main__":
     unittest.main()
