@@ -172,6 +172,23 @@ class PartitionSwapExperimentTests(unittest.TestCase):
         self.assertNotIn("macro_nodes", result)
         self.assertNotIn("macro_edges", result)
 
+    def test_primary_partition_refusal_preserves_secondary_failure_detail(self):
+        from experiments.partition_swap import _lift_receipt
+
+        result = _lift_receipt(
+            lift_id="unexpected-plus-empty-hostile",
+            partition={"X": ("A", "B", "C", "D", "E"), "Y": ()},
+            partition_rule="hostile-compound-invalidity",
+            preservation_target="partition-validity",
+        )
+
+        self.assertEqual(result["status"], "REFUSE")
+        self.assertEqual(result["reason"], "partition-unexpected")
+        self.assertEqual(result["unexpected"], ["E"])
+        self.assertEqual(result["empty_blocks"], ["Y"])
+        self.assertNotIn("macro_nodes", result)
+        self.assertNotIn("macro_edges", result)
+
 
 if __name__ == "__main__":
     unittest.main()
