@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import datetime
+
 
 def run_nonbijective_relabel_control_probe() -> dict[str, object]:
     """Refuse a many-to-one label map before it can masquerade as pure relabeling."""
@@ -86,5 +88,41 @@ def run_partial_relabel_scope_control_probe() -> dict[str, object]:
         "declared_source_labels": sorted(declared_source_labels),
         "declared_relabeling": declared_relabeling,
         "unmapped_source_labels": [],
+        "authority": "none",
+    }
+
+
+def run_posthoc_relabel_chronology_control_probe() -> dict[str, object]:
+    """Refuse applying a later relabel declaration as if it named an earlier observation."""
+    observed_labels = ["X", "Y"]
+    declared_relabeling = {"X": "P", "Y": "Q"}
+    observation_at = "2026-09-13T12:00:00Z"
+    relabel_declared_at = "2026-09-13T12:05:00Z"
+
+    observation_time = datetime.fromisoformat(observation_at.replace("Z", "+00:00"))
+    relabel_time = datetime.fromisoformat(relabel_declared_at.replace("Z", "+00:00"))
+
+    if relabel_time > observation_time:
+        return {
+            "experiment": "POSTHOC-RELABEL-CHRONOLOGY-001",
+            "observation": "RELABELING_CANNOT_REWRITE_PRIOR_OBSERVATION",
+            "status": "REFUSE",
+            "reason": "relabeling-postdates-observation",
+            "observed_labels": observed_labels,
+            "declared_relabeling": declared_relabeling,
+            "observation_at": observation_at,
+            "relabel_declared_at": relabel_declared_at,
+            "authority": "none",
+        }
+
+    return {
+        "experiment": "POSTHOC-RELABEL-CHRONOLOGY-001",
+        "observation": "RELABELING_AVAILABLE_AT_OBSERVATION",
+        "status": "PASS",
+        "observed_labels": observed_labels,
+        "declared_relabeling": declared_relabeling,
+        "observation_at": observation_at,
+        "relabel_declared_at": relabel_declared_at,
+        "relabelled_labels": [declared_relabeling[label] for label in observed_labels],
         "authority": "none",
     }
