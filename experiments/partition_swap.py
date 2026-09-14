@@ -80,6 +80,7 @@ def _partition_refusal(
         "duplicates": duplicates,
         "missing": missing,
         "unexpected": unexpected,
+        "empty_blocks": empty_blocks,
     }
 
 
