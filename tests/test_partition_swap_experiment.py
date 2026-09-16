@@ -143,6 +143,30 @@ class PartitionSwapExperimentTests(unittest.TestCase):
         self.assertEqual(uncovered["missing"], ["D"])
         self.assertNotIn("macro_edges", uncovered)
 
+    def test_overlap_refusal_is_invariant_to_block_serialization_order(self):
+        from experiments.partition_swap import _lift_receipt
+
+        left = _lift_receipt(
+            lift_id="overlap-order-left",
+            partition={"X": ("A", "B"), "Y": ("A", "C", "D")},
+            partition_rule="hostile-overlap-order-left",
+            preservation_target="partition-validity",
+        )
+        right = _lift_receipt(
+            lift_id="overlap-order-right",
+            partition={"Y": ("A", "C", "D"), "X": ("A", "B")},
+            partition_rule="hostile-overlap-order-right",
+            preservation_target="partition-validity",
+        )
+
+        for result in (left, right):
+            self.assertEqual(result["status"], "REFUSE")
+            self.assertEqual(result["reason"], "partition-overlap")
+            self.assertEqual(result["duplicates"], ["A"])
+            self.assertEqual(result["missing"], [])
+            self.assertNotIn("macro_nodes", result)
+            self.assertNotIn("macro_edges", result)
+
     def test_combined_overlap_and_uncovered_partition_preserves_both_failures(self):
         from experiments.partition_swap import run_invalid_partition_refusal_probe
 
