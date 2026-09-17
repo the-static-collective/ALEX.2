@@ -35,6 +35,23 @@ def test_shared_possibility_is_must_only_when_every_representative_has_it():
     assert receipt["contributors"]["advance"] == ["left", "right"]
 
 
+def test_empty_local_menu_is_preserved_as_a_representative_fact():
+    receipt = summarize_menu(
+        {
+            "blocked": set(),
+            "ready": {"advance"},
+        }
+    )
+
+    assert receipt["may"] == ["advance"]
+    assert receipt["must"] == []
+    assert receipt["contributors"] == {"advance": ["ready"]}
+    assert receipt["representatives"] == {
+        "blocked": [],
+        "ready": ["advance"],
+    }
+
+
 def test_empty_representative_family_is_refused():
     try:
         summarize_menu({})
