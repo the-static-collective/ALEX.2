@@ -1,0 +1,25 @@
+{
+  "id": "commons-deposit-is-not-admission",
+  "title": "Accepted deposit is not admitted claim",
+  "constitutional_laws": [
+    "DEPOSIT != ADMISSION"
+  ],
+  "given": {
+    "deposit_status": "RECEIVED",
+    "claim": "C"
+  },
+  "attempt": {
+    "promote": "claim_admitted"
+  },
+  "expected": {
+    "disposition": "REFUSE",
+    "refusal_code": "DEPOSIT_NOT_ADMISSION",
+    "required_receipt_survivors": [
+      "deposit_received"
+    ],
+    "forbidden_promotions": [
+      "claim_admitted"
+    ]
+  },
+  "version": 1
+}
