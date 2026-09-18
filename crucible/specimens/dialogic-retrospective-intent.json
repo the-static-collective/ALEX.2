@@ -1,0 +1,28 @@
+{
+  "id": "dialogic-retrospective-intent",
+  "title": "Current recollection cannot overwrite the earlier artifact",
+  "constitutional_laws": [
+    "CURRENT STATED INTENT != HISTORICAL INTENT",
+    "CREATOR RESPONSE != RETROACTIVE PROOF"
+  ],
+  "given": {
+    "artifact": "A1",
+    "current_recollection": "I meant X at the time"
+  },
+  "attempt": {
+    "overwrite_artifact": "A1",
+    "promote": "historical_intent_as_fact"
+  },
+  "expected": {
+    "disposition": "REFUSE",
+    "refusal_code": "RETROSPECTIVE_INTENT_OVERWRITE",
+    "required_receipt_survivors": [
+      "artifact:A1",
+      "current_testimony"
+    ],
+    "forbidden_promotions": [
+      "historical_intent_as_fact"
+    ]
+  },
+  "version": 1
+}
