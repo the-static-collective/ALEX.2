@@ -116,3 +116,8 @@ The fake adapters under `tests/fixtures/` exist only to test the harness. They a
 ### DIALOGIC TRACE specimens
 
 `dialogic-*` specimens enforce that living-source testimony may change the active model without rewriting earlier artifacts or becoming independent corroboration by agreement alone.
+
+
+### ALEX Commons specimens
+
+`commons-*` specimens enforce that contribution occurrence and continuity do not convert identity, transport, or deposit count into evidentiary authority.
