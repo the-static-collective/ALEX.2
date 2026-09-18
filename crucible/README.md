@@ -111,3 +111,8 @@ The first fixture lives under `tests/fixtures/projection_break/hidden-adjacency.
 Passing `crucible-contract` proves the fixture corpus and reference harness are internally consistent. It does not prove an ALEX runtime conforms. Runtime conformance begins only when a real adapter executes the applicable fixtures and the harness reports zero constitutional mismatches.
 
 The fake adapters under `tests/fixtures/` exist only to test the harness. They are not ALEX implementations and must never be cited as runtime conformance evidence. The answer-echo and identity-switch fixtures are deliberately adversarial harness tests: their failure demonstrates that the harness refuses those cheating strategies, not that a production research runtime is correct.
+
+
+### DIALOGIC TRACE specimens
+
+`dialogic-*` specimens enforce that living-source testimony may change the active model without rewriting earlier artifacts or becoming independent corroboration by agreement alone.
