@@ -5,6 +5,8 @@
 **Shape:** PRESSURE + COMPARE + TRACE  
 **Primary question:** When do numbers in ancient religious texts function as quantities, and when do they function as operators over relations?
 
+**Hornung amendment — 2026-09-17:** Section 5 is preserved as the original compact H0. It is **not** the active literal genealogy after source pressure. The current descendant is recorded in §§17–24 below; in particular, the conventional Heliopolitan genealogy is preserved as 1 -> 3 -> 5 -> 9, not silently compressed to 1 -> 3 -> 9.
+
 > **RESEMBLANCE != GENEALOGY.**  
 > **NUMBER != MEANING BY ITSELF.**  
 > **REPRESENTATION != RELATION.**  
@@ -444,3 +446,406 @@ This is a question, not an admitted interpretation.
     PRIVATE SOURCE != PUBLIC EVIDENCE
 
 **Working frontier:** determine whether ancient Egyptian 9 -> 10 is merely a recurring enumeration pattern or a stable relational operator linking plurality, completion, kingship, and creation-order.
+
+---
+
+## 17. Hornung pressure amendment — number can classify without merely counting
+
+### SOURCE / WITNESS CUT
+
+Primary scholarly source for this amendment:
+
+- Erik Hornung, *Conceptions of God in Ancient Egypt: The One and the Many*, trans. John Baines (Cornell University Press, 1982), especially:
+  - p. 176 for creator / differentiation / “one who made himself into millions”;
+  - pp. 217–223, Chapter 7, “Classification and Articulation of the Pantheon,” for numerical and genealogical classification.
+- Bibliographic record / edition check:
+  https://books.google.com/books/about/Conceptions_of_God_in_Ancient_Egypt.html?id=J9QlAQAAMAAJ
+
+Current remote verification used a searchable extracted-text surface corresponding to the printed edition. The printed page loci above are preserved, but this pass did **not** perform a fresh page-image collation of the book. Therefore:
+
+    printed locus known
+    extracted text inspected
+    exact page-image reinspection remains available as a later audit
+
+No private correspondence is quoted, paraphrased, or used as support for this amendment.
+
+### SCHOLARLY CLAIM — numerical classification is structurally active
+
+Hornung treats numerical classification as one way Egyptians organized a pantheon whose multiplicity otherwise becomes difficult to comprehend.
+
+His account distinguishes:
+
+    numerical classification
+    genealogical classification
+    local classification
+    social classification
+
+and shows that these methods can overlap without becoming identical.
+
+For the present inquiry, the crucial point is:
+
+    number may organize a divine class
+    without functioning only as literal member count
+
+### THREE — plurality rather than merely three inventory items
+
+Hornung connects Egyptian triadic organization with Egyptian grammatical / written plurality.
+
+The relevant structure is:
+
+    singular = one
+    dual = two
+    plural = three-or-more
+
+and plural writing can be indicated by three strokes or three repetitions.
+
+ALEX descendant:
+
+    3 -> minimal / marked plurality
+
+This does **not** mean every occurrence of three in Egyptian material means “plurality.”
+It means that Egyptian linguistic and classificatory practice gives the relation:
+
+    THREE <-> PLURALITY
+
+a historically grounded research basis.
+
+### NINE — intensified plurality / classificatory Ennead
+
+Hornung describes the Ennead as an intensified form of plurality based on three times three.
+
+More importantly, he notes that groups called “Enneads” can contain numbers other than nine, including seven or fifteen in later local formations.
+
+Therefore a pure cardinal model fails:
+
+    ENNEAD != NECESSARILY |members| = 9
+
+The active survivor is:
+
+    cardinal nine
+    !=
+    Ennead as classificatory / totalizing form
+
+This strengthens the earlier packet claim that psḏt can carry more semantic work than headcount.
+
+### TWO ENNEADS / PLURAL ENNEADS
+
+Hornung also notes Egyptian usages such as “two Enneads” or plural “Enneads” as ways of expressing a more comprehensive totality.
+
+This matters because the operation is not cleanly reducible to:
+
+    2 * 9 = 18 inventory items
+
+The number-name is participating in the classification of multiplicity.
+
+### PURPOSE OF NUMERICAL CLASSIFICATION
+
+Hornung’s wider argument is that these numerical principles help create an ordered, comprehensible pantheon without abolishing its plurality.
+
+ALEX abstraction:
+
+    unmanageable multiplicity
+      -> numerical classifier
+      -> bounded / comprehensible relational form
+
+This is a strong NUMBER-GRAMMAR specimen because the number can compress structure without claiming exhaustive cardinal identity.
+
+---
+
+## 18. Genealogy correction — preserve the five
+
+The conventional Heliopolitan genealogy should be written as:
+
+    Atum
+      -> Shu + Tefnut
+      -> Geb + Nut
+      -> Osiris + Isis + Seth + Nephthys
+
+Cumulative membership therefore develops as:
+
+    1 -> 3 -> 5 -> 9
+
+not:
+
+    1 -> 3 -> 9
+
+The earlier §5 sequence remains preserved as H0 because it helped form the inquiry, but it fails as a literal genealogy.
+
+### FAILED IDENTITY
+
+    Heliopolitan genealogy
+    !=
+    1 -> 3 -> 9
+
+### SURVIVOR
+
+The failure does not kill number grammar.
+
+It reveals a stronger distinction:
+
+    genealogy generates members
+    numerical schema can bound / classify the generated set
+
+Hornung explicitly observes that the genealogy ends at the nine-member Ennead while Horus, although genealogically generated by Isis and Osiris, is omitted from that conventional nine-member composition along with the sons of Horus.
+
+This yields a higher-value candidate:
+
+> **The number may help determine where the classified relational object ends, rather than merely report how many entities happened to be generated.**
+
+That is substantially stronger than an aesthetically neat 1-3-9 ladder.
+
+---
+
+## 19. Horus frontier after Hornung — the tenth is generated inside the nine
+
+Combine two independently sourced structures already present in this packet:
+
+### STRUCTURE A — conventional Ennead boundary
+
+    Atum
+      -> Shu / Tefnut
+      -> Geb / Nut
+      -> Osiris / Isis / Seth / Nephthys
+      = conventional nine-member Ennead
+
+### STRUCTURE B — genealogy continues
+
+    Osiris + Isis
+      -> Horus
+
+Therefore:
+
+    Horus is genealogically generated by relations inside the nine
+
+while:
+
+    Horus is excluded from the conventional nine-member boundary
+
+and, in the Tillier-attested configuration already recorded in §3:
+
+    Horus appears after the nine
+    and can be described as the tenth who completes the Ennead
+
+### ACTIVE RELATION
+
+    NINE
+      --internal genealogy-->
+    TENTH
+
+This motivates the working seal:
+
+> **THE TENTH IS GENERATED INSIDE THE NINE.**
+
+Do not universalize it.
+
+The current research question is narrower:
+
+> When Horus crosses from genealogically generated descendant to explicitly counted tenth / completing member, does the transition encode only enumeration, or does it also mark succession, inheritance, kingship, or transition from generated divine plurality to governed order?
+
+This remains a question until the primary Egyptian loci behind Tillier’s classification are enumerated.
+
+---
+
+## 20. One and many — creation as differentiation
+
+Hornung’s broader account supplies another independent relation.
+
+At p. 176 he discusses the Egyptian creator as the original one who differentiates into the plurality of existent reality, including the traditional creator epithet:
+
+> “one who made himself into millions”
+
+Use this brief phrase only as a source-locus marker; the argument is paraphrased here.
+
+The relevant structure is not:
+
+    ONE disappears
+      -> MANY replace it
+
+but approximately:
+
+    undifferentiated / pre-created unity
+      -> differentiation
+      -> plurality of existent forms
+
+ALEX abstraction:
+
+    ONE
+      --DIFFERENTIATE-->
+    MANY
+
+The MANY does not function as a simple negation of the ONE.
+
+This matters because the ontology underneath numerical classification is already relational:
+
+    existence -> differentiation
+    differentiation -> plurality
+    plurality -> requires articulation / ordering
+
+Numerical classification can then operate over that plurality.
+
+### ACTIVE DESCENDANT MODEL
+
+Do **not** promote:
+
+    1 -> 3 -> 9 -> 10
+
+as one ancient Egyptian arithmetic formula.
+
+Instead preserve interacting layers:
+
+    CREATION LAYER
+    1 --differentiate--> MANY
+
+    CLASSIFICATION LAYER
+    2 -> complementary articulation
+    3 -> marked / minimal plurality
+    4 -> repeated completeness / field-spanning structures
+    8 = 4 paired / doubled in the Hermopolitan Ogdoad
+    9 = 3 x 3 intensified plurality / Ennead classifier
+
+    GENEALOGY LAYER
+    1 -> 3 -> 5 -> 9
+
+    SUCCESSION FRONTIER
+    9 --internal genealogy--> Horus / tenth in some configurations
+
+The operator labels above are **ALEX abstractions**, not Egyptian lexical definitions.
+
+---
+
+## 21. New primary discriminator — count or class?
+
+The Hornung pass sharpens the whole packet into one discriminating question:
+
+> **WHEN DOES A NUMBER COUNT THE MEMBERS, AND WHEN DOES IT DEFINE THE CLASS?**
+
+Candidate states:
+
+    CARDINAL
+      number reports member count
+
+    CLASSIFIER
+      number names / bounds a relational class
+      while literal membership may vary
+
+    OPERATOR
+      changing the number changes available relations,
+      completion conditions, or transformations
+
+    MIXED
+      cardinal and classificatory functions coexist
+
+### ENNEAD CONTROL
+
+If a group called an Ennead contains seven or fifteen members, then:
+
+    Ennead label survived
+    literal nine-member count did not
+
+That is direct pressure against:
+
+    numerical divine label = pure inventory count
+
+It does **not** by itself prove a universal symbolic doctrine of nine.
+
+### GENEALOGY-BOUNDARY CONTROL
+
+If Horus is omitted because the conventional Ennead is bounded at nine, while genealogy nevertheless produces him, then number may be constraining the represented relational boundary.
+
+Test this against alternative explanations:
+
+- textual convention;
+- local theology;
+- editorial selection;
+- changing membership traditions;
+- later harmonization;
+- simple naming convention with no active numerical semantics.
+
+### HORUS-TENTH CONTROL
+
+Enumerate every source in which Horus is:
+
+- outside the Ennead;
+- substituted into the Ennead;
+- appended as tenth;
+- explicitly said to complete the Ennead.
+
+Only then ask whether:
+
+    tenth
+    correlates with
+    inheritance / kingship / completion / governed order
+
+### NULL
+
+Find Egyptian numerical divine groupings whose number-name remains conventional while carrying no demonstrable relational work beyond labeling.
+
+A valid NUMBER-GRAMMAR method must permit:
+
+    NUMBER IS ONLY A LABEL HERE
+
+as a successful result.
+
+---
+
+## 22. Updated evidence-strength ledger
+
+    Egyptian singular / dual / plural grammar               STRONG
+    three as marked plurality in writing / grammar          STRONG
+    nine as 3 x 3 intensified plurality in Hornung          STRONG SCHOLARLY CLAIM
+    Ennead membership can differ from nine                  STRONG
+    Ennead therefore can exceed pure headcount              STRONG INFERENCE
+    Heliopolitan cumulative genealogy 1->3->5->9             STRONG
+    literal genealogy 1->3->9                               FAILED
+    number may bound the represented genealogy at nine      STRONG SCHOLARLY / RELATIONAL CLAIM
+    Horus generated by Isis + Osiris inside the nine         STRONG
+    Horus as explicit tenth / completing Ennead             STRONG ATTESTED CONFIGURATION
+    9->10 = universal Egyptian completion operator           UNRESOLVED
+    ONE->MANY by differentiation as broad theology           STRONG SCHOLARLY CLAIM
+    full universal Egyptian integer grammar                  UNSUPPORTED
+
+---
+
+## 23. Revised next discriminators
+
+1. Obtain / inspect Hornung pp. 176 and 217–223 as page images or a controlled physical/digital edition and preserve exact page-to-claim receipts.
+2. Enumerate Hornung’s cited Egyptian primary witnesses for:
+   - three explicitly equated with plural;
+   - Enneads with seven / fifteen members;
+   - “two Enneads” and plural Enneads;
+   - genealogy stopping at nine.
+3. Retrieve Tillier 2013 at exact page / inscription loci and enumerate every Horus-as-tenth / ḥtm psḏ.t witness.
+4. Build a typed table:
+   - source date;
+   - location;
+   - divine group;
+   - numerical label;
+   - literal member count;
+   - genealogy;
+   - completion language;
+   - royal / succession function.
+5. Test whether Horus-as-tenth is specifically correlated with:
+   - kingship;
+   - inheritance;
+   - legitimation;
+   - solar emergence;
+   - transition from cosmogony to governed order.
+6. Compare number-as-cardinal vs number-as-classifier across triads, Ogdoads, Enneads, and doubled/plural Enneads before any Hebrew or later esoteric comparison.
+7. Preserve the five. Any future model that silently rewrites 1->3->5->9 as 1->3->9 fails provenance.
+
+---
+
+## 24. Revised seal
+
+    COUNT != CLASS
+    CLASS != OPERATOR
+    NUMBER MAY BOUND A RELATIONAL OBJECT
+    MEMBERSHIP COUNT MAY VARY WHILE CLASSIFICATION SURVIVES
+    GENEALOGY != NUMERICAL SCHEMA
+    THE FIVE MUST NOT DISAPPEAR
+    THE TENTH IS GENERATED INSIDE THE NINE
+    ONE -> MANY IS DIFFERENTIATION, NOT SIMPLE REPLACEMENT
+    BEAUTIFUL COMPRESSION != HISTORICAL FORMULA
+    PRIVATE SOURCE != PUBLIC EVIDENCE
+
+**Active frontier:** determine where Egyptian number-terms merely count, where they classify a plurality, and where changing the number changes the available relational structure.
