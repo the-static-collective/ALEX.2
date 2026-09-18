@@ -1,0 +1,25 @@
+{
+  "id": "dialogic-silence",
+  "title": "Silence remains unanswered",
+  "constitutional_laws": [
+    "SILENCE != REJECTION"
+  ],
+  "given": {
+    "question_status": "UNANSWERED"
+  },
+  "attempt": {
+    "infer": "rejection"
+  },
+  "expected": {
+    "disposition": "REFUSE",
+    "refusal_code": "SILENCE_INFERENCE",
+    "required_receipt_survivors": [
+      "status:UNANSWERED"
+    ],
+    "forbidden_promotions": [
+      "rejection",
+      "agreement"
+    ]
+  },
+  "version": 1
+}
