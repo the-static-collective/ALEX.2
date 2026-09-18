@@ -59,6 +59,12 @@ class DepositTests(unittest.TestCase):
  def test_tor_transport_does_not_change_authority(self):
   x=copy.deepcopy(BASE_DEPOSIT); x["transport_class"]="ONION_SERVICE"; r=evaluate_commons_deposit(x)
   self.assertEqual(r["receipt"]["transport_class"],"ONION_SERVICE"); self.assertEqual(r["receipt"]["authority"],"none")
+ def test_arrival_cannot_claim_cleared_quarantine(self):
+  x=copy.deepcopy(BASE_DEPOSIT); x["quarantine_status"]="CLEARED_FOR_PROCESSING"
+  r=evaluate_commons_deposit(x); self.assertEqual(r["reason"],"arrival_must_be_inert")
+ def test_arrival_cannot_claim_processed_state(self):
+  x=copy.deepcopy(BASE_DEPOSIT); x["ingest_result"]="PROCESSED"
+  r=evaluate_commons_deposit(x); self.assertEqual(r["reason"],"arrival_must_be_received")
 
 class PseudonymContinuityTests(unittest.TestCase):
  def _bytes(self,key):
