@@ -1,0 +1,28 @@
+{
+  "id": "dialogic-private-leakage",
+  "title": "Private correspondence cannot be published without permission",
+  "constitutional_laws": [
+    "PUBLIC ACCESS != REDISTRIBUTION PERMISSION",
+    "DEPOSIT != PUBLICATION"
+  ],
+  "given": {
+    "visibility": "PRIVATE",
+    "publication_permission": "NO",
+    "quotation_permission": "NO"
+  },
+  "attempt": {
+    "publish": "verbatim_response"
+  },
+  "expected": {
+    "disposition": "REFUSE",
+    "refusal_code": "PRIVATE_CORRESPONDENCE_LEAKAGE",
+    "required_receipt_survivors": [
+      "private_response_metadata",
+      "publication_permission:NO"
+    ],
+    "forbidden_promotions": [
+      "public_quote"
+    ]
+  },
+  "version": 1
+}
