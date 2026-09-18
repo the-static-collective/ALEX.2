@@ -163,6 +163,9 @@ def verify_pseudonym_continuity(proof: object) -> dict[str, Any]:
         return _refuse(CONTINUITY_RESULT_SCHEMA,"invalid_base64")
     if len(public_key_bytes)!=32:
         return _refuse(CONTINUITY_RESULT_SCHEMA,"invalid_public_key")
+    expected_prefix=f"alex-continuity:{proof['card_id']}:"
+    if not proof["message"].startswith(expected_prefix):
+        return _refuse(CONTINUITY_RESULT_SCHEMA,"message_card_mismatch")
     try:
         Ed25519PublicKey.from_public_bytes(public_key_bytes).verify(signature,proof["message"].encode("utf-8"))
     except (InvalidSignature,ValueError):
