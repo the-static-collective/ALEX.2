@@ -83,6 +83,12 @@ class PseudonymContinuityTests(unittest.TestCase):
    "public_key_b64":base64.b64encode(self._bytes(k)).decode("ascii"),"message":message.decode("ascii"),
    "signature_b64":base64.b64encode(other.sign(message)).decode("ascii")}
   r=verify_pseudonym_continuity(proof); self.assertEqual(r["reason"],"signature_verification_failed")
+ def test_signature_cannot_be_rebound_to_another_card(self):
+  k=Ed25519PrivateKey.generate(); message=b"alex-continuity:card:pseudo:001:deposit-002"
+  proof={"schema":"alex.pseudonym-continuity/v0","card_id":"card:pseudo:999",
+   "public_key_b64":base64.b64encode(self._bytes(k)).decode("ascii"),"message":message.decode("ascii"),
+   "signature_b64":base64.b64encode(k.sign(message)).decode("ascii")}
+  r=verify_pseudonym_continuity(proof); self.assertEqual(r["reason"],"message_card_mismatch")
 
 class RunnerTests(unittest.TestCase):
  def test_local_runner_has_no_network_listener_and_accepts_deposit(self):
