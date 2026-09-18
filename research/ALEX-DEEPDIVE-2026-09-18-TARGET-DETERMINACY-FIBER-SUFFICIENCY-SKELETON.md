@@ -571,6 +571,66 @@ E. same pre/post history / different causal worlds
 
 Case E should remain structurally distinct: a finite causal-model fixture can demonstrate non-identifiability, but no general causal runtime is implied.
 
+
+## Executable landing — TARGET-DETERMINACY-ERASURE-001
+
+The bounded experiment above is now implemented on this research branch without touching `alex_runtime`.
+
+Files:
+
+```text
+research/target_determinacy_erasure_001.py
+tests/fixtures/target_determinacy_erasure/five-frontiers.json
+tests/test_target_determinacy_erasure_001.py
+```
+
+The harness performs exactly one finite structural test:
+
+```text
+for every fiber F of projection pi:
+    is target q constant on F?
+```
+
+If not, it emits one explicit collision witness:
+
+```text
+pi(x) = pi(y)
+q(x) != q(y)
+```
+
+An optional declared refinement adds one or more coordinates and repeats the same test.
+
+The frozen fixture covers the five frontier classes proposed above:
+
+1. same semantic text / different evidence posture;
+2. same untyped graph signature / reversed typed orientation;
+3. same surface digest + subject occurrence / different historical declaration binding;
+4. same carrier + selector / different grammar-as-of reading;
+5. same observed pre/post chronology / different counterfactual causal-model classes.
+
+All five coarse projections intentionally return `DOES_NOT_DETERMINE`.
+
+In the finite synthetic fixtures, the declared additional coordinate refines each case to `DETERMINES_FOR_TARGET`. That result is deliberately local:
+
+```text
+DETERMINES IN THIS FINITE FIXTURE
+!=
+UNIVERSALLY SUFFICIENT COORDINATE
+```
+
+The causal fixture is especially bounded. It demonstrates only that the same observed before/after chronology can belong to distinct declared counterfactual model classes. The harness emits no `caused_by` claim and performs no causal inference.
+
+Hostile controls also freeze:
+
+- duplicate state identity -> `INSUFFICIENT_TO_TEST`;
+- a "refinement" that merely repeats an existing projection field -> refusal;
+- a positive control where the coarse projection already determines its target;
+- source-case immutability during evaluation;
+- `authority: none` throughout.
+
+This executable landing supports the cross-index while preserving the same promotion boundary.
+
+
 ## Why not promote a new schema yet
 
 Existing ALEX already owns almost every required ingredient:
