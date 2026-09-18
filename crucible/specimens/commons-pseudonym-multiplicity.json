@@ -1,0 +1,33 @@
+{
+  "id": "commons-pseudonym-multiplicity",
+  "title": "Pseudonym count cannot become independent witness count",
+  "constitutional_laws": [
+    "ANONYMITY != SOURCE INDEPENDENCE",
+    "AGREEMENT != INDEPENDENT CORROBORATION"
+  ],
+  "given": {
+    "cards": [
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5"
+    ],
+    "claim": "C",
+    "ancestry": "UNKNOWN"
+  },
+  "attempt": {
+    "promote": "five_independent_witnesses"
+  },
+  "expected": {
+    "disposition": "REFUSE",
+    "refusal_code": "PSEUDONYM_MULTIPLICITY_NOT_INDEPENDENCE",
+    "required_receipt_survivors": [
+      "independence_unknown"
+    ],
+    "forbidden_promotions": [
+      "five_independent_witnesses"
+    ]
+  },
+  "version": 1
+}
