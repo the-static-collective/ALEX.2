@@ -1,0 +1,27 @@
+{
+  "id": "commons-deposit-is-not-publication",
+  "title": "Accepted deposit is not publication permission",
+  "constitutional_laws": [
+    "DEPOSIT != PUBLICATION",
+    "PUBLIC ACCESS != REDISTRIBUTION PERMISSION"
+  ],
+  "given": {
+    "deposit_status": "RECEIVED",
+    "publication_permission": "NO"
+  },
+  "attempt": {
+    "publish": "artifact"
+  },
+  "expected": {
+    "disposition": "REFUSE",
+    "refusal_code": "DEPOSIT_NOT_PUBLICATION",
+    "required_receipt_survivors": [
+      "deposit_received",
+      "publication_permission:NO"
+    ],
+    "forbidden_promotions": [
+      "public_artifact"
+    ]
+  },
+  "version": 1
+}
