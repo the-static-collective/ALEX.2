@@ -1,0 +1,28 @@
+{
+  "id": "dialogic-leading-question",
+  "title": "Leading wording limits what agreement can establish",
+  "constitutional_laws": [
+    "QUESTION WORDING != NEUTRAL OBSERVATION"
+  ],
+  "given": {
+    "leading_risk": "HIGH",
+    "question": "You agree X is true, right?",
+    "response": "yes"
+  },
+  "attempt": {
+    "promote": "spontaneous_confirmation"
+  },
+  "expected": {
+    "disposition": "REFUSE",
+    "refusal_code": "LEADING_QUESTION_CONTAMINATION",
+    "required_receipt_survivors": [
+      "exact_question",
+      "leading_risk:HIGH",
+      "response"
+    ],
+    "forbidden_promotions": [
+      "spontaneous_confirmation"
+    ]
+  },
+  "version": 1
+}
