@@ -1,0 +1,26 @@
+{
+  "id": "commons-verified-identity-is-not-verified-claim",
+  "title": "Verified identity does not verify attached claims",
+  "constitutional_laws": [
+    "VERIFIED IDENTITY != VERIFIED CLAIM",
+    "IDENTITY != CONTRIBUTION AUTHORITY"
+  ],
+  "given": {
+    "identity_status": "VERIFIED_NAMED",
+    "claim": "C"
+  },
+  "attempt": {
+    "promote": "claim_verified"
+  },
+  "expected": {
+    "disposition": "REFUSE",
+    "refusal_code": "IDENTITY_NOT_CLAIM_VERIFICATION",
+    "required_receipt_survivors": [
+      "identity_status:VERIFIED_NAMED"
+    ],
+    "forbidden_promotions": [
+      "claim_verified"
+    ]
+  },
+  "version": 1
+}
