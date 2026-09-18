@@ -119,8 +119,12 @@ def evaluate_commons_deposit(record: object) -> dict[str, Any]:
         return _refuse(DEPOSIT_RESULT_SCHEMA,"invalid_publication_permission")
     if record["quarantine_status"] not in QUARANTINE_STATUSES:
         return _refuse(DEPOSIT_RESULT_SCHEMA,"invalid_quarantine_status")
+    if record["quarantine_status"] != "INERT":
+        return _refuse(DEPOSIT_RESULT_SCHEMA,"arrival_must_be_inert")
     if record["ingest_result"] not in INGEST_RESULTS:
         return _refuse(DEPOSIT_RESULT_SCHEMA,"invalid_ingest_result")
+    if record["ingest_result"] != "RECEIVED":
+        return _refuse(DEPOSIT_RESULT_SCHEMA,"arrival_must_be_received")
     if record["independence_status"] not in INDEPENDENCE_STATUSES:
         return _refuse(DEPOSIT_RESULT_SCHEMA,"invalid_independence_status")
     receipt={
