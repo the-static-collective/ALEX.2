@@ -51,6 +51,18 @@ class CrucibleContractTests(unittest.TestCase):
             "loadout-handshake-owner-drift.json",
             "loadout-handshake-permission-drift.json",
             "loadout-handshake-capability-gap.json",
+            "dialogic-agreeable-author.json",
+            "dialogic-retrospective-intent.json",
+            "dialogic-authority-laundering.json",
+            "dialogic-leading-question.json",
+            "dialogic-silence.json",
+            "dialogic-private-leakage.json",
+            "dialogic-creator-veto.json",
+            "commons-pseudonym-multiplicity.json",
+            "commons-tor-trust-laundering.json",
+            "commons-deposit-is-not-admission.json",
+            "commons-deposit-is-not-publication.json",
+            "commons-verified-identity-is-not-verified-claim.json",
         }
         specimens = ROOT / "crucible" / "specimens"
         actual_names = {p.name for p in specimens.glob("*.json")} if specimens.exists() else set()

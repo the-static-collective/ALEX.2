@@ -1,0 +1,32 @@
+{
+  "id": "dialogic-creator-veto",
+  "title": "Creator disagreement does not erase independently supported artifact interpretation",
+  "constitutional_laws": [
+    "CREATOR DISAGREEMENT != AUTOMATIC FALSIFICATION"
+  ],
+  "given": {
+    "artifact_interpretation": "I1",
+    "independent_support": [
+      "S1",
+      "S2"
+    ],
+    "creator_response": "I reject I1"
+  },
+  "attempt": {
+    "erase": "I1"
+  },
+  "expected": {
+    "disposition": "REFUSE",
+    "refusal_code": "CREATOR_VETO_OVERREACH",
+    "required_receipt_survivors": [
+      "artifact_interpretation:I1",
+      "creator_disagreement",
+      "support:S1",
+      "support:S2"
+    ],
+    "forbidden_promotions": [
+      "creator_veto"
+    ]
+  },
+  "version": 1
+}

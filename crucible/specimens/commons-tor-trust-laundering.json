@@ -1,0 +1,25 @@
+{
+  "id": "commons-tor-trust-laundering",
+  "title": "Tor transport cannot grant evidentiary trust",
+  "constitutional_laws": [
+    "TRANSPORT PRIVACY != EVIDENTIARY TRUST"
+  ],
+  "given": {
+    "transport_class": "ONION_SERVICE"
+  },
+  "attempt": {
+    "promote": "whistleblower_authenticity"
+  },
+  "expected": {
+    "disposition": "REFUSE",
+    "refusal_code": "TRANSPORT_CANNOT_PROMOTE_TRUST",
+    "required_receipt_survivors": [
+      "transport_class_only"
+    ],
+    "forbidden_promotions": [
+      "whistleblower_authenticity",
+      "extra_credibility"
+    ]
+  },
+  "version": 1
+}

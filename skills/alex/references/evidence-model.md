@@ -271,3 +271,61 @@ internal constitution:
 Internal v0 records may remain simpler as long as exact ancestry, transformation
 paths, coordinate spaces, hypothesis lineage, discovery/evidence separation,
 and locators survive round-trip export.
+
+
+## Living-source dialogue records
+
+| Record | What it establishes | What it does not establish |
+| --- | --- | --- |
+| `source_question` | Exact question, target, framing, channel, and privacy state | That the question is neutral or answered |
+| `source_response` | Attributable response occurrence and bounded testimony | External truth, historical intent, or independent corroboration |
+| `model_delta` | What changed in ALEX's model after a response | That response-dependent changes survived independent retest |
+
+Useful relations:
+
+```text
+asks
+answers
+clarifies_current_position
+clarifies_current_intent
+disputes_our_reading
+confirms_our_reading
+supplies_source
+supplies_counterexample
+opens_discriminator
+claims_historical_intent
+claims_authorship
+claims_provenance
+```
+
+Hard boundaries:
+
+```text
+creator response != retroactive proof
+creator agreement != independent corroboration
+creator disagreement != automatic falsification
+current stated intent != historical intent
+silence != rejection
+question wording != neutral observation
+```
+
+
+## ALEX Commons contribution records
+
+| Record | What it establishes | What it does not establish |
+| --- | --- | --- |
+| `contributor` | A declared contributor identity surface or anonymous state | Civil identity, honesty, independence, or claim truth |
+| `identity_attestation` | Bounded support for a claimed identity within a declared scope | Truth of claims made by that identity |
+| `library_card` | Capabilities and continuity for one contributor handle/key | Evidentiary authority |
+| `commons_deposit` | One received contribution occurrence, transport class, rights state, and digest | Admission, publication, or independent corroboration |
+| `rights_statement` | Declared permissions for hold/process/quote/publish/identity disclosure/reply | Ownership beyond the declaration or legal sufficiency outside scope |
+
+Hard boundaries:
+
+```text
+identity != contribution authority
+contributor continuity != civil identity
+transport privacy != evidentiary trust
+deposit != admission
+deposit != publication
+```

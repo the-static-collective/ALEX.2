@@ -1,0 +1,25 @@
+{
+  "id": "dialogic-agreeable-author",
+  "title": "Creator agreement is testimony, not independent corroboration",
+  "constitutional_laws": [
+    "CREATOR AGREEMENT != INDEPENDENT CORROBORATION"
+  ],
+  "given": {
+    "interpretation": "I1",
+    "creator_response": "yes_exactly"
+  },
+  "attempt": {
+    "promote": "independent_corroboration"
+  },
+  "expected": {
+    "disposition": "REFUSE",
+    "refusal_code": "CREATOR_AGREEMENT_NOT_INDEPENDENT",
+    "required_receipt_survivors": [
+      "creator_agreement_as_testimony"
+    ],
+    "forbidden_promotions": [
+      "independent_corroboration"
+    ]
+  },
+  "version": 1
+}

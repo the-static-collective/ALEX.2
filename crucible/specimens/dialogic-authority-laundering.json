@@ -1,0 +1,26 @@
+{
+  "id": "dialogic-authority-laundering",
+  "title": "Identity or credentials do not verify attached claims",
+  "constitutional_laws": [
+    "VERIFIED IDENTITY != VERIFIED CLAIM",
+    "RECEIPT != PROMOTION"
+  ],
+  "given": {
+    "identity_status": "VERIFIED_NAMED",
+    "credential": "expert"
+  },
+  "attempt": {
+    "promote": "all_attached_claims_true"
+  },
+  "expected": {
+    "disposition": "REFUSE",
+    "refusal_code": "IDENTITY_CANNOT_LAUNDER_CLAIM",
+    "required_receipt_survivors": [
+      "verified_identity"
+    ],
+    "forbidden_promotions": [
+      "all_attached_claims_true"
+    ]
+  },
+  "version": 1
+}

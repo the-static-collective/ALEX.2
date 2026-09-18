@@ -195,3 +195,12 @@ Before finishing, confirm:
 - rights, privacy, external egress, truncation, and inaccessible sources remain visible;
 - uncertainty has a proposed discriminator rather than decorative caveating;
 - any executable body was selected by attributable registry state and exact SHA rather than mutable recency.
+
+
+## DIALOGIC TRACE
+
+| Shape | Use |
+| --- | --- |
+| `DIALOGIC TRACE` | Ask a reachable living source a discriminating question after ALEX has formed and pressured a precise model; preserve the response as testimony plus a model delta, never as retroactive proof |
+
+For DIALOGIC TRACE, read [references/modes/dialogic-trace.md](references/modes/dialogic-trace.md). Prefer PRESSURE before contact so the question can discriminate between explicit live models.
