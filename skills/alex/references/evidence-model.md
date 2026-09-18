@@ -308,3 +308,24 @@ current stated intent != historical intent
 silence != rejection
 question wording != neutral observation
 ```
+
+
+## ALEX Commons contribution records
+
+| Record | What it establishes | What it does not establish |
+| --- | --- | --- |
+| `contributor` | A declared contributor identity surface or anonymous state | Civil identity, honesty, independence, or claim truth |
+| `identity_attestation` | Bounded support for a claimed identity within a declared scope | Truth of claims made by that identity |
+| `library_card` | Capabilities and continuity for one contributor handle/key | Evidentiary authority |
+| `commons_deposit` | One received contribution occurrence, transport class, rights state, and digest | Admission, publication, or independent corroboration |
+| `rights_statement` | Declared permissions for hold/process/quote/publish/identity disclosure/reply | Ownership beyond the declaration or legal sufficiency outside scope |
+
+Hard boundaries:
+
+```text
+identity != contribution authority
+contributor continuity != civil identity
+transport privacy != evidentiary trust
+deposit != admission
+deposit != publication
+```
