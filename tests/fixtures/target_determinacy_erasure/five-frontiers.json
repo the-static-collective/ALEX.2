@@ -1,0 +1,120 @@
+{
+  "specimen": "TARGET-DETERMINACY-ERASURE-001",
+  "cases": [
+    {
+      "case_id": "semantic-evidence-posture",
+      "target_kind": "evidence_posture",
+      "projection_fields": ["semantic_text"],
+      "target_field": "evidence_posture",
+      "refinement_fields": ["formation_class"],
+      "states": [
+        {
+          "state_id": "source",
+          "semantic_text": "The bank moved.",
+          "evidence_posture": "source_attested",
+          "formation_class": "external_source"
+        },
+        {
+          "state_id": "generated",
+          "semantic_text": "The bank moved.",
+          "evidence_posture": "generated_proposal",
+          "formation_class": "model_generated"
+        }
+      ]
+    },
+    {
+      "case_id": "typed-role-orientation",
+      "target_kind": "typed_role_orientation",
+      "projection_fields": ["untyped_graph_signature"],
+      "target_field": "typed_orientation",
+      "refinement_fields": ["role_passport"],
+      "states": [
+        {
+          "state_id": "forward",
+          "untyped_graph_signature": "G",
+          "typed_orientation": "SOURCE->DERIVED",
+          "role_passport": "source-left"
+        },
+        {
+          "state_id": "reversed",
+          "untyped_graph_signature": "G",
+          "typed_orientation": "DERIVED->SOURCE",
+          "role_passport": "source-right"
+        }
+      ]
+    },
+    {
+      "case_id": "surface-chronology",
+      "target_kind": "historical_declaration_status",
+      "projection_fields": ["surface_digest", "subject_occurrence"],
+      "target_field": "binding_mode",
+      "refinement_fields": ["publication_relation"],
+      "states": [
+        {
+          "state_id": "attested",
+          "surface_digest": "sha256:same-surface",
+          "subject_occurrence": "repo:t0",
+          "binding_mode": "occurrence_attested",
+          "publication_relation": "present_at_t0"
+        },
+        {
+          "state_id": "retrospective",
+          "surface_digest": "sha256:same-surface",
+          "subject_occurrence": "repo:t0",
+          "binding_mode": "retrospectively_applied",
+          "publication_relation": "published_after_t0"
+        }
+      ]
+    },
+    {
+      "case_id": "grammar-as-of",
+      "target_kind": "historical_reading",
+      "projection_fields": ["carrier_ref", "selector"],
+      "target_field": "reading",
+      "refinement_fields": ["grammar_as_of"],
+      "states": [
+        {
+          "state_id": "g0",
+          "carrier_ref": "carrier:X",
+          "selector": "sign:hinge",
+          "reading": "mechanical_joint",
+          "grammar_as_of": "G0@t0"
+        },
+        {
+          "state_id": "g1",
+          "carrier_ref": "carrier:X",
+          "selector": "sign:hinge",
+          "reading": "constitutive_relation",
+          "grammar_as_of": "G1@t1"
+        }
+      ]
+    },
+    {
+      "case_id": "counterfactual-causal-world",
+      "target_kind": "counterfactual_causal_model_class",
+      "projection_fields": ["observed_pre_post"],
+      "target_field": "causal_model_class",
+      "refinement_fields": ["counterfactual_signature"],
+      "states": [
+        {
+          "state_id": "encounter-causes",
+          "observed_pre_post": "G0-E-G1",
+          "causal_model_class": "E_causes_delta",
+          "counterfactual_signature": "noE:no_delta"
+        },
+        {
+          "state_id": "spontaneous",
+          "observed_pre_post": "G0-E-G1",
+          "causal_model_class": "delta_without_E",
+          "counterfactual_signature": "noE:delta"
+        },
+        {
+          "state_id": "competing",
+          "observed_pre_post": "G0-E-G1",
+          "causal_model_class": "K_causes_delta",
+          "counterfactual_signature": "noK:no_delta"
+        }
+      ]
+    }
+  ]
+}
