@@ -1,0 +1,263 @@
+"""CRITERION-NOT-POLICY-001.
+
+Experimental / non-canonical finite witness that one frozen statewise
+performance table does not determine a policy ranking until a decision
+criterion (and, where consumed, a prior) is declared.
+
+Authority: none.
+"""
+
+from fractions import Fraction
+
+
+_STATES = ("a", "b", "c", "d")
+_COSTS = {
+    "ADAPTIVE": (1, 3, 3, 3),
+    "FIXED": (2, 2, 2, 2),
+}
+_HEAVY_PRIOR = (Fraction(3, 4), Fraction(1, 12), Fraction(1, 12), Fraction(1, 12))
+_UNIFORM_PRIOR = (Fraction(1, 4),) * 4
+
+
+def _expected(costs: tuple[int, ...], prior: tuple[Fraction, ...]) -> Fraction:
+    return sum((weight * cost for weight, cost in zip(prior, costs)), Fraction(0, 1))
+
+
+def _winner(left_name: str, left_value, right_name: str, right_value) -> str:
+    if left_value < right_value:
+        return left_name
+    if right_value < left_value:
+        return right_name
+    return "TIE"
+
+
+def evaluate_frozen_policy_table() -> dict:
+    """Evaluate the frozen two-policy table under four declared readings.
+
+    The function reports conditional comparisons only. It does not choose
+    which criterion should govern any real decision.
+    """
+
+    adaptive = _COSTS["ADAPTIVE"]
+    fixed = _COSTS["FIXED"]
+
+    adaptive_worst = max(adaptive)
+    fixed_worst = max(fixed)
+
+    adaptive_heavy = _expected(adaptive, _HEAVY_PRIOR)
+    fixed_heavy = _expected(fixed, _HEAVY_PRIOR)
+    adaptive_uniform = _expected(adaptive, _UNIFORM_PRIOR)
+    fixed_uniform = _expected(fixed, _UNIFORM_PRIOR)
+
+    oracle = tuple(min(a, f) for a, f in zip(adaptive, fixed))
+    adaptive_regret = tuple(a - o for a, o in zip(adaptive, oracle))
+    fixed_regret = tuple(f - o for f, o in zip(fixed, oracle))
+    adaptive_max_regret = max(adaptive_regret)
+    fixed_max_regret = max(fixed_regret)
+
+    return {
+        "experiment": "CRITERION-NOT-POLICY-001",
+        "authority": "none",
+        "state_space": list(_STATES),
+        "costs": {name: list(costs) for name, costs in _COSTS.items()},
+        "worst_case": {
+            "criterion": "worst_case_cost",
+            "ADAPTIVE": adaptive_worst,
+            "FIXED": fixed_worst,
+            "ranking": _winner("ADAPTIVE", adaptive_worst, "FIXED", fixed_worst),
+        },
+        "expected_cost_heavy": {
+            "criterion": "expected_cost",
+            "prior": list(_HEAVY_PRIOR),
+            "ADAPTIVE": adaptive_heavy,
+            "FIXED": fixed_heavy,
+            "ranking": _winner("ADAPTIVE", adaptive_heavy, "FIXED", fixed_heavy),
+        },
+        "expected_cost_uniform": {
+            "criterion": "expected_cost",
+            "prior": list(_UNIFORM_PRIOR),
+            "ADAPTIVE": adaptive_uniform,
+            "FIXED": fixed_uniform,
+            "ranking": _winner("ADAPTIVE", adaptive_uniform, "FIXED", fixed_uniform),
+        },
+        "minimax_regret": {
+            "criterion": "minimax_regret",
+            "oracle": list(oracle),
+            "ADAPTIVE_regret": list(adaptive_regret),
+            "FIXED_regret": list(fixed_regret),
+            "ADAPTIVE": adaptive_max_regret,
+            "FIXED": fixed_max_regret,
+            "ranking": _winner(
+                "ADAPTIVE", adaptive_max_regret, "FIXED", fixed_max_regret
+            ),
+        },
+        "observation": "STATEWISE_COST_TABLE_DOES_NOT_SELECT_POLICY_WITHOUT_CRITERION",
+    }
+
+
+def evaluate_posthoc_criterion_swap() -> dict:
+    """Freeze a later analysis without letting it govern an earlier cut."""
+
+    table = evaluate_frozen_policy_table()
+    earlier = table["worst_case"]
+    later = table["expected_cost_heavy"]
+
+    return {
+        "experiment": "POST-HOC-CRITERION-SWAP-001",
+        "authority": "none",
+        "decision_cut": "t0",
+        "earlier_constitution": {
+            "formed_at": "t0",
+            "criterion": earlier["criterion"],
+            "ranking": earlier["ranking"],
+        },
+        "later_analysis": {
+            "formed_at": "t1",
+            "criterion": later["criterion"],
+            "prior": later["prior"],
+            "ranking": later["ranking"],
+        },
+        "later_analysis_governs_earlier_decision": False,
+        "status": "REFUSE_RETROACTIVE_CRITERION",
+        "observation": "LATER_CRITERION_DOES_NOT_REWRITE_EARLIER_DECISION_CONSTITUTION",
+    }
+
+
+def evaluate_posthoc_prior_swap() -> dict:
+    """Freeze a later prior without letting it govern an earlier cut."""
+
+    table = evaluate_frozen_policy_table()
+    earlier = table["expected_cost_uniform"]
+    later = table["expected_cost_heavy"]
+
+    return {
+        "experiment": "POST-HOC-PRIOR-001",
+        "authority": "none",
+        "decision_cut": "t0",
+        "earlier_constitution": {
+            "formed_at": "t0",
+            "criterion": earlier["criterion"],
+            "prior": earlier["prior"],
+            "ranking": earlier["ranking"],
+        },
+        "later_analysis": {
+            "formed_at": "t1",
+            "criterion": later["criterion"],
+            "prior": later["prior"],
+            "ranking": later["ranking"],
+        },
+        "later_prior_governs_earlier_decision": False,
+        "status": "REFUSE_RETROACTIVE_PRIOR",
+        "observation": "LATER_PRIOR_DOES_NOT_REWRITE_EARLIER_DECISION_CONSTITUTION",
+    }
+
+
+def evaluate_undeclared_prior() -> dict:
+    """Refuse expected-cost replay when the consumed prior is undeclared."""
+
+    return {
+        "experiment": "UNDECLARED-PRIOR-001",
+        "authority": "none",
+        "criterion": "expected_cost",
+        "prior": None,
+        "ranking": None,
+        "status": "INSUFFICIENT_TO_REPLAY_EXPECTATION",
+        "observation": "EXPECTED_COST_REQUIRES_ATTRIBUTABLE_PRIOR",
+    }
+
+
+def evaluate_prior_set_robustness() -> dict:
+    """Hold one prior set fixed while changing only the robust criterion."""
+
+    adaptive = _COSTS["ADAPTIVE"]
+    fixed = _COSTS["FIXED"]
+    prior_set = (_UNIFORM_PRIOR, _HEAVY_PRIOR)
+
+    adaptive_expected_costs = tuple(_expected(adaptive, prior) for prior in prior_set)
+    fixed_expected_costs = tuple(_expected(fixed, prior) for prior in prior_set)
+
+    oracle = tuple(min(a, f) for a, f in zip(adaptive, fixed))
+    adaptive_regret = tuple(a - o for a, o in zip(adaptive, oracle))
+    fixed_regret = tuple(f - o for f, o in zip(fixed, oracle))
+    adaptive_expected_regrets = tuple(_expected(adaptive_regret, prior) for prior in prior_set)
+    fixed_expected_regrets = tuple(_expected(fixed_regret, prior) for prior in prior_set)
+
+    adaptive_max_expected_cost = max(adaptive_expected_costs)
+    fixed_max_expected_cost = max(fixed_expected_costs)
+    adaptive_max_expected_regret = max(adaptive_expected_regrets)
+    fixed_max_expected_regret = max(fixed_expected_regrets)
+
+    return {
+        "experiment": "PRIOR-SET-NOT-ROBUSTNESS-CRITERION-001",
+        "authority": "none",
+        "prior_set": [list(prior) for prior in prior_set],
+        "max_expected_cost": {
+            "criterion": "max_expected_cost_over_prior_set",
+            "ADAPTIVE": adaptive_max_expected_cost,
+            "FIXED": fixed_max_expected_cost,
+            "ranking": _winner(
+                "ADAPTIVE", adaptive_max_expected_cost, "FIXED", fixed_max_expected_cost
+            ),
+        },
+        "max_expected_regret": {
+            "criterion": "max_expected_regret_over_prior_set",
+            "ADAPTIVE": adaptive_max_expected_regret,
+            "FIXED": fixed_max_expected_regret,
+            "ranking": _winner(
+                "ADAPTIVE", adaptive_max_expected_regret, "FIXED", fixed_max_expected_regret
+            ),
+        },
+        "observation": "UNCERTAINTY_SET_DOES_NOT_SELECT_ROBUSTNESS_CRITERION",
+    }
+
+
+def evaluate_criterion_agreement_control() -> dict:
+    """Pressure one coincident verdict with a second frozen cost fixture."""
+
+    baseline = evaluate_frozen_policy_table()
+    baseline_worst = baseline["worst_case"]["ranking"]
+    baseline_uniform = baseline["expected_cost_uniform"]["ranking"]
+
+    pressure_costs = {
+        "ADAPTIVE": (1, 1, 1, 10),
+        "FIXED": (4, 4, 4, 4),
+    }
+    adaptive = pressure_costs["ADAPTIVE"]
+    fixed = pressure_costs["FIXED"]
+
+    adaptive_worst = max(adaptive)
+    fixed_worst = max(fixed)
+    adaptive_uniform = _expected(adaptive, _UNIFORM_PRIOR)
+    fixed_uniform = _expected(fixed, _UNIFORM_PRIOR)
+
+    worst_case = {
+        "criterion": "worst_case_cost",
+        "ADAPTIVE": adaptive_worst,
+        "FIXED": fixed_worst,
+        "ranking": _winner("ADAPTIVE", adaptive_worst, "FIXED", fixed_worst),
+    }
+    expected_uniform = {
+        "criterion": "expected_cost",
+        "prior": list(_UNIFORM_PRIOR),
+        "ADAPTIVE": adaptive_uniform,
+        "FIXED": fixed_uniform,
+        "ranking": _winner("ADAPTIVE", adaptive_uniform, "FIXED", fixed_uniform),
+    }
+
+    return {
+        "experiment": "CRITERION-AGREEMENT-CONTROL-001",
+        "authority": "none",
+        "baseline_fixture": {
+            "worst_case_ranking": baseline_worst,
+            "expected_cost_uniform_ranking": baseline_uniform,
+            "verdicts_agree": baseline_worst == baseline_uniform,
+        },
+        "pressure_fixture": {
+            "costs": {name: list(costs) for name, costs in pressure_costs.items()},
+            "worst_case": worst_case,
+            "expected_cost_uniform": expected_uniform,
+            "verdicts_agree": worst_case["ranking"] == expected_uniform["ranking"],
+        },
+        "equivalence_claim_survives_pressure": False,
+        "observation": "VERDICT_AGREEMENT_ON_ONE_FIXTURE_DOES_NOT_ESTABLISH_CRITERION_EQUIVALENCE",
+    }
