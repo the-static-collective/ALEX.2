@@ -98,11 +98,18 @@ organ.
 
 ## Current status
 
-**Blueprint and skill floor. No production runtime is claimed.**
+**Executable provenance/research substrate under active conformance and research work. No production service or universal truth engine is claimed.**
 
-The next gate is human review of the written design. After that, implementation
-planning can lower the first vertical slice into tasks without smuggling later
-library-scale ambitions into v0.
+The original one-book floor remains architectural ancestry, but it is no longer
+the implementation boundary. `main` now contains multiple bounded executable
+research organs and specimens, including **CHRONOBODY-001** and **ALEX Commons +
+DIALOGIC TRACE v0**. Current research is increasingly organized around
+target-relative sufficiency: what information a declared question or operation
+actually needs to survive a projection without silently restoring erased detail.
+
+An owner-local BODY-EMERGENCE interface declaration is also under review as a
+separate composition surface. Compatibility there would still grant no execution,
+merge, evidence, truth, or adoption authority.
 
 ## Crucible runtime gate
 
