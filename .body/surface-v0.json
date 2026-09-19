@@ -1,0 +1,84 @@
+{
+  "schema": "body.surface/v0",
+  "organ": "alex",
+  "owner": "the-static-collective/ALEX.2",
+  "publication": {
+    "status": "owner-published",
+    "standard": "static-collective/body-surface/v0",
+    "scope": "interface-declaration"
+  },
+  "provides": [
+    {
+      "kind": "current-organ-manifest",
+      "protocol": "static-collective/current-organ",
+      "version": "v0"
+    }
+  ],
+  "needs": [
+    {
+      "kind": "calculation-receipt",
+      "protocol": "dogram.receipt",
+      "version": "v0"
+    }
+  ],
+  "interfaces": [
+    {
+      "name": "current-organ",
+      "direction": "emit",
+      "kind": "current-organ-manifest",
+      "protocol": "static-collective/current-organ",
+      "version": "v0"
+    },
+    {
+      "name": "calculation-receipt-input",
+      "direction": "accept",
+      "kind": "calculation-receipt",
+      "protocol": "dogram.receipt",
+      "version": "v0"
+    }
+  ],
+  "measure": {
+    "declared": [
+      {
+        "dimension": "entrypoint",
+        "value": "skills/alex/SKILL.md",
+        "unit": "path"
+      },
+      {
+        "dimension": "runtime-claim",
+        "value": "no-production-runtime-claimed",
+        "unit": "state"
+      }
+    ],
+    "observed": []
+  },
+  "receipts": [
+    {
+      "kind": "owner-contract",
+      "coordinate": "README.md"
+    },
+    {
+      "kind": "current-organ",
+      "coordinate": ".live/current-organ.json"
+    }
+  ],
+  "residual_fog": [
+    "This surface declares only a minimal cross-project interface subset; it is not a complete inventory of ALEX capabilities."
+  ],
+  "non_authorities": [
+    "surface != research evidence",
+    "receipt input != evidence promotion",
+    "compatibility != adoption"
+  ],
+  "evidence": [
+    {
+      "kind": "owner-readme",
+      "coordinate": "README.md"
+    },
+    {
+      "kind": "current-organ",
+      "coordinate": ".live/current-organ.json"
+    }
+  ],
+  "authority": "none"
+}
