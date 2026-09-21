@@ -56,7 +56,8 @@ def attach_pressure(proposal, *, experiment_ref, result, observation_ref, interp
     if interpretation not in ("not_assessed", "independently_supported", "contradicted", "unresolved"):
         raise ValueError("interpretation requires an explicit disposition")
     # The result of one experiment is not an evidentiary rank or final judgment.
-    return {"schema": "alex.relation-pressure/0.1", "proposal_ref": proposal["proposal_digest"],
+    body = {"schema": "alex.relation-pressure/0.1", "proposal_ref": proposal["proposal_digest"],
             "experiment_ref": experiment_ref, "result": result, "observation_ref": observation_ref,
             "interpretation": interpretation,
             "non_claim": "experimental result does not grant source, historical or theological authority"}
+    return {**body, "pressure_digest": _digest(body)}
