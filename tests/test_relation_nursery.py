@@ -13,6 +13,18 @@ class NurseryTests(unittest.TestCase):
         self.assertEqual(p["disposition"],"proposed")
         self.assertEqual(result["result"],"fail")
         self.assertEqual(result["proposal_ref"],p["proposal_digest"])
+    def test_pressure_receipt_has_independent_stable_identity(self):
+        p=self.seed()
+        first=attach_pressure(p,experiment_ref="fixture:control",result="pass",
+            observation_ref="fixture:witness",interpretation="independently_supported")
+        replay=attach_pressure(p,experiment_ref="fixture:control",result="pass",
+            observation_ref="fixture:witness",interpretation="independently_supported")
+        sibling=attach_pressure(p,experiment_ref="fixture:control-2",result="fail",
+            observation_ref="fixture:miss",interpretation="contradicted")
+        self.assertTrue(first["pressure_digest"].startswith("sha256:"))
+        self.assertEqual(first["pressure_digest"], replay["pressure_digest"])
+        self.assertNotEqual(first["pressure_digest"], sibling["pressure_digest"])
+        self.assertEqual(first["proposal_ref"], sibling["proposal_ref"])
     def test_tampered_source_ref_refused(self):
         p=self.seed();p["source_refs"][0]="fixture:replacement"
         with self.assertRaisesRegex(ValueError,"rewritten"):
