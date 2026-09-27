@@ -1,5 +1,7 @@
 # ALEX.2
 
+> **Static Collective compass:** [Front Room](https://github.com/the-static-collective/What-is-the-static-collective-) · [Living Git Map](https://github.com/the-static-collective/What-is-the-static-collective-/tree/main/atlas)
+
 **A local-ish, provenance-first research floor for scanned books, manuscripts,
 historical editions, and the claims we build from them.**
 
