@@ -106,6 +106,34 @@ A passing `PROJECTION-BREAK-001` result does **not** prove the hidden difference
 
 The first fixture lives under `tests/fixtures/projection_break/hidden-adjacency.json`. No new universal `CONSUMES` or intervention-edge ontology is introduced; ordinary receipt ancestry plus the explicit intervention occurrence remains sufficient for this specimen.
 
+## MEDIATED-SUPPORT-001
+
+`MEDIATED-SUPPORT-001` is a cross-run ALEX evaluator over two already-formed Gate-2 derivation cases plus attributable selection/context testimony. It composes `RELATION-DERIVATION-001`; it does not replace or widen Gate-2 semantics, and it does not implement LOADOUT selection or 3rdi projection kernels.
+
+Its bounded distinction is:
+
+```text
+interest / selection provenance
+        -> may change bounded context
+        -> may change genuine evidence basis
+        -> may therefore change Gate-2 support
+
+interest / selection provenance
+        -X-> semantic support basis
+```
+
+When the evaluated evidence basis is fixed, changing interest ancestry must leave the semantic support result unchanged. If an interest, selector, or consumption receipt appears inside Gate-2 semantic support inputs, the pair is refused as `INTEREST_AS_SUPPORT`.
+
+A changed support result may be classified as `LAWFUL_MEDIATION` only when the evidence basis also changes and that change peels through attributable selection/consumption formation with a changed bounded context. The selection receipts survive as formation provenance; survival does not convert them into evidence.
+
+For `POPULATION_GENERALIZATION`, stripped selection formation yields `INSUFFICIENT_TO_TEST / SELECTION_FORMATION_REQUIRED`, not falsity. The evaluator does not implement a statistical sampling engine. For `OBJECT_LOCAL` claims, genuine attributable evidence is not weakened merely because interest guided discovery or because selection history is absent.
+
+Nested Gate-2 results that are insufficient to test are not laundered into pair-level support claims. `MEDIATED-SUPPORT-001` returns `DERIVATION_NOT_COMPARABLE` instead. Run-local evaluation and assertion identities are excluded from the semantic support digest, while their required receipt survivors remain preserved.
+
+Passing this evaluator does **not** prove representative sampling, accuracy of an interest or motive receipt, causal sufficiency or dominance, global truth, canon, admission, publication, warrant, permission, or execution authority.
+
+`COUNTERFACTUAL-RECTANGLE-001` remains unimplemented. It will be considered only if the completed pairwise evaluators leave a materially distinct interaction class that cannot already be named compositionally.
+
 ## Conformance boundary
 
 Passing `crucible-contract` proves the fixture corpus and reference harness are internally consistent. It does not prove an ALEX runtime conforms. Runtime conformance begins only when a real adapter executes the applicable fixtures and the harness reports zero constitutional mismatches.
