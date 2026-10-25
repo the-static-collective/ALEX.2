@@ -1,0 +1,7 @@
+interface:
+  display_name: "LOADOUT"
+  short_description: "Choose the smallest sufficient capability set"
+  default_prompt: "Use $loadout to choose the smallest sufficient set of currently available capabilities for this task without expanding authority."
+
+policy:
+  allow_implicit_invocation: true
