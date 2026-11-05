@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 
 const DEFAULT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../research/packets/MOTIF-021');
-const STOP=new Set('what which whose would could should where when why how does that this there with about from were have been then them each source sources these those into only under over before after'.split(' '));
+const STOP=new Set('what which whose would could should where when why how does that this there with about from were have been then them each source sources these those into only under over before after can make is are an and for the in on of to by a as it do be'.split(' '));
 const hash=x=>createHash('sha256').update(x).digest('hex');
 const blob=x=>createHash('sha1').update(Buffer.from('blob '+x.length+'\0')).update(x).digest('hex');
 function terms(s){return [...new Set(s.toLowerCase().split(/[^a-z0-9]+/).filter(t=>t.length>2&&!STOP.has(t)))];}
