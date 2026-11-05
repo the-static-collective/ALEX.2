@@ -1,0 +1,25 @@
+name: ALEX-025 Public Provider Discovery
+on:
+  push:
+    branches: [research/025-provider-routing-public]
+  pull_request:
+    paths:
+      - 'tools/eagle-eye-providers-025.mjs'
+      - 'test/eagle-eye-providers-025.test.mjs'
+      - '.github/workflows/eagle-eye-providers-025.yml'
+permissions:
+  contents: read
+jobs:
+  provider-router:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Query-aware router and permission boundary regression
+        run: node --test test/eagle-eye-providers-025.test.mjs
+      - name: Real public index probe; at least one independently selected provider must work
+        run: |
+          node --input-type=module -e "import {searchSelectedProviders} from './tools/eagle-eye-providers-025.mjs'; const p=await searchSelectedProviders({question:'ancient philosophy historical sources',scopes:{openlibrary:true,crossref:true}});console.log(JSON.stringify({status:p.status,providers:p.providers_queried,hits:p.hits.length,failures:p.failures},null,2));if(!p.hits.length||p.remote_writes!==0||p.private_sources_accessed)process.exit(1)"
