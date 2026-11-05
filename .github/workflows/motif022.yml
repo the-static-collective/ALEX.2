@@ -1,0 +1,21 @@
+name: ALEX MOTIF-022 Dynamic Inquiry
+on:
+  push:
+    branches: [research/022-inquiry-from-question]
+  pull_request:
+    paths: ['tools/motif022-question.mjs', 'test/motif022-question.test.mjs', '.github/workflows/motif022.yml']
+jobs:
+  inquire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node --test test/motif022-question.test.mjs
+      - run: node tools/motif022-question.mjs 'Which original carrier supports a suspected hidden common ancestor?' > alex-motif022-packet.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: alex022-question-research-packet
+          path: alex-motif022-packet.json
+          retention-days: 14
