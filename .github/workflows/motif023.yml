@@ -1,0 +1,33 @@
+name: ALEX-023 Live Public Collection Inquiry
+on:
+  push:
+    branches:
+      - research/023-public-source-observations
+  pull_request:
+    paths:
+      - 'tools/motif023-live.mjs'
+      - 'test/motif023-live.test.mjs'
+      - '.github/workflows/motif023.yml'
+permissions:
+  contents: read
+jobs:
+  source-observation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Mock transport tests and source privacy refusals
+        run: node --test test/motif023-live.test.mjs
+      - name: Fresh public GitHub source retrieval with Git blob verification
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node tools/motif023-live.mjs 'Which original Maxhinal Fiber and Pressure chambers preserve source custody?' > alex023-live.json
+      - name: Require a real fetched public document, not only an apparent success
+        run: node -e "const x=require('./alex023-live.json'); if(!x.fetched_from_live_github_api||!x.sources.length||!x.sources.some(s=>s.public_eligibility_verified)||!x.hits.length)process.exit(1)"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: alex023-live-public-source-packet
+          path: alex023-live.json
+          retention-days: 14
