@@ -1,0 +1,26 @@
+[
+  {
+    "experiment": "001",
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "test_learns_role_relative_rules_from_demonstrations (test_motif.MotifTests.test_learns_role_relative_rules_from_demonstrations) ... ok\ntest_missing_tool_blocks_repair (test_motif.MotifTests.test_missing_tool_blocks_repair) ... ok\ntest_permission_absence_holds (test_motif.MotifTests.test_permission_absence_holds) ... ok\ntest_unseen_entities_plan_three_steps (test_motif.MotifTests.test_unseen_entities_plan_three_steps) ... ok\ntest_unseen_pattern_fails_closed (test_motif.MotifTests.test_unseen_pattern_fails_closed) ... ok\ntest_world_not_mutated_by_imagination (test_motif.MotifTests.test_world_not_mutated_by_imagination) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 0.008s\n\nOK\n"
+  },
+  {
+    "experiment": "002",
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "test_holdout_names_and_composition (test_motif002.UnnamedVerbTests.test_holdout_names_and_composition) ... ok\ntest_missing_wrenches_disallows_repairs (test_motif002.UnnamedVerbTests.test_missing_wrenches_disallows_repairs) ... ok\ntest_new_world_is_not_mutated (test_motif002.UnnamedVerbTests.test_new_world_is_not_mutated) ... ok\ntest_no_action_labels_or_role_hints (test_motif002.UnnamedVerbTests.test_no_action_labels_or_role_hints) ... ok\ntest_no_fixture_can_imply_real_authority (test_motif002.UnnamedVerbTests.test_no_fixture_can_imply_real_authority) ... ok\ntest_no_permission_is_no_plan (test_motif002.UnnamedVerbTests.test_no_permission_is_no_plan) ... ok\ntest_noop_does_not_invent_rule (test_motif002.UnnamedVerbTests.test_noop_does_not_invent_rule) ... ok\ntest_one_off_noise_is_not_required (test_motif002.UnnamedVerbTests.test_one_off_noise_is_not_required) ... ok\ntest_report_is_consistent (test_motif002.UnnamedVerbTests.test_report_is_consistent) ... ok\ntest_training_order_does_not_change_model (test_motif002.UnnamedVerbTests.test_training_order_does_not_change_model) ... ok\n\n----------------------------------------------------------------------\nRan 10 tests in 0.007s\n\nOK\n"
+  },
+  {
+    "experiment": "003",
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "test_002_integration_demo (test_affordance.CapabilityHorizonTests.test_002_integration_demo) ... ok\ntest_different_immediate_and_frontier_choices (test_affordance.CapabilityHorizonTests.test_different_immediate_and_frontier_choices) ... ok\ntest_frontier_budget_exhaustion_is_visible (test_affordance.CapabilityHorizonTests.test_frontier_budget_exhaustion_is_visible) ... ok\ntest_initial_actions_include_repair_and_teach (test_affordance.CapabilityHorizonTests.test_initial_actions_include_repair_and_teach) ... ok\ntest_no_permission_means_no_recommended_action (test_affordance.CapabilityHorizonTests.test_no_permission_means_no_recommended_action) ... ok\ntest_witness_mismatch_kept_distinct (test_affordance.CapabilityHorizonTests.test_witness_mismatch_kept_distinct) ... ok\ntest_world_and_observations_not_mutated (test_affordance.CapabilityHorizonTests.test_world_and_observations_not_mutated) ... ok\n\n----------------------------------------------------------------------\nRan 7 tests in 0.005s\n\nOK\n"
+  },
+  {
+    "experiment": "004",
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "test_contradictory_success_invalidates_separation (test_scar.ScarTests.test_contradictory_success_invalidates_separation) ... ok\ntest_divergent_observation_forces_abstention (test_scar.ScarTests.test_divergent_observation_forces_abstention) ... ok\ntest_duplicate_ids_and_untrusted_provenance_rejected (test_scar.ScarTests.test_duplicate_ids_and_untrusted_provenance_rejected) ... ok\ntest_explicit_abstention_for_unknown_operator (test_scar.ScarTests.test_explicit_abstention_for_unknown_operator) ... ok\ntest_holdout_separation_and_identity_generalization (test_scar.ScarTests.test_holdout_separation_and_identity_generalization) ... ok\ntest_induces_one_role_relative_discriminator (test_scar.ScarTests.test_induces_one_role_relative_discriminator) ... ok\ntest_noop_is_a_recorded_counterexample (test_scar.ScarTests.test_noop_is_a_recorded_counterexample) ... ok\ntest_permissions_missing_cannot_be_learned_as_attempt (test_scar.ScarTests.test_permissions_missing_cannot_be_learned_as_attempt) ... ok\ntest_report_counts_heldout_without_training_on_them (test_scar.ScarTests.test_report_counts_heldout_without_training_on_them) ... ok\ntest_sparse_and_one_sided_examples_abstain (test_scar.ScarTests.test_sparse_and_one_sided_examples_abstain) ... ok\ntest_spurious_second_separator_abstains (test_scar.ScarTests.test_spurious_second_separator_abstains) ... ok\ntest_synthetic_observations_are_immutable (test_scar.ScarTests.test_synthetic_observations_are_immutable) ... ok\ntest_training_order_independence (test_scar.ScarTests.test_training_order_independence) ... ok\n\n----------------------------------------------------------------------\nRan 13 tests in 0.010s\n\nOK\n"
+  }
+]

@@ -1,0 +1,449 @@
+{
+  "created_utc": "2026-11-05T00:58:46.536Z",
+  "user_facing_date": "2026-11-04 America/Chicago",
+  "scope": "MOTIF frontier research harvest; non-exhaustive",
+  "sources": [
+    {
+      "kind": "library-note",
+      "name": "relational-decompression-formation-trace-ard.md",
+      "id": "libfile_154c60ccf3988191a7066aba010f32f5",
+      "file_id": "file_00000000e15c820898767b6c3212a417",
+      "version": null,
+      "modified": "2026-08-03T23:15:45.090288Z",
+      "url": "https://chatgpt.com/library?file_id=libfile_154c60ccf3988191a7066aba010f32f5&account_id=personal",
+      "archive_path": "gathered-notes/libfile_154c60ccf3988191a7066aba010f32f5.md",
+      "has_more": false
+    },
+    {
+      "kind": "library-note",
+      "name": "Consequence - Authority Field(1).html",
+      "id": "libfile_7425f8faa5708191a8340614d4a1fd32",
+      "file_id": "file_000000002070822f8dc690e9e80c0b3d",
+      "version": null,
+      "modified": "2026-08-24T18:14:12.390921Z",
+      "url": "https://chatgpt.com/library?file_id=libfile_7425f8faa5708191a8340614d4a1fd32&account_id=personal",
+      "archive_path": "gathered-notes/libfile_7425f8faa5708191a8340614d4a1fd32.md",
+      "has_more": false
+    },
+    {
+      "kind": "library-note",
+      "name": "Pasted markdown (2)(2).md",
+      "id": "libfile_da73002456088191bff6b3033077bd43",
+      "file_id": "file_0000000047c4822f9005d9dead101b05",
+      "version": null,
+      "modified": "2026-08-27T05:30:32.134539Z",
+      "url": "https://chatgpt.com/library?file_id=libfile_da73002456088191bff6b3033077bd43&account_id=personal",
+      "archive_path": "gathered-notes/libfile_da73002456088191bff6b3033077bd43.md",
+      "has_more": false
+    },
+    {
+      "kind": "library-note",
+      "name": "Pasted markdown (2)(3).md",
+      "id": "libfile_05d5c069fbac8191b95b392b59b33e41",
+      "file_id": "file_000000009b0881f5a4d9226f6ca00a45",
+      "version": null,
+      "modified": "2026-08-27T16:06:47.212083Z",
+      "url": "https://chatgpt.com/library?file_id=libfile_05d5c069fbac8191b95b392b59b33e41&account_id=personal",
+      "archive_path": "gathered-notes/libfile_05d5c069fbac8191b95b392b59b33e41.md",
+      "has_more": false
+    },
+    {
+      "kind": "library-note",
+      "name": "Pasted markdown (2)(4).md",
+      "id": "libfile_a61e1bc8571c8191b934811851c41646",
+      "file_id": "file_000000005fb081f588aef675db1fc137",
+      "version": null,
+      "modified": "2026-08-28T03:46:26.020223Z",
+      "url": "https://chatgpt.com/library?file_id=libfile_a61e1bc8571c8191b934811851c41646&account_id=personal",
+      "archive_path": "gathered-notes/libfile_a61e1bc8571c8191b934811851c41646.md",
+      "has_more": false
+    },
+    {
+      "kind": "library-note",
+      "name": "Pasted markdown (2)(5).md",
+      "id": "libfile_6170b271055481918c7f98be6eabb7ed",
+      "file_id": "file_000000001ec0822f96a3a438577cd4a9",
+      "version": null,
+      "modified": "2026-08-28T13:46:37.085657Z",
+      "url": "https://chatgpt.com/library?file_id=libfile_6170b271055481918c7f98be6eabb7ed&account_id=personal",
+      "archive_path": "gathered-notes/libfile_6170b271055481918c7f98be6eabb7ed.md",
+      "has_more": false
+    },
+    {
+      "kind": "library-note",
+      "name": "Pasted markdown (2)(8).md",
+      "id": "libfile_b603b271158c8191b30efc0622d5ffb7",
+      "file_id": "file_0000000039ac81f695bfc78ac1fff7df",
+      "version": null,
+      "modified": "2026-08-29T14:55:57.046537Z",
+      "url": "https://chatgpt.com/library?file_id=libfile_b603b271158c8191b30efc0622d5ffb7&account_id=personal",
+      "archive_path": "gathered-notes/libfile_b603b271158c8191b30efc0622d5ffb7.md",
+      "has_more": false
+    },
+    {
+      "kind": "library-note",
+      "name": "Pasted markdown (2)(6).md",
+      "id": "libfile_f9fefe91c73c8191bb06fd2e1bc8171a",
+      "file_id": "file_00000000af4081f7b2fa3b0a7b39533d",
+      "version": null,
+      "modified": "2026-08-28T22:00:26.861270Z",
+      "url": "https://chatgpt.com/library?file_id=libfile_f9fefe91c73c8191bb06fd2e1bc8171a&account_id=personal",
+      "archive_path": "gathered-notes/libfile_f9fefe91c73c8191bb06fd2e1bc8171a.md",
+      "has_more": false
+    },
+    {
+      "kind": "library-note",
+      "name": "Pasted markdown (2)(7).md",
+      "id": "libfile_83945d0a4a848191b1daebdb8bf88ba4",
+      "file_id": "file_00000000030481f5ab1af3e0f5c429fc",
+      "version": null,
+      "modified": "2026-08-29T02:25:05.262148Z",
+      "url": "https://chatgpt.com/library?file_id=libfile_83945d0a4a848191b1daebdb8bf88ba4&account_id=personal",
+      "archive_path": "gathered-notes/libfile_83945d0a4a848191b1daebdb8bf88ba4.md",
+      "has_more": false
+    },
+    {
+      "kind": "library-note",
+      "name": "Pasted markdown(20260824-172750).md",
+      "id": "libfile_522359c756288191bcadc47cd0e17e3b",
+      "file_id": "file_00000000c4a081f6853bb49de09e7a20",
+      "version": null,
+      "modified": "2026-08-24T17:27:51.871689Z",
+      "url": "https://chatgpt.com/library?file_id=libfile_522359c756288191bcadc47cd0e17e3b&account_id=personal",
+      "archive_path": "gathered-notes/libfile_522359c756288191bcadc47cd0e17e3b.md",
+      "has_more": false
+    },
+    {
+      "kind": "library-note",
+      "name": "Pasted markdown(20260827-174426).md",
+      "id": "libfile_6986e823127481918418c88ef858c2fb",
+      "file_id": "file_000000002fb081f58343d38d2693f2a5",
+      "version": null,
+      "modified": "2026-08-27T17:44:27.176613Z",
+      "url": "https://chatgpt.com/library?file_id=libfile_6986e823127481918418c88ef858c2fb&account_id=personal",
+      "archive_path": "gathered-notes/libfile_6986e823127481918418c88ef858c2fb.md",
+      "has_more": false
+    },
+    {
+      "kind": "library-note",
+      "name": "Pasted markdown(20260828-134007).md",
+      "id": "libfile_de3243c97ae08191bb2c28b32af00e2f",
+      "file_id": "file_00000000aaf4822fa3f46d98cabda6d8",
+      "version": null,
+      "modified": "2026-08-28T13:40:09.260455Z",
+      "url": "https://chatgpt.com/library?file_id=libfile_de3243c97ae08191bb2c28b32af00e2f&account_id=personal",
+      "archive_path": "gathered-notes/libfile_de3243c97ae08191bb2c28b32af00e2f.md",
+      "has_more": false
+    },
+    {
+      "kind": "library-note",
+      "name": "INSPAND-012-question-cycle-review.html",
+      "id": "libfile_96002618404c81919350836c8313f87f",
+      "file_id": "file_00000000f8f881f59124416c0a23a02f",
+      "version": null,
+      "modified": "2026-10-30T00:18:04.731924Z",
+      "url": "https://chatgpt.com/library?file_id=libfile_96002618404c81919350836c8313f87f&account_id=personal",
+      "archive_path": "gathered-notes/libfile_96002618404c81919350836c8313f87f.md",
+      "has_more": false
+    },
+    {
+      "kind": "library-note",
+      "name": "Pasted markdown (2)(1).md",
+      "id": "libfile_c90c2bca41f48191aa46ee522b2c3f8f",
+      "file_id": "file_000000008e9081f6b295ca8cae393a20",
+      "version": null,
+      "modified": "2026-08-26T15:48:58.059191Z",
+      "url": "https://chatgpt.com/library?file_id=libfile_c90c2bca41f48191aa46ee522b2c3f8f&account_id=personal",
+      "archive_path": "gathered-notes/libfile_c90c2bca41f48191aa46ee522b2c3f8f.md",
+      "has_more": false
+    },
+    {
+      "kind": "library-note",
+      "name": "living-baseline.md",
+      "id": "libfile_16128b12d418819186292e2256cc1d01",
+      "file_id": "file_0000000078d481fd9d5a3a79e39ea7dc",
+      "version": null,
+      "modified": "2026-07-23T16:37:39.214438Z",
+      "url": "https://chatgpt.com/library?file_id=libfile_16128b12d418819186292e2256cc1d01&account_id=personal",
+      "archive_path": "gathered-notes/libfile_16128b12d418819186292e2256cc1d01.md",
+      "has_more": false
+    },
+    {
+      "kind": "gitbook-note",
+      "name": "frontroom",
+      "id": "ZNnvl6rFZP6SiAKvoiTW",
+      "revision": "zVJ7kH3KrtxKulRwhEhr",
+      "url": "https://app.gitbook.com/o/ddlx1UAH93SFyQsNFNa4/s/HILTtUulCBDqDzXXk6RQ/?page=ZNnvl6rFZP6SiAKvoiTW",
+      "archive_path": "gathered-notes/gitbook-frontroom.md",
+      "note": "get_page returned current main text; revision identifies contemporaneous navigation, not a cryptographic guarantee of each retrieved page"
+    },
+    {
+      "kind": "gitbook-note",
+      "name": "incubator",
+      "id": "YAbnufjkQeBnVuLTvugA",
+      "revision": "zVJ7kH3KrtxKulRwhEhr",
+      "url": "https://app.gitbook.com/o/ddlx1UAH93SFyQsNFNa4/s/HILTtUulCBDqDzXXk6RQ/?page=YAbnufjkQeBnVuLTvugA",
+      "archive_path": "gathered-notes/gitbook-incubator.md",
+      "note": "get_page returned current main text; revision identifies contemporaneous navigation, not a cryptographic guarantee of each retrieved page"
+    },
+    {
+      "kind": "gitbook-note",
+      "name": "seedbank",
+      "id": "dzzmb2TwXqE6RL4MyTKa",
+      "revision": "zVJ7kH3KrtxKulRwhEhr",
+      "url": "https://app.gitbook.com/o/ddlx1UAH93SFyQsNFNa4/s/HILTtUulCBDqDzXXk6RQ/?page=dzzmb2TwXqE6RL4MyTKa",
+      "archive_path": "gathered-notes/gitbook-seedbank.md",
+      "note": "get_page returned current main text; revision identifies contemporaneous navigation, not a cryptographic guarantee of each retrieved page"
+    },
+    {
+      "kind": "gitbook-note",
+      "name": "bitcraft",
+      "id": "Tviof0uloHDvlDNVPQ4U",
+      "revision": "zVJ7kH3KrtxKulRwhEhr",
+      "url": "https://app.gitbook.com/o/ddlx1UAH93SFyQsNFNa4/s/HILTtUulCBDqDzXXk6RQ/?page=Tviof0uloHDvlDNVPQ4U",
+      "archive_path": "gathered-notes/gitbook-bitcraft.md",
+      "note": "get_page returned current main text; revision identifies contemporaneous navigation, not a cryptographic guarantee of each retrieved page"
+    },
+    {
+      "kind": "gitbook-note",
+      "name": "narrativeSolver",
+      "id": "xKf3gAwNurDecnxOboWn",
+      "revision": "zVJ7kH3KrtxKulRwhEhr",
+      "url": "https://app.gitbook.com/o/ddlx1UAH93SFyQsNFNa4/s/HILTtUulCBDqDzXXk6RQ/?page=xKf3gAwNurDecnxOboWn",
+      "archive_path": "gathered-notes/gitbook-narrativeSolver.md",
+      "note": "get_page returned current main text; revision identifies contemporaneous navigation, not a cryptographic guarantee of each retrieved page"
+    },
+    {
+      "kind": "gitbook-note",
+      "name": "counterexample",
+      "id": "VzrKjeGnpcC2dhd3hGvI",
+      "revision": "zVJ7kH3KrtxKulRwhEhr",
+      "url": "https://app.gitbook.com/o/ddlx1UAH93SFyQsNFNa4/s/HILTtUulCBDqDzXXk6RQ/?page=VzrKjeGnpcC2dhd3hGvI",
+      "archive_path": "gathered-notes/gitbook-counterexample.md",
+      "note": "get_page returned current main text; revision identifies contemporaneous navigation, not a cryptographic guarantee of each retrieved page"
+    },
+    {
+      "kind": "gitbook-note",
+      "name": "viability",
+      "id": "t9EChCoWajSPIdhU20iR",
+      "revision": "zVJ7kH3KrtxKulRwhEhr",
+      "url": "https://app.gitbook.com/o/ddlx1UAH93SFyQsNFNa4/s/HILTtUulCBDqDzXXk6RQ/?page=t9EChCoWajSPIdhU20iR",
+      "archive_path": "gathered-notes/gitbook-viability.md",
+      "note": "get_page returned current main text; revision identifies contemporaneous navigation, not a cryptographic guarantee of each retrieved page"
+    },
+    {
+      "kind": "gitbook-note",
+      "name": "gestalt",
+      "id": "1Jd4YYPGgOVcAnqvkBbA",
+      "revision": "zVJ7kH3KrtxKulRwhEhr",
+      "url": "https://app.gitbook.com/o/ddlx1UAH93SFyQsNFNa4/s/HILTtUulCBDqDzXXk6RQ/?page=1Jd4YYPGgOVcAnqvkBbA",
+      "archive_path": "gathered-notes/gitbook-gestalt.md",
+      "note": "get_page returned current main text; revision identifies contemporaneous navigation, not a cryptographic guarantee of each retrieved page"
+    },
+    {
+      "kind": "gitbook-note",
+      "name": "reconstitute",
+      "id": "6txc2qc5Vklenx1LwnfI",
+      "revision": "zVJ7kH3KrtxKulRwhEhr",
+      "url": "https://app.gitbook.com/o/ddlx1UAH93SFyQsNFNa4/s/HILTtUulCBDqDzXXk6RQ/?page=6txc2qc5Vklenx1LwnfI",
+      "archive_path": "gathered-notes/gitbook-reconstitute.md",
+      "note": "get_page returned current main text; revision identifies contemporaneous navigation, not a cryptographic guarantee of each retrieved page"
+    },
+    {
+      "kind": "repository-cut",
+      "name": "MOTIF",
+      "sha": "8351cea323d0ee71feed06b65c27811f0e773376",
+      "url": "https://github.com/the-static-collective/MOTIF/tree/8351cea323d0ee71feed06b65c27811f0e773376",
+      "note": "17 files inspected; 36 tests reproduced"
+    },
+    {
+      "kind": "repository-cut",
+      "name": "LOADOUT",
+      "sha": "1adcb3d82f736f3ca8329c3c1d0d9eba398d49ee",
+      "url": "https://github.com/the-static-collective/LOADOUT/tree/1adcb3d82f736f3ca8329c3c1d0d9eba398d49ee",
+      "note": "bounded source slice inspected; not full repository verification"
+    },
+    {
+      "kind": "repository-cut",
+      "name": "3rdi",
+      "sha": "e631167a04c6bd1bf95c62cbe5a415994ebb8134",
+      "url": "https://github.com/the-static-collective/3rdi/tree/e631167a04c6bd1bf95c62cbe5a415994ebb8134",
+      "note": "bounded source slice inspected; not full repository verification"
+    },
+    {
+      "kind": "repository-cut",
+      "name": "ALEX.2",
+      "sha": "7d116b716df82ee2379b399d90936d2fc01b7b16",
+      "url": "https://github.com/the-static-collective/ALEX.2/tree/7d116b716df82ee2379b399d90936d2fc01b7b16",
+      "note": "bounded source slice inspected; not full repository verification"
+    },
+    {
+      "kind": "repository-cut",
+      "name": "Dogram",
+      "sha": "551b5f9df18f17ec69b452ddcdff01718e0ff771",
+      "url": "https://github.com/the-static-collective/Dogram/tree/551b5f9df18f17ec69b452ddcdff01718e0ff771",
+      "note": "bounded source slice inspected; not full repository verification"
+    },
+    {
+      "kind": "gitbook-note",
+      "name": "Research Packet A — Crossing, Consequence & Local Constitution",
+      "id": "wqzangpUqWE6YgRkdry6",
+      "revision": "zVJ7kH3KrtxKulRwhEhr",
+      "url": "https://the-static-collective.gitbook.io/the-static-collective-docs/frontier/primitive-incubator/research-packet-a-crossing-consequence-and-local-constitution",
+      "archive_path": "gathered-notes/gitbook-packetA.md",
+      "note": "Current page text captured; revision records contemporaneous navigation."
+    },
+    {
+      "kind": "gitbook-note",
+      "name": "Research Packet B — Continuity, Carrier, Re-entry & Reconstruction",
+      "id": "Ap0L1GAcINXaPZMsz6OJ",
+      "revision": "zVJ7kH3KrtxKulRwhEhr",
+      "url": "https://the-static-collective.gitbook.io/the-static-collective-docs/frontier/primitive-incubator/research-packet-b-continuity-carrier-re-entry-and-reconstruction",
+      "archive_path": "gathered-notes/gitbook-packetB.md",
+      "note": "Current page text captured; revision records contemporaneous navigation."
+    },
+    {
+      "kind": "gitbook-note",
+      "name": "Research Packet C — Witness, Knowability & Observer-Local Epistemics",
+      "id": "g5gBtbls1EvuUdvxhhAI",
+      "revision": "zVJ7kH3KrtxKulRwhEhr",
+      "url": "https://the-static-collective.gitbook.io/the-static-collective-docs/frontier/primitive-incubator/research-packet-c-witness-knowability-and-observer-local-epistemics",
+      "archive_path": "gathered-notes/gitbook-packetC.md",
+      "note": "Current page text captured; revision records contemporaneous navigation."
+    },
+    {
+      "kind": "gitbook-note",
+      "name": "Research Packet D — Crucibles, Counterexamples & Promotion",
+      "id": "wsuBN1NRwrtp2cccUm1t",
+      "revision": "zVJ7kH3KrtxKulRwhEhr",
+      "url": "https://the-static-collective.gitbook.io/the-static-collective-docs/frontier/primitive-incubator/research-packet-d-crucibles-counterexamples-and-promotion",
+      "archive_path": "gathered-notes/gitbook-packetD.md",
+      "note": "Current page text captured; revision records contemporaneous navigation."
+    },
+    {
+      "kind": "gitbook-note",
+      "name": "Research Packet E — Creative, Material & Metaphor Portals",
+      "id": "5sR4xbOLZuyG3pq8Nicp",
+      "revision": "zVJ7kH3KrtxKulRwhEhr",
+      "url": "https://the-static-collective.gitbook.io/the-static-collective-docs/frontier/primitive-incubator/research-packet-e-creative-material-and-metaphor-portals",
+      "archive_path": "gathered-notes/gitbook-packetE.md",
+      "note": "Current page text captured; revision records contemporaneous navigation."
+    },
+    {
+      "kind": "gitbook-note",
+      "name": "Research Packet F — Narrative, Embodied & Symbolic Worlds",
+      "id": "tXsM8ZS0i4W3KH2rRJgu",
+      "revision": "zVJ7kH3KrtxKulRwhEhr",
+      "url": "https://the-static-collective.gitbook.io/the-static-collective-docs/frontier/primitive-incubator/research-packet-f-narrative-embodied-and-symbolic-worlds",
+      "archive_path": "gathered-notes/gitbook-packetF.md",
+      "note": "Current page text captured; revision records contemporaneous navigation."
+    },
+    {
+      "kind": "gitbook-note",
+      "name": "Research Packet G — Active Project Frontiers",
+      "id": "G5TQfcFezbLwhvNheZBp",
+      "revision": "zVJ7kH3KrtxKulRwhEhr",
+      "url": "https://the-static-collective.gitbook.io/the-static-collective-docs/frontier/primitive-incubator/research-packet-g-active-project-frontiers",
+      "archive_path": "gathered-notes/gitbook-packetG.md",
+      "note": "Current page text captured; revision records contemporaneous navigation."
+    },
+    {
+      "kind": "project-doc-capture",
+      "name": "oldMotif",
+      "url": "https://github.com/the-static-collective/project0/blob/37f7c70ec38df9199189127c27e077f63cac1d24/docs/MINIMAL_RESONANCE_MOTIF.md",
+      "blob": "3bbf8920c99678fce914da3a436f6b0b62e5ee5a",
+      "archive_path": "gathered-notes/oldMotif.md"
+    },
+    {
+      "kind": "project-doc-capture",
+      "name": "DogramReadme",
+      "url": "https://github.com/the-static-collective/Dogram/blob/551b5f9df18f17ec69b452ddcdff01718e0ff771/README.md",
+      "blob": "823445178c15ea42b392858946a83572c047ecdb",
+      "archive_path": "gathered-notes/DogramReadme.md"
+    },
+    {
+      "kind": "project-doc-capture",
+      "name": "Dogram/research/ANTI-COLLAPSE-REACHABILITY-001.md",
+      "url": "https://github.com/the-static-collective/Dogram/blob/551b5f9df18f17ec69b452ddcdff01718e0ff771/research/ANTI-COLLAPSE-REACHABILITY-001.md",
+      "blob": "efe488f6882da0f0dc309d36e71a4689cd85316f",
+      "archive_path": "gathered-notes/Dogram-research-ANTI-COLLAPSE-REACHABILITY-001.md.md"
+    },
+    {
+      "kind": "primary-research",
+      "name": "Empowerment",
+      "url": "https://uhra.herts.ac.uk/id/eprint/300/1/901933.pdf",
+      "depth": "PDF extracted definition sections",
+      "redistributed": false
+    },
+    {
+      "kind": "primary-research",
+      "name": "From Skills to Symbols",
+      "url": "https://cs.brown.edu/people/gdk/pubs/orig_sym_jair.pdf",
+      "depth": "Search/publication excerpts only; full PDF exceeded size cap",
+      "redistributed": false
+    },
+    {
+      "kind": "primary-research",
+      "name": "Relational Inductive Biases",
+      "url": "https://arxiv.org/abs/1806.01261",
+      "depth": "Abstract/institutional record",
+      "redistributed": false
+    },
+    {
+      "kind": "primary-research",
+      "name": "DreamCoder",
+      "url": "https://arxiv.org/html/2006.08381v1",
+      "depth": "Abstract and selected full-text introduction/algorithm",
+      "redistributed": false
+    },
+    {
+      "kind": "primary-research",
+      "name": "Causal Representation Learning",
+      "url": "https://arxiv.org/abs/2102.11107",
+      "depth": "Abstract",
+      "redistributed": false
+    },
+    {
+      "kind": "primary-research",
+      "name": "CEGAR",
+      "url": "https://www.cs.cmu.edu/~emc/papers/Papers%20In%20Refereed%20Journals/Counterexample-guided%20abstraction%20refinement.pdf",
+      "depth": "PDF extracted introduction/refinement loci",
+      "redistributed": false
+    },
+    {
+      "kind": "primary-research",
+      "name": "Hyperproperties",
+      "url": "https://www.cs.cornell.edu/fbs/publications/1813-9480.pdf",
+      "depth": "2008 technical-report abstract/introduction",
+      "redistributed": false
+    },
+    {
+      "kind": "primary-research",
+      "name": "Learning Progress",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3893575/",
+      "depth": "Retrieved primary-article passage",
+      "redistributed": false
+    },
+    {
+      "kind": "primary-research",
+      "name": "Neuro-symbolic skills",
+      "url": "https://arxiv.org/abs/2206.10680",
+      "depth": "Abstract",
+      "redistributed": false
+    },
+    {
+      "kind": "primary-research",
+      "name": "Curiosity-Driven Imagination",
+      "url": "https://arxiv.org/html/2503.04931v1",
+      "depth": "Selected methods/experimental sections",
+      "redistributed": false
+    },
+    {
+      "kind": "primary-research",
+      "name": "SkillWrapper",
+      "url": "https://arxiv.org/html/2511.18203v8",
+      "depth": "Abstract, theory and assumption sections",
+      "redistributed": false
+    }
+  ]
+}

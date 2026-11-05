@@ -120,3 +120,7 @@ merge, evidence, truth, or adoption authority.
 Before the one-book runtime claims constitutional conformance, a real runtime
 adapter must execute the applicable Crucible specimens. Contract self-tests and
 fake adapters are insufficient.
+
+## Research packets
+
+- [MOTIF-FRONTIER-001 — Learning What Opens the Next Door](research/packets/MOTIF-FRONTIER-001/README.md): frontier dossier, source index, proposed experiment and pinned synthetic-test receipts. Research proposal; no semantic or runtime promotion.

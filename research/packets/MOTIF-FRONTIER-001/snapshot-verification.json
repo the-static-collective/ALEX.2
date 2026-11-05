@@ -1,0 +1,104 @@
+[
+  {
+    "path": ".github/workflows/test.yml",
+    "expected_git_blob": "0e6fdc6d66272be0383ee6df235fb40b5ded3180",
+    "actual_git_blob": "0e6fdc6d66272be0383ee6df235fb40b5ded3180",
+    "matches": true
+  },
+  {
+    "path": "README.md",
+    "expected_git_blob": "637f31b845f28932cee6966b9b541e019a9c3211",
+    "actual_git_blob": "637f31b845f28932cee6966b9b541e019a9c3211",
+    "matches": true
+  },
+  {
+    "path": "docs/THE-OUTERMOST-CIRCLE.md",
+    "expected_git_blob": "10e3fae8741efc5f9554cb13e166d4fde8632064",
+    "actual_git_blob": "10e3fae8741efc5f9554cb13e166d4fde8632064",
+    "matches": true
+  },
+  {
+    "path": "experiments/001/VISION.md",
+    "expected_git_blob": "1f6806ae1db513fdde265b49b9e0776cfe092ee7",
+    "actual_git_blob": "1f6806ae1db513fdde265b49b9e0776cfe092ee7",
+    "matches": true
+  },
+  {
+    "path": "experiments/001/experiment-results.json",
+    "expected_git_blob": "8d0c24135aba8dd4300f825a4869b1432c772848",
+    "actual_git_blob": "8d0c24135aba8dd4300f825a4869b1432c772848",
+    "matches": true
+  },
+  {
+    "path": "experiments/001/motif.py",
+    "expected_git_blob": "75fe5d7f1fa0d36ac1ad243fd25baaa11da0ed60",
+    "actual_git_blob": "75fe5d7f1fa0d36ac1ad243fd25baaa11da0ed60",
+    "matches": true
+  },
+  {
+    "path": "experiments/001/test_motif.py",
+    "expected_git_blob": "99e1e021ab15c9fd95d85def621ec7a894122ded",
+    "actual_git_blob": "99e1e021ab15c9fd95d85def621ec7a894122ded",
+    "matches": true
+  },
+  {
+    "path": "experiments/002/DESIGN.md",
+    "expected_git_blob": "64eb82f102a999b9faf69365606a30ab8dc25a3b",
+    "actual_git_blob": "64eb82f102a999b9faf69365606a30ab8dc25a3b",
+    "matches": true
+  },
+  {
+    "path": "experiments/002/experiment-results.json",
+    "expected_git_blob": "6de7a3dff99819ef0510ca67230d6551a042df8e",
+    "actual_git_blob": "6de7a3dff99819ef0510ca67230d6551a042df8e",
+    "matches": true
+  },
+  {
+    "path": "experiments/002/motif002.py",
+    "expected_git_blob": "b9f1e7b7879a94f7ef3869bc305608c4d7fa8695",
+    "actual_git_blob": "b9f1e7b7879a94f7ef3869bc305608c4d7fa8695",
+    "matches": true
+  },
+  {
+    "path": "experiments/002/test_motif002.py",
+    "expected_git_blob": "1d36de98d57ca6fa56010360810c583e991947a6",
+    "actual_git_blob": "1d36de98d57ca6fa56010360810c583e991947a6",
+    "matches": true
+  },
+  {
+    "path": "experiments/003/affordance.py",
+    "expected_git_blob": "db25da0d50a9c8e2cd87aa576a22f969405737cf",
+    "actual_git_blob": "db25da0d50a9c8e2cd87aa576a22f969405737cf",
+    "matches": true
+  },
+  {
+    "path": "experiments/003/test_affordance.py",
+    "expected_git_blob": "e32b873bf9b98f330f6aefaf2dd6f39c4db23efb",
+    "actual_git_blob": "e32b873bf9b98f330f6aefaf2dd6f39c4db23efb",
+    "matches": true
+  },
+  {
+    "path": "experiments/004/DESIGN.md",
+    "expected_git_blob": "ec8e9179722a1fde574ccb1081fcbd53e569becc",
+    "actual_git_blob": "ec8e9179722a1fde574ccb1081fcbd53e569becc",
+    "matches": true
+  },
+  {
+    "path": "experiments/004/experiment-results.json",
+    "expected_git_blob": "2f5e29656a1d42a07e838e619ad19e4dea506dfe",
+    "actual_git_blob": "2f5e29656a1d42a07e838e619ad19e4dea506dfe",
+    "matches": true
+  },
+  {
+    "path": "experiments/004/scar.py",
+    "expected_git_blob": "63bdcac246f272b7abbcf236fae5d1b8d59c8562",
+    "actual_git_blob": "63bdcac246f272b7abbcf236fae5d1b8d59c8562",
+    "matches": true
+  },
+  {
+    "path": "experiments/004/test_scar.py",
+    "expected_git_blob": "12e6ce3bb1f3fa37c2bf5b07388e550f9e013eea",
+    "actual_git_blob": "12e6ce3bb1f3fa37c2bf5b07388e550f9e013eea",
+    "matches": true
+  }
+]
