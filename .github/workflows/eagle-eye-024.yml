@@ -24,7 +24,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          node --input-type=module -e "import {eagleEye} from './tools/eagle-eye-024.mjs'; const p=await eagleEye({question:'Which source documents preserve witness lineage and provenance?',scopes:{github:true,wikipedia:false,scholarly:false},depth:4},{githubToken:process.env.GITHUB_TOKEN}); if(!p.hits.length||!p.source_documents.length||p.private_sources_accessed)process.exit(1); console.log(JSON.stringify(p,null,2));" > alex024-eagle-eye.json
+          node --input-type=module -e "import {eagleEye} from './tools/eagle-eye-024.mjs'; const p=await eagleEye({question:'Which source documents preserve witness lineage and provenance?',scopes:{github:true,wikipedia:false,scholarly:false},depth:4},{githubToken:process.env.GITHUB_TOKEN}); console.error(JSON.stringify({status:p.status,catalog:p.catalog,failures:p.failures,sourceDocs:p.source_documents.length,hits:p.hits.length})); if(!p.hits.length||!p.source_documents.length||p.private_sources_accessed)process.exit(1); console.log(JSON.stringify(p,null,2));" > alex024-eagle-eye.json
       - uses: actions/upload-artifact@v4
         with:
           name: alex024-public-eagle-eye-receipt
