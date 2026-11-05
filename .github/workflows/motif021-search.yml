@@ -1,0 +1,28 @@
+name: ALEX MOTIF-021 Frozen Source Search
+on:
+  push:
+    branches:
+      - research/motif021-evidence-search
+  pull_request:
+    paths:
+      - 'research/packets/MOTIF-021/**'
+      - 'tools/motif021-search.mjs'
+      - 'test/motif021-search.test.mjs'
+      - '.github/workflows/motif021-search.yml'
+jobs:
+  pinned-source-search:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Recompute exact ALEX packet, refuse changed Git blob bytes
+        run: node --test test/motif021-search.test.mjs
+      - name: Retain new reproducible packet artifact
+        run: node tools/motif021-search.mjs > motif021-alex-research-packet.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: alex-motif021-public-source-research
+          path: motif021-alex-research-packet.json
+          retention-days: 14
