@@ -4,7 +4,7 @@ import {createHash} from 'node:crypto';
 import {eagleEye,validatePacket,SOURCE_LIMITS} from '../tools/eagle-eye-024.mjs';
 const hash=b=>createHash('sha1').update(Buffer.from('blob '+b.length+'\0')).update(b).digest('hex');
 const NAMES=['MOTIF','ALEX.2','JAR-VIS','planZ','GRAFT','the-daily-slice','MEMENTO'];
-function mock({privateEntry=false,corrupt=false,githubFails=false,wikiFails=false}={}){
+function mock({privateEntry=false,corrupt=false,githubFails=false,wikiFails=false,userOwner=false}={}){
  const calls=[];
  const transport=async (url,opts)=>{
   const u=new URL(url); calls.push({url:u.href,method:opts.method,auth:!!opts.headers.Authorization});
@@ -19,7 +19,8 @@ function mock({privateEntry=false,corrupt=false,githubFails=false,wikiFails=fals
   }
   if(u.hostname!=='api.github.com')throw Error('unexpected host '+u.hostname);
   if(githubFails)return fake({},503);
-  if(u.pathname==='/orgs/the-static-collective/repos'){
+  if(u.pathname==='/orgs/the-static-collective/repos'&&userOwner)return fake({},404);
+  if(u.pathname==='/orgs/the-static-collective/repos'||u.pathname==='/users/the-static-collective/repos'){
    return fake(NAMES.map((name,i)=>({
     full_name:'the-static-collective/'+name,
     owner:{login:'the-static-collective'},
@@ -110,4 +111,13 @@ test('touched receipt or authority claim refuses validation',async()=>{
   {transport:mock().transport});
  assert.throws(()=>validatePacket({...r,question:'modified'}),/TAMPERED_EAGLE_EYE/);
  assert.throws(()=>validatePacket({...r,authority:'publish'}),/INVALID_EAGLE_EYE/);
+});
+
+test('GitHub USER owner falls back from nonexistent /orgs endpoint to /users',async()=>{
+ const m=mock({userOwner:true});
+ const r=await eagleEye({question:'Which source research files preserve witness provenance?',
+  scopes:{github:true,wikipedia:false,scholarly:false},depth:2},{transport:m.transport});
+ assert.ok(r.hits.length>0);
+ assert.ok(m.calls.some(c=>c.url.includes('/orgs/the-static-collective/repos')));
+ assert.ok(m.calls.some(c=>c.url.includes('/users/the-static-collective/repos')));
 });
