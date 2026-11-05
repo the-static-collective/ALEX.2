@@ -1,0 +1,32 @@
+name: ALEX-026 Discovery of Discovery
+on:
+  push:
+    branches: [research/026-provider-genealogy]
+  pull_request:
+    paths:
+      - 'tools/api-discovery-026.mjs'
+      - 'test/api-discovery-026.test.mjs'
+      - '.github/workflows/alex026.yml'
+permissions:
+  contents: read
+jobs:
+  bounded-discovery:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: No egress without approval, source SHA verification, privately marked source refusal
+        run: node --test test/api-discovery-026.test.mjs
+      - name: Real public GitHub provider-catalog discovery (real candidates may be unrecognized)
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          node --input-type=module -e "import {discoverMissingProvider,verifyDiscovery} from './tools/api-discovery-026.mjs'; import {writeFileSync} from 'node:fs'; const p=await discoverMissingProvider({question:'Which live weather forecast API provides hourly weather data?',approvedPublicGithubSearch:true},{githubToken:process.env.GITHUB_TOKEN});verifyDiscovery(p);writeFileSync('alex026-live-source-research.json',JSON.stringify(p,null,2));console.log(JSON.stringify({status:p.status,attempts:p.origin_searches_executed,inspected:p.candidate_repositories_screened,verifiedSpecs:p.unreviewed_spec_documents.length,proposals:p.public_provider_proposals.length,errors:p.errors?.length}));if(p.status==='HOLD_SOURCE_CATALOG_UNAVAILABLE'||p.origin_searches_executed<1||p.no_candidate_endpoint_contact!==true)process.exit(1)"
+      - name: Preserve bounded public-source research packet
+        uses: actions/upload-artifact@v4
+        with:
+          name: alex026-public-api-source-candidates
+          path: alex026-live-source-research.json
+          retention-days: 14
